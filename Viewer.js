@@ -92,7 +92,8 @@ async function showCover() {
         }
 	} catch (err) {
 		console.error(err);
-		window.alert("Failed to load set. Please upload another.")
+		window.alert("Failed to load set. Please upload another.");
+        cover.style.cssText = "opacity: 0; padding: 0px; max-height: 0vh;";
         return;
 	}
     
