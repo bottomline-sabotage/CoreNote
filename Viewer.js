@@ -81,7 +81,7 @@ async function showCover() {
         return;
 
     if(!file.name.endsWith(".corenote")) {
-        window.alert("The file doesn't seem like a .corenote, but we will try anyways!");
+        // AH! LOCAL YOKEL's BOUGHT IT
     }
 
 	try {
