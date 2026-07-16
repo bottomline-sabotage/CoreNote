@@ -1,0 +1,227 @@
+* {
+	  -webkit-user-select: none;
+	  -moz-user-select: none;
+	  -ms-user-select: none;
+	  user-select: none;  
+}
+
+.selectable, tr > * {
+  -webkit-user-select: text; 
+  -moz-user-select: text;    
+  -ms-user-select: text;     
+  user-select: text;         
+}
+
+::selection {
+    background-color: #005c1c63; 
+}
+
+
+:root {
+    --card_view_width: 72.5vw;
+}
+
+#top_bar {
+    /* display: flex; */
+    margin: auto auto;
+    /* position: relative; */
+    /* justify-content: space-between; */
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-bottom: 0px;
+    /* align-items: center; */
+}
+
+#top_bar > button {
+    width: 20vw;
+    height: 102%;
+    border-radius: 20px;
+    background-color: #312e00;
+    color: white;
+    border-color: black;
+    border-width: 2px;
+}
+
+#set_title {
+    font-family: norwester, Arial, Helvetica, sans-serif;
+    font-weight: 150;
+    font-size: 5vh;
+}
+
+#set_class {
+    color: rgb(61, 61, 61);
+    font-style: italic;
+    font-size: small;
+}
+
+#card_view {
+    position: relative;
+    margin: auto;
+    background-color: #ebebeb;
+    width: var(--card_view_width);
+    height: 55vh;
+    border-radius: 15px;
+    border-width: 3px;
+    border-color: black;
+    border-style: solid;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 2px 6px rgba(0, 0, 0, 0.18);
+    overflow: scroll;
+}
+
+#raw_html {
+    margin: auto;
+    /*align-content: center;*/
+    margin-top: 2%;
+    width: 90%;
+	height: 90%;
+    padding: 1.5%;
+    
+    text-align: center;
+}
+
+#raw_html > * {
+    margin: 3.5%;
+}
+
+#raw_html > img {
+    width: 80%;
+}
+
+#progress_bar_container {
+    position: fixed;
+    width: 100vw;
+    height: 1vh;
+    margin: 0;
+    left: 0;
+    top: 0;
+    z-index: 599;
+}
+
+#progress_bar {
+    width: 0%;
+    background-color: rgba(113, 54, 54, 0.2);
+    height: 100%;
+    border-radius: 15px;
+    transition: all 0.5s ease;
+}
+
+#current_card_stuff, #current_card_stuff > * {
+    font-family: norwester, Arial, Helvetica, sans-serif;
+    font-weight: 100;
+    font-size: 2.7rem;
+}
+
+#div_for_segment_stuff {
+    font-weight: bold;
+}
+
+#div_for_segment_stuff > * {
+    font-family: norwester, Arial, Helvetica, sans-serif; 
+    font-weight: 100;
+}
+
+.under_the_card {
+    width: var(--card_view_width);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: auto;
+}
+
+/*#help, #explanation {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
+
+#comment {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+#star {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+}*/
+
+#left_card_centered {
+    margin: 0 auto;
+    width: var(--card_view_width);
+    text-align: left;
+}
+
+#flip_button {
+    font-size: 1.5vh;
+    width: var(--card_view_width);
+    height: 3vh;
+    background-image: linear-gradient(0.25turn, #AF1290, #eb0bbe);
+    color: white;
+    border-width: 2px;
+    transition: all 0.3s ease;
+}
+
+#flip_button:hover {
+    background-image: linear-gradient(0.25turn, #8e1075, #cd0ba6);
+}
+
+#wrong_count, #right_count {
+    font-weight: 200;
+    transition: 1.5s color ease, 0.3s transform ease;
+}
+
+#this_scary {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin: auto;
+}
+
+#wrong_button:hover, #previous_button:hover, #next_button:hover, #right_button:hover {
+	font-size: 1.5rem; /*Remove default hover font change as it messes with spacing*/ 
+}
+
+#wrong_answer {
+	opacity: 0;
+	transition: opacity 0.3s ease;
+}
+
+.deactivated_button {
+    transform: scale(0.6);
+    background-color: #2d322f;
+    color: gray;
+}
+
+.deactivated_button:hover {
+    background-color:  #444b47;
+}
+
+.code-block {
+    background-color: rgb(36, 36, 42);
+    color: #e0e0e0;
+    font-family: 'Courier New', Courier, monospace;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
+    max-width: 800px;
+    margin: 2rem auto;
+    white-space: pre-lap;
+    word-wrap: break-word;
+    overflow-x: auto;
+}
+
+.code-box br {
+    line-height: 0.3em;
+    display: block;
+    margin: 0.2em 0;
+}  
+
+/* Inline code */
+code {
+    background-color: rgb(46, 46, 52);
+    padding: 0.2em 0.4em;
+    border-radius: 5px;
+    font-family: 'Courier New', Courier, monospace;
+    color: #ffcc99;
+}

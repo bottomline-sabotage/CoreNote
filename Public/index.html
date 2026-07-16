@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreNote</title>
+    <link rel="stylesheet" href="Styles.css">
+    <style>
+        #logo {
+            width: 70vw; height: auto;
+            max-width: 600px;
+        }
+
+        .floating_window {
+            width: 40vw;
+            padding: 25px;
+            margin: auto;
+            /* transform: translate(50%); */
+            justify-content: center;
+            text-align: center;
+        }
+
+        #screen_size {
+            height: 80vh;
+            width: 100vw;
+        }
+
+        #info_thing {
+            margin: 10px;
+        }
+
+        #settings-auto_scroll-time-label {
+            transition: all 0.5s ease;
+        }
+
+
+    </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"> </script>
+</head>
+<body>
+
+    <img id="logo" placeholder="CoreNote Logo" src="Assets/Logo.png"><br>
+    <span id="subtitle"><!-- --></span>
+
+    <div class="floating_window">
+        <button onclick="window.location.href = 'Create.html'">Create Set</button><br>
+        <button onclick="window.location.href = 'Viewer.html'">Study Set</button><br>
+        <!-- <input style="opacity: 0;" type="file" accept=".corenote" id="file_input"> -->
+        <!-- <p>View the <a href="https://drive.google.com/drive/folders/...">Public Set Library</a></p> -->
+    </div>
+
+
+    <span style="z-index: 1; font-size: 3rem; position: fixed; bottom: 2vh; transform: translate(-50%); opacity: 1; transition: 0.5s opacity ease;" id="scroll_arrow">↓</span>
+    <div id="screen_size"></div>
+    <div id="info_thing">
+        <hr>
+        <h1 id="description_title">But... what is CoreNote?</h1>
+        <div style="height: 10h;" id="description_spacer">
+        <p>
+            CoreNote is a free and open source note card studying software.<br><br>
+            Compared to our competitors, CoreNote has tons of innovative (and 100% free) features.<br>Here's a couple:<br>
+
+            <br>- Several Card Formats 
+            <br>- Category Division Per Set
+            <br>- Access to audio, images, videos, and other assets
+            <br>- Math formula support
+            <br>- Studier's inline comments
+            <br>- Segmented and iterative studying
+            <br>- Every set is editable (even if you don't own it)
+            <br>- AND MORE
+        
+
+        </p>
+        <h1>Page-Only System</h1>
+        <p>
+            There's no server required for CoreNote. Instead, it prioritizes doing things on your own device. Sets are shared via .corenote files (which are just renamed .zip files for those interested). This means you don't need an account (you can't even make an account if you wanted). <b>All your data is yours</b>.
+        </p>
+
+        <h1>HTML Cards</h1>
+        <p>
+            Internally, all cards are just HTML pages. CoreNote fully supports you taking the HTML and coding it yourself, over using the default editor. This allows for an infinite amount of creativity (such as utilizing phone sensors and geolocation).<br><br>
+            For security reasons, <b>please only use CoreNote cards you trust or verified yourself</b>. An insecure CoreNote set probably won't give you a virus. At worst, it might give some random guy your IP address (or location, but <b>only if you gave permission in the first place</b>).
+        </p>
+
+        <h1>100% Customizable</h1>
+        <p>
+            There's TONS of settings you can change while studying. Some examples are autoscroll, segmenting, TTS, answer sorting, etc.
+        </p>
+
+        <hr>
+
+        <h1>Settings</h1>
+        <button onclick="resetToDefault(); loadSettings();">Reset To Default</button><br><br>
+        <label class="checkbox-container" title="Doesn't load assets for all sets (if a set constantly crashes, this can help)"> Disable Set Assets <input type="checkbox" id="settings-disable_assets"/> <span class="checkmark"></span> </label> 
+        
+        <div style="display: none; opacity: 0;">
+            <br>
+            <label class="checkbox-container" title="Doesn't load assets for all sets (if a set constantly crashes, this can help)"> Motion Controls <input type="checkbox" id="settings-motion"/> <span class="checkmark"></span> </label> <br>
+            <div class="segmented_study_settings" id="settings-motion-window">
+                <b>To mark <span class="red">wrong</span>: </b><br><br>
+                Turn your phone counterclockwise, then a bit clockwise, then more counterclockwise.<br><br>
+                <b>To mark <span class="green">correct</span>: </b><br><br>
+                Turn your phone clockwise, then a bit counterclockwise, then more clockwise.<br><br>
+                <b>To flip the card: </b><br><br>
+                Quickly turn your phone towards your face (or the floor), then back (aka, pitch).
+            </div>
+        </div>
+        
+        <!-- <label class="checkbox-container" title="Keeps sets you use downloaded in your web browser"> Cache Sets <input type="checkbox"/> <span class="checkmark"></span> </label> <br> -->
+        <h1>Default Study Settings</h1>
+        <span class="note">These apply to all sets you study by default.</span><br><br>
+        <label class="checkbox-container" title="Reads the contents of the cards out loud"> Read Out Loud (TTS) <input type="checkbox" id="settings-tts"/> <span class="checkmark"></span> </label> <br>
+        
+        <label class="checkbox-container"> Flip Cards (back is the new front) <input type="checkbox" id="settings-flip"/> <span class="checkmark"></span> </label> <br>
+        
+        <label class="checkbox-container" title="Auto-scroll through cards by a fixed time interval"> Auto-Scroll <input type="checkbox" id="settings-auto_scroll-check"/> <span class="checkmark"></span> </label> <label id="settings-auto_scroll-time-label"> <br>Seconds: <input type="number" id="settings-auto_scroll-time"></label> <br>
+        <!-- <label class="checkbox-container" title="Time you spent on each card is tracked"> Speedrun Study <input type="checkbox" id="settings-speedrun"/> <span class="checkmark"></span> </label> <br> -->
+        <label class="checkbox-container" title="Shuffles cards"> Card Shuffle <input type="checkbox" id="settings-card_shuffle"/> <span class="checkmark"></span> </label> <br>
+        <label class="checkbox-container" title="Mark each card as right or wrong"> Answer Sorting <input type="checkbox" id="settings-answer_sorting"/> <span class="checkmark"></span> </label> <br>
+        <label class="checkbox-container"> Segmented Studying <input type="checkbox" id="settings-segmented_study-enabled"/> <span class="checkmark"></span> </label> <br>
+        <div class="segmented_study_settings" id="settings-segmented_study-window">
+            <!-- <br><br> -->
+            <h2>Segmented Study Settings</h2>
+            <span class="note">Segmented/Iterative Studying is a technique where you master a small segment of terms (e.g., 5) at a time. After you nail that segment, you move on to the next segment. Not all sets works well with Segmented Studying, but a lot do.</span><br><br>
+            <label>Count: <input type="number" id="settings-segmented_study-count"></label><br><br>
+            <div style="display: none;">
+                <label>Chance to repeat cards from prior Segments: <input type="number" id="settings-segmented_study-card_repeat"></label><label>%</label><br><br>
+            </div>
+            <label>Required percentage to complete a Segment: <input type="number" id="settings-segmented_study-required_percent"></label><label>%</label><br><br>
+            <label>Required repetitions with score ≥<span id="settings-segmented_study-percent"></span>: <input type="number" id="settings-segmented_study-perfect_iterations"></label><br><br>
+            <!-- <label class="checkbox-container"> Shuffle Segment Order <input type="checkbox" id="settings-segmented_study-shuffle_segment_order"/> <span class="checkmark"></span> </label> -->
+            <!-- <br><br> -->
+        </div>
+
+
+    </div>
+    
+    <div style="height: 1vh;"></div>
+
+    <footer>
+        © Tyler Koberna, 2026.<br>
+        View on <a href="https://github.com/bottomline-sabotage/CoreNote/">GitHub</a>
+    </footer>
+    
+
+    
+    <div style="height: 5vh;"></div>
+    
+    <span id="awards"></span>
+    
+<!-- 
+    <div style="height: 15vh;" id="small_one"></div>
+    <div style="height: 9999vh;"></div> -->
+
+    <script src="General.js"></script>
+
+    <script>
+        const subtitle = document.querySelector("#subtitle");
+        if(sessionStorage.getItem("title_subtitle")) {
+            subtitle.innerHTML = sessionStorage.getItem("title_subtitle");
+        } else {
+            const options = [
+                "Four eyes approved ✔️",
+                "SOH CAH TOA",
+                "hide thy spurs him in",
+                "to be or not to be (i always choose the ladder)",
+                "cross product",
+                "Battle of Kings Mountain",
+                "study the studies before they study you (you don't want the studies studying you not studying)",
+                "100% free",
+                "\\(x=\\frac{-b\\pm\\sqrt{b^2-4ac}}{2a}\\)",
+                "benny franky was on the $100, yeah man?",
+                "cite in mla",
+                "[citation needed]",
+                "be sure to check wikipedia",
+                "π = 4, right?",
+                "powered by partial credit enthusiasts",
+                "WHERE IS MY EXTRA CREDIT!?!?!",
+                "the children yearn for the quadratic formula",
+                "finding x like it's hiding from the IRS",
+                "<b>why</b> = mx + b",
+                "ap study hall and ap lunch are the two hardest classes in high school",
+                "known to the state of california to cause learning 😱",
+                "for educational purposes only",
+                "watch out! there's a wandering albatross <b>right behind you</b>",
+                "python sucks (and not just dat snake)",
+                "the truth is often in the complex middle ('cept for when it ain't)"
+
+            ];
+            
+            let setArr = [];
+            if(localStorage.getItem("subtitles")) {
+                setArr = JSON.parse(localStorage.getItem("subtitles"));
+            }
+            
+            for(const sub of setArr) {
+                options.push(sub);
+            }
+            
+            if(localStorage.getItem("visitCount") == "19") {
+                subtitle.innerHTML = "You've been to this page 20 times! Congrats, you won a metal 🥉! ";
+            } else if(localStorage.getItem("visitCount") == "99") {
+                subtitle.innerHTML = "You've OFFICALLY been to this page 100 times! You are a true studier! Have this metal 🥈!";
+            } else if(localStorage.getItem("visitCount") == "999") {
+                subtitle.innerHTML = "WOW! YOU'VE BEEN HERE 1,000 TIMES! PLEASE, TAKE MY AWARDS 🏆🥇🎖️!";
+            } else {
+                subtitle.innerHTML = (options[rng(0, options.length - 1)]).toLowerCase();
+                sessionStorage.setItem("title_subtitle", subtitle.innerHTML);
+            }
+            
+            
+        }
+        
+        // Update study count
+        if(!sessionStorage.getItem("notFirstVisit")) {
+            sessionStorage.setItem("notFirstVisit", "happy");
+            
+            let count = 0;
+            if(localStorage.getItem("visitCount")) {
+                count = parseInt(localStorage.getItem("visitCount"));
+            }
+            
+            count++;
+            localStorage.setItem("visitCount", count);
+       }
+       
+       const awards = document.querySelector("#awards")
+       if(parseInt(localStorage.getItem("visitCount")) >= 1000) {
+            awards.textContent = "Awards: 🥉, 🥈, 🏆, 🥇, 🎖️";
+       } else if(parseInt(localStorage.getItem("visitCount")) >= 100) {
+            awards.textContent = "Awards: 🥉, 🥈";
+        } else if(parseInt(localStorage.getItem("visitCount")) >= 20) {
+            awards.textContent = "Awards: 🥉";
+        }
+        
+
+    </script>
+
+    <script>
+
+        const arrow = document.getElementById("scroll_arrow");
+        document.addEventListener("scroll", (event) => { 
+            if(window.scrollY >= 150) {
+                arrow.style.opacity = 0;
+            } else {
+                arrow.style.opacity = 1;
+            }
+        });
+    
+        // document.querySelector("#study_set").onclick = () => {
+        //     const fileInput = document.querySelector("#file_input");
+        //     fileInput.click()
+        // }
+    </script>
+
+    <script>
+        function loadSettings() {
+            try {
+                var settings = JSON.parse(localStorage.getItem("globalSettings"));
+            } catch (err) {
+                localStorage.removeItem("globalSettings");
+                window.location.href = window.location.href;
+            }
+            
+            // Elements
+            const disableAssets = document.querySelector("#settings-disable_assets");
+
+            const tts = document.querySelector("#settings-tts");
+            const motionControls = document.querySelector("#settings-motion");
+            const motionControlsWindow = document.querySelector("#settings-motion-window");
+            const autoScrollCheck = document.querySelector("#settings-auto_scroll-check");
+            const autoScrollTime = document.querySelector("#settings-auto_scroll-time");
+            const autoScrollTimeLabel = document.querySelector("#settings-auto_scroll-time-label");
+            // const speedrunStudy = document.querySelector("#settings-speedrun");
+            const answerSorting = document.querySelector("#settings-answer_sorting");
+            const cardShuffle = document.querySelector("#settings-card_shuffle");
+            
+            const cardFlip = document.querySelector("#settings-flip");
+            
+
+            const segmentedStudy = document.querySelector("#settings-segmented_study-enabled");
+            const segmentedStudyWindow = document.querySelector("#settings-segmented_study-window");
+            const segmentedCount = document.querySelector("#settings-segmented_study-count");
+            const segmentedCardRepeat = document.querySelector("#settings-segmented_study-card_repeat");
+            const segmentedRequiredScore = document.querySelector("#settings-segmented_study-required_percent");
+            const segmentedPercentLabel = document.querySelector("#settings-segmented_study-percent");
+            const segmentedRequiredPerfectIterations = document.querySelector("#settings-segmented_study-perfect_iterations");
+
+            // Define Settings in LocalStorage
+            const setter = () => {
+                disableAssets.checked = settings.disableSetAssets;
+                motionControls.checked = settings.motionControls;
+                cardFlip.checked = settings.cardFlip;
+                if(motionControls.checked) {
+                    motionControlsWindow.style.opacity = "1";
+                    motionControlsWindow.style.maxHeight = "100vh";
+                    motionControlsWindow.style.padding = "20px";
+                } else {
+                    motionControlsWindow.style.padding = "0px";
+                    motionControlsWindow.style.maxHeight = "0vh";
+                    motionControlsWindow.style.opacity = "0";
+                }
+                
+                tts.checked = settings.tts;
+                autoScrollCheck.checked = settings.autoScroll.enabled;
+                autoScrollTime.value = settings.autoScroll.time;
+                if(settings.autoScroll.enabled) {
+                    autoScrollTimeLabel.style.opacity = "1";
+                } else {
+                    autoScrollTimeLabel.style.opacity = "0";
+                }
+                // speedrunStudy.checked = settings.speedrunStudy;
+                answerSorting.checked = settings.answerSorting;
+                cardShuffle.checked = settings.shuffledCards;
+                segmentedStudy.checked = settings.segmentedStudying.enabled;
+                segmentedCount.value = settings.segmentedStudying.count;
+                segmentedCardRepeat.value = settings.segmentedStudying.repeatChance;
+                segmentedRequiredScore.value = settings.segmentedStudying.percentRequiredToProceed;
+                segmentedRequiredPerfectIterations.value = settings.segmentedStudying.requiredPerfections;
+
+                segmentedPercentLabel.innerHTML = `<b>${segmentedRequiredScore.value}%</b>`;
+
+                if(settings.segmentedStudying.enabled) {
+                    segmentedStudyWindow.style.opacity = "1";
+                    segmentedStudyWindow.style.maxHeight = "100vh";
+                    segmentedStudyWindow.style.padding = "20px";
+                } else {
+                    segmentedStudyWindow.style.maxHeight = "1vh";
+                    segmentedStudyWindow.style.opacity = "0";
+                    segmentedStudyWindow.style.padding = "0px";
+                }
+            };
+            setter();
+
+            // Handle on-clicks
+            const cleanup = () => {
+                localStorage.setItem("globalSettings", JSON.stringify(settings)); // This might be inefficient and weird, but this entire function is. I don't like JS enough to fix it.
+                setter();
+            };
+
+            disableAssets.onclick = () => {
+                settings.disableSetAssets = disableAssets.checked;
+                cleanup();
+            };
+            motionControls.onclick = () => {
+                settings.motionControls = motionControls.checked;
+                cleanup();
+            }
+            
+            cardFlip.onclick = () => {
+                settings.cardFlip = cardFlip.checked;
+                cleanup();
+            }
+
+            tts.onclick = () => {
+                settings.tts = tts.checked;
+                cleanup();
+            };
+            autoScrollCheck.onclick = () => {
+                settings.autoScroll.enabled = autoScrollCheck.checked;
+                cleanup();
+            };
+            autoScrollTime.addEventListener('change', (e) => {
+                if(parseFloat(autoScrollTime.value) < 0) 
+                    autoScrollTime.value = 0;
+
+                settings.autoScroll.time = parseFloat(autoScrollTime.value);
+                cleanup();
+            });
+            // speedrunStudy.onclick = () => {
+            //     settings.speedrunStudy = speedrunStudy.checked;
+            //     cleanup();
+            // };
+            answerSorting.onclick = () => {
+                settings.answerSorting = answerSorting.checked;
+                if(!answerSorting.checked && segmentedStudy.checked) { // Segmented studying needs answer sorting
+                    sendNotification("Segmented Studying requires Answer Sorting to be enabled.<br>To use Segmented Studying, enable Answer Sorting.", 5e+3);
+                    segmentedStudy.checked = false;
+                    segmentedStudy.onclick();
+                }
+                cleanup();  
+            };
+            cardShuffle.onclick = () => {
+                settings.shuffledCards = cardShuffle.checked;
+                cleanup();
+            };
+            segmentedStudy.onclick = () => {
+                if(!answerSorting.checked && segmentedStudy.checked) {
+                    answerSorting.checked = true;
+                    settings.answerSorting = true;
+                }
+                settings.segmentedStudying.enabled = segmentedStudy.checked;
+                cleanup();
+            }
+
+            segmentedCount.addEventListener('change', (e) => {
+                if(parseInt(segmentedCount.value) < 0) 
+                    segmentedCount.value = 0;
+
+                segmentedCount.value = parseInt(segmentedCount.value);
+
+                settings.segmentedStudying.count = parseInt(segmentedCount.value);
+                cleanup();
+            });
+            segmentedCardRepeat.addEventListener('change', (e) => {
+                if(parseFloat(segmentedCardRepeat.value) < 0) 
+                    segmentedCardRepeat.value = 0;
+                if(parseFloat(segmentedCardRepeat.value) > 100) 
+                    segmentedCardRepeat.value = 100;
+
+                settings.segmentedStudying.repeatChance = parseFloat(segmentedCardRepeat.value);
+                cleanup();
+            });
+            segmentedRequiredScore.addEventListener('change', (e) => {
+                if(parseFloat(segmentedRequiredScore.value) < 0) 
+                    segmentedRequiredScore.value = 0;
+                if(parseFloat(segmentedRequiredScore.value) > 100) 
+                    segmentedRequiredScore.value = 100;
+
+                settings.segmentedStudying.percentRequiredToProceed = parseFloat(segmentedRequiredScore.value);
+                cleanup();
+            });
+            segmentedRequiredPerfectIterations.addEventListener('change', (e) => {
+                if(parseInt(segmentedRequiredPerfectIterations.value) < 1) 
+                    segmentedRequiredPerfectIterations.value = 1;
+
+                segmentedRequiredPerfectIterations.value = parseInt(segmentedRequiredPerfectIterations.value);
+
+                settings.segmentedStudying.requiredPerfections = parseInt(segmentedRequiredPerfectIterations.value);
+                cleanup();
+            });
+        }
+
+        // localStorage.removeItem("globalSettings")
+        
+
+        if(!localStorage.getItem("globalSettings"))
+            resetToDefault();
+        loadSettings();
+        
+    </script>
+</body>
+</html>

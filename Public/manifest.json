@@ -1,0 +1,10 @@
+{
+    "name": "CoreNote",
+    "short_name": "CoreNote",
+    "start_url": "index.html",
+    "display_override": ["fullscreen", "minimal-ui"],
+    "display": "standalone",
+    "background_color": "#d5d5d5",
+    "theme_color": "#d5d5d5",
+    "orientation": "portrait"
+}

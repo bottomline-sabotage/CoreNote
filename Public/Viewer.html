@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreNote</title>
+    <link rel="stylesheet" href="Styles.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <link rel="stylesheet" href="Viewer.css">
+
+   
+
+    <style>
+        .fix_this_thing_that_sucks {
+            display: relative;
+            max-height: 1vh;
+            overflow: hidden;
+        }
+
+        #submit_phase {
+            position: relative;
+            /* margin-top: 20%; */
+            transition: all 0.5s ease;
+        }
+
+        #past_submit {
+            opacity: 0;
+            padding: 0px;
+            max-height: 0vh;
+            transition: all 0.5s ease;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="submit_phase">
+        <h1>Import your Study Set</h1>
+        <span class="note">CoreNote Set files use the file extension <i>.corenote</i>.<br><b>Please only use sets from trusted sources</b>.</span><br><br>
+        <input type="file" accept=".corenote" id="file_input" style="display: none;"><br>
+        <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { showCover(); })">Upload</button>
+
+        <div style="height: 3vh;"></div>
+        
+
+        <div class="gray_area" style="opacity: 0; padding: 0px; max-height: 0vh;" id="cover">
+            <h1 id="cover-title">~</h1>
+            <span class="note" id="cover-description">~</span>
+            <br><br>
+            
+            <b>Class</b>: <span id="cover-class">~</span><br>
+            <b>Unit Info</b>: <span id="cover-unit_info">~</span><br>
+            <b>Author</b>: <span id="cover-author">~</span><br>
+            <b>Generation Date</b>: <span id="cover-date">~</span><br><br>
+            <button onclick="submitStart()">Start</button>
+        </div>
+    </div>
+
+    <div id="progress_bar_container">
+        <div id="progress_bar"></div>
+    </div>
+    <div id="past_submit">
+
+        <!-- My fear here is that This is huge  -->
+        <div id="top_bar" style="display: none;">
+            
+            
+            <div style="display: none;">
+                <span id="set_title" style="display: none;">Title</span><br>
+                <span id="set_class" style="display: none;">Class</span>
+            </div>
+        </div>
+
+        <div style="height: 1vh;"></div>
+
+        <!-- <button>Settings</button> -->
+        <div id="div_for_segment_stuff" style="display: none;">
+            <span>Perfect Segments: <span id="perfect_segment_count">1</span>/<span id="perfect_segment_required">∞</span></span><br>
+            <span>Segment <span id="current_segment_i">∞</span>/<span id="total_segments">∞</span></span>
+            <br>
+        </div>
+		<span class="red" id="wrong_answer">Answered Wrong Last Time</span>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-left: 10px; margin-right: 10px;">
+            <span id="wrong_count">∞</span>
+            <span id="current_card_stuff"><span id="current_card_i">∞</span> of <span id="total_cards">∞</span></span>
+            <span id="right_count">∞</span>
+        </div>
+
+        <div style="min-height: 3vh; padding: 5px; display: grid; place-items: center;">
+            <div id="comment_window" cla style="display: none;">
+                <span class="note"><b>Comment: </b><span class="selectable" id="commment_content"></span></span>
+            </div>
+        </div>
+        
+        <!-- <div id="left_card_centered">
+            <label class="note">Flip Button:</label>
+        </div> -->
+        
+		<div id="this_scary">
+			<button id="wrong_button" onclick="markWrong(); next();">❌</button>
+            <button id="previous_button" onclick="previous()">⬅️</button>
+            
+			
+			<div id="card_view">
+	            <div id="raw_html" class="selectable">
+	                
+	            </div>
+				
+				<div style="display: flex; justify-content: space-between; align-items: center; margin: auto; width: 100%; position: absolute; bottom: 3px;">
+					<button id="help" onclick="help()">?</button>
+		            <button id="explanation" onclick="explanation()">!</button>
+		            <button id="comment" onclick="comment()">Comment</button>
+					<button id="star" onclick="star()">★</button>
+		            <input id="comment_input" style="position: fixed; right:500vw"></input> <!--TODO: see if this is used by JS still; it probably isn't-->
+				</div>
+	        </div>	
+			
+			<button id="next_button" onclick="next()">➡️</button>
+			<button id="right_button" onclick="markRight(); next();">✅</button>
+		</div>
+        
+        <button id="flip_button" onclick="flip()">Flip</button>
+        <div class="under_the_card">
+            <span><b>Category</b>: <span id="card_category" style="text-decoration: underline;">Unknown</span></span><br>
+            <span><b>&nbsp;&nbsp;Difficulty</b>:<span id="card_difficulty"></span></span>
+        </div>
+        <!-- <div class="under_the_card" style="width: 35vw;">
+            <a id="help" onclick="help()">?</a>
+            <a id="explanation" onclick="explanation()">!</a>
+            <a id="comment" onclick="comment()">Comment</a>
+            <a id="star" onclick="star()">★</a>
+        </div> -->
+
+        <div style="height: 22vh;"></div>
+    
+
+        <hr>
+        <h1>Categories</h1>
+        <span class="note">Review only a specific category.<br>Currently: "<b id="current_category">None</b>"</span><br><br>
+        <div id="categories_list" class="gray_area">
+
+        </div>
+        <br>
+        <hr>
+        <div>
+            <h1 id="set_settings_header">Set Settings</h1>
+    
+            <div class="fix_this_thing_that_sucks" id="set_settings-uncreated" style="transition: all 0.5s ease;">
+                <label>Right now, this set is using your <u>default settings</u> (set on the homepage). You can make this set use some custom settings by pressing the button below:</label><br>
+                <button onclick="createSettings()">Creates Set Settings</button>
+                <br>
+            </div>
+    
+    
+            <div class="fix_this_thing_that_sucks" id="set_settings-creation_page" style="transition: all 0.5s ease;">
+                <button onclick="removeSettings()">Remove Set Settings</button><br><br>
+    
+                <label class="checkbox-container" title="Reads the contents of the cards out loud"> Read Out Loud (TTS) <input type="checkbox" id="settings-tts"/> <span class="checkmark"></span> </label> <br>
+                
+                <label class="checkbox-container"> Flip Cards (back is the new front) <input type="checkbox" id="settings-flip"/> <span class="checkmark"></span> </label> <br>
+                
+                <label class="checkbox-container" title="Auto-scroll through cards by a fixed time interval"> Auto-Scroll <input type="checkbox" id="settings-auto_scroll-check"/> <span class="checkmark"></span> </label> <label id="settings-auto_scroll-time-label"> <br>Seconds: <input type="number" id="settings-auto_scroll-time"></label> <br>
+                <!-- <label class="checkbox-container" title="Time you spent on each card is tracked"> Speedrun Study <input type="checkbox" id="settings-speedrun"/> <span class="checkmark"></span> </label> <br> -->
+                <label class="checkbox-container" title="Shuffles cards"> Card Shuffle <input type="checkbox" id="settings-card_shuffle"/> <span class="checkmark"></span> </label> <br>
+                <label class="checkbox-container" title="Mark each card as right or wrong"> Answer Sorting <input type="checkbox" id="settings-answer_sorting"/> <span class="checkmark"></span> </label> <br>
+                <label class="checkbox-container"> Segmented Studying <input type="checkbox" id="settings-segmented_study-enabled"/> <span class="checkmark"></span> </label> <br>
+                <div class="segmented_study_settings" id="settings-segmented_study-window">
+                    <!-- <br><br> -->
+                    <h2>Segmented Study Settings</h2>
+                    <span class="note">Segmented/Iterative Studying is a technique where you master a small segment of terms (e.g., 5) at a time. After you nail that segment, you move on to the next segment. Not all sets works well with Segmented Studying, but a lot do.</span><br><br>
+                    <label>Count: <input type="number" id="settings-segmented_study-count"></label><br><br>
+                    <div style="display: none;">
+                        <label>Chance to repeat cards from prior Segments: <input type="number" id="settings-segmented_study-card_repeat"></label><label>%</label><br><br>
+                    </div>
+                    <label>Required percentage to complete a Segment: <input type="number" id="settings-segmented_study-required_percent"></label><label>%</label><br><br>
+                    <label>Required repetitions with score ≥<span id="settings-segmented_study-percent"></span>: <input type="number" id="settings-segmented_study-perfect_iterations"></label><br><br>
+                    <!-- <label class="checkbox-container"> Shuffle Segment Order <input type="checkbox" id="settings-segmented_study-shuffle_segment_order"/> <span class="checkmark"></span> </label> -->
+                    <!-- <br><br> -->
+                </div>
+            </div>
+        </div>
+    
+        <br>
+    
+        <hr>
+        <div>
+            <h1>Set Information</h1>
+            <table class="selectable">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><b>Title</b></td>
+                        <td id="info-title">null</td>
+                    </tr>
+                    <tr>
+                        <td><b>Description</b></td>
+                        <td id="info-desc">null</td>
+                    </tr>
+                    <tr>
+                        <td><b>Author</b></td>
+                        <td id="info-author">null</td>
+                    </tr>
+                    <tr>
+                        <td><b>Class</b></td>
+                        <td id="info-class">null</td>
+                    </tr>
+                    <tr>
+                        <td><b>Unit Info</b></td>
+                        <td id="info-unit_info">null</td>
+                    </tr>
+                    <tr>
+                        <td><b>Times You've Studied This</b></td>
+                        <td id="info-study_times">0</td>
+                    </tr>
+                    <tr>
+                        <td><b>Number of Cards</b></td>
+                        <td id="info-num_cards">null</td>
+                    </tr>
+                    <tr>
+                        <td><b>Categories</b></td>
+                        <td id="info-categories">null</td>
+                    </tr>
+                    <!-- <tr>
+                        <td><b>Orders</b></td>
+                        <td id="info-orders">null</td>
+                    </tr> -->
+                    <tr>
+                        <td><b>Version</b></td>
+                        <td id="info-version">null</td>
+                    </tr>
+                    <tr>
+                        <td><b>Generation Date</b></td>
+                        <td id="info-date">null</td>
+                    </tr>
+                    <tr>
+                        <td><b>ID</b></td>
+                        <td id="info-id">null</td>
+                    </tr>
+                </tbody>
+              </table>
+        </div>
+		
+		<hr>
+		
+        <div>
+            <button onclick="window.scrollTo({top: 0, behavior: 'smooth'});">Go back</button>
+            <button onclick="window.location.href = 'index.html'">Exit</button>
+        </div>
+    
+        <div style="height: 5vh;"></div>
+    </div>
+
+    <span style="z-index: 1; font-size: 3rem; position: fixed; left: 50%; bottom: 2vh; transform: translate(-50%); opacity: 0; transition: 0.5s opacity ease;" id="scroll_arrow">↓</span>
+
+    <script src="jszip/jszip.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"> </script>
+    <script src="TTS.js"></script>
+    <script src="General.js"> </script>
+    <script src="Viewer.js"> </script>
+    <script src="Vignette.js"> </script>
+
+    <script>
+
+        const arrowManager = () => {
+            let stopIt = null;
+            const arrow = document.getElementById("scroll_arrow");
+            document.addEventListener("scroll", function cb (event) { 
+                if(document.querySelector('#past_submit').style.opacity != '1') {
+                    arrow.style.opacity = 0;
+                    return;
+                }
+    
+                if(stopIt === null) {
+                    stopIt = false;
+                    setTimeout(() => {
+                        stopIt = true;
+                        document.removeEventListener('scroll', cb);
+                        arrow.style.opacity = 0;
+                    }, 15e+3);
+                }
+    
+                if(stopIt)
+                    return;
+    
+                if(window.scrollY >= 90) {
+                    arrow.style.opacity = 0;
+                } else {
+                    arrow.style.opacity = 1;
+                }
+            });
+        };
+
+        if(localStorage.getItem('arrowTimes')) {
+            const val = parseInt(localStorage.getItem('arrowTimes'));
+            if(val <= 2) {
+                localStorage.setItem('arrowTimes', val + 1);
+                arrowManager();
+            } else {
+                
+                document.getElementById("scroll_arrow").remove();
+            }
+        } else {
+            localStorage.setItem('arrowTimes', 0)
+            arrowManager();
+        }
+
+    </script>
+
+    <script>
+        function submitStart() {
+            document.querySelector('#submit_phase').style.cssText = 'opacity: 0; padding: 0px; max-height: 0vh;';
+            document.querySelector('#past_submit').style.cssText = 'opacity: 0; padding: 0px; max-height: 0vh; display: inline';
+            load(); 
+            try { 
+                document.getElementById('scroll_arrow').style.opacity = 1; 
+            } catch (err) {} 
+            
+            setTimeout(() => { 
+                document.querySelector('#submit_phase').style.display = 'none'; 
+            }, 700); 
+            setTimeout(() => {
+                document.querySelector('#past_submit').style.cssText = ' opacity: 1; padding: 20px; max-height: 100vh; display: inline';
+            }, 300);
+            
+        }
+    </script>
+</body>
+</html>
