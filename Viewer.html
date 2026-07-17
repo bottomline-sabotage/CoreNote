@@ -123,7 +123,7 @@
         
         <button id="flip_button" onclick="flip()">Flip</button>
         <div class="under_the_card">
-            <span><b>Category</b>: <span id="card_category" style="text-decoration: underline;">Unknown</span></span><br>
+            <span id="category_button"><b>Category</b>: <span id="card_category" style="text-decoration: underline;">Unknown</span></span><br>
             <span><b>&nbsp;&nbsp;Difficulty</b>:<span id="card_difficulty"></span></span>
         </div>
         <!-- <div class="under_the_card" style="width: 35vw;">
@@ -137,7 +137,7 @@
     
 
         <hr>
-        <h1>Categories</h1>
+        <h1 id="categories_header">Categories</h1>
         <span class="note">Review only a specific category.<br>Currently: "<b id="current_category">None</b>"</span><br><br>
         <div id="categories_list" class="gray_area">
 
@@ -331,6 +331,11 @@
             }, 300);
             
         }
+    </script>
+    <script>
+        document.querySelector("#category_button").addEventListener('click', (event) => {
+            document.querySelector("#categories_header").scrollTo({behavior: 'smooth'});
+        });  
     </script>
 </body>
 </html>
