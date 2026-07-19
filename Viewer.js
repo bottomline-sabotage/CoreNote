@@ -1200,3 +1200,63 @@ function unsegmify() {
 
     setCard(0);
 }
+
+function print() {
+    const div = document.createElement("div");
+    div.innerHTML = `
+        <h1>${cardSet.json.title}</h1>
+        <span class="note">In order to print this, use your browser's built-in print button/hotkey.</span>
+        <hr>
+        <div style="display: flex; align-items: center; justify-content: space-between;"><b>Front</b><b>Back</b></div>
+        <hr>
+    `;
+
+
+    for(const card of cardSet.json.cards) {
+        
+
+        const cardContent = document.createElement("div");
+        cardContent.style.cssText = "display: flex; align-items: center; justify-content: space-between;";
+
+        const front = document.createElement('span');
+        front.innerHTML = card.front;
+
+        const back = document.createElement('span');
+        back.innerHTML = card.back;
+
+        cardContent.appendChild(front);
+        cardContent.appendChild(back);
+        
+        div.appendChild(cardContent);
+        div.appendChild(document.createElement('hr'));
+    }
+
+    const pastSubmit = document.querySelector("#past_submit");
+    pastSubmit.style.display = "none";
+    document.body.appendChild(div);
+   
+    const back = document.createElement('button');
+    back.textContent = "Back";
+    back.onclick = () => {
+        div.remove();
+        pastSubmit.style.display = "inline";
+        back.remove();
+    }
+    document.body.prepend(back);
+
+    // Asset Rendering
+    console.log(cardAssets);
+    for(const [key, src] of Object.entries(cardAssets)) {
+        document.querySelectorAll(key).forEach(async (el) => {
+            el.src = src;
+            el.style.maxWidth = "175px";
+            el.style.maxHeight = "175px";
+        });
+    }
+
+    // Render math
+    if(renderMathInElement)
+        renderMathInElement(div);
+    else 
+        console.error("Failed to render math (renderMathInElement doesn't exist");
+}

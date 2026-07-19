@@ -2,19 +2,247 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Not Here</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>CoreNote</title>
+    <link rel="stylesheet" href="Styles.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <link rel="stylesheet" href="Viewer.css">
+    <link rel="stylesheet" href="Creator.css">
+   
+
     <style>
-        * {
-            text-align: center;
+        .fix_this_thing_that_sucks {
+            display: relative;
+            max-height: 1vh;
+            overflow: hidden;
+        }
+
+        #submit_phase {
+            position: relative;
+            /* margin-top: 20%; */
+            transition: all 0.3s ease;
+        }
+
+        #past_submit {
+            opacity: 0;
+            transition: all 0.3s ease;
+            display: none;
+            height: 100vh;
+        
+        }
+
+        #button_info, #button_cards, #button_settings {
+            transition: all 0.3s ease;
+            margin-left: 25px;
+            margin-right: 25px;
+        }
+
+        #window_info, #window_cards, #window_settings {
+            max-width: none;
+            min-width: none; 
+            width: 85vw;
+            height: 80vh;
+            margin: auto;
+            left: auto;
+            
+            margin-bottom: 0.5vh;
+            overflow: scroll;
+        }
+
+        hr {
+            opacity: 0.3;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <h1>Nope!</h1>
-    <hr>
-    <p>
-        Courtesy of security reasons, creation is not in the public webpage yet (nor GitHub). If you still need to make a set, either wait a week or two or rename a pre-existing .corenote into a .zip then edit from there.
-    </p>
+    <div id="submit_phase">    
+        <h1>Upload or Create New?</h1>
+        <span class="note">Either upload a pre-existing set to continue working on it or start work on a brand new one.</span><br><br>
+        <input type="file" accept=".corenote" id="file_input" style="display: none;"><br>
+        <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { showCover(); })">Upload</button>
+        <button onclick="start()">New</button><br><br>
+        <button onclick="window.location.href = 'index.html'">Exit</button>
+
+        <div style="height: 3vh;"></div>
+        
+        <div class="gray_area" style="opacity: 0; padding: 0px; max-height: 0vh;" id="cover">
+            <h1 id="cover-title">~</h1>
+            <span class="note" id="cover-description">~</span>
+            <br><br>
+            
+            <b>Class</b>: <span id="cover-class">~</span><br>
+            <b>Unit Info</b>: <span id="cover-unit_info">~</span><br>
+            <b>Author</b>: <span id="cover-author">~</span><br>
+            <b>Generation Date</b>: <span id="cover-date">~</span><br><br>
+            <button onclick="submitStart()">Start</button>
+        </div>
+    </div>
+
+    <div id="progress_bar_container">
+        <div id="progress_bar"></div>
+    </div>
+    <div id="past_submit" style="min-height: none; height: 100vh;">
+        <div style="display: flex; align-items: center; justify-content: space-between;margin-bottom: 0;"><h2 id="button_info">Info</h2><h2 id="button_cards">Cards</h2><h2 id="button_settings">Settings</h2></div>
+
+        <span class="note" id="please_just_click_something" style="display: none; opacity: 0; transition: all 1s ease; margin: 0; padding: 0;">To enter a window (Info, Cards, or Settings), select a tab at the top. If you're just starting, I'd recommend "Info." Whenever you want to save your set, do so in "Settings."<br></span>
+
+        <div id="window_info" class="gray_area">
+            <label>Title</label><br>
+            <input id="info-title"><br><br>
+
+            <label>Description</label><br>
+            <textarea id="info-description"></textarea><br><br>
+
+            <label>Class</label><br>
+            <input id="info-class"><br><br>
+
+            <label>Unit Info</label><br>
+            <input id="info-unit_info"><br><br>
+
+            <label>Author</label><br>
+            <input id="info-author"><br><br>
+
+            <hr>
+
+            <label>Number of Cards</label><br>
+            <span id="info-number_of_cards" class="note">None</span><br><br>
+
+            <label>Average Difficulty</label><br>
+            <span id="info-difficulty" class="note">?</span><br><br>
+
+            <label>Categories</label><br>
+            <span id="info-cateogires" class="note">...</span><br><br>
+        </div>
+        <div id="window_cards" class="gray_area">
+            
+        </div>
+        <div id="window_settings" class="gray_area">
+            <label>Save set to .corenote (you must do this to save your progress)</label><br>
+            <button >Save</button>
+
+            <hr>
+
+            <label>Go back to the main page</label><br>
+            <button onclick="window.location.href = '/'">Go back</button>
+        </div>
+
+        <!-- <div style="font-family: webdings;"></div> -->
+    </div>
+
+    <!-- <span style="z-index: 1; font-size: 3rem; position: fixed; left: 50%; bottom: 2vh; transform: translate(-50%); opacity: 0; transition: 0.5s opacity ease;" id="scroll_arrow">↓</span> -->
+
+    <script src="jszip/jszip.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"> </script>
+    <script src="TTS.js"></script>
+    <script src="General.js"> </script>
+    <script src="Vignette.js"> </script>
+    <script src="Creator.js"> </script>
+
+    <script>
+        function start() {
+            const preSubmit = document.querySelector("#submit_phase");
+            const afterSubmit = document.querySelector("#past_submit");
+            preSubmit.style.opacity = 0;
+            setTimeout(() => {
+                preSubmit.style.display = "none";
+                afterSubmit.style.display = "inline";
+                afterSubmit.style.opacity = 1;
+            }, 305);
+        }
+    </script>
+
+    <script>
+        window.isDirty = false;
+
+        window.addEventListener('beforeunload', (event) => {
+            if(isDirty) {
+                event.preventDefault();  
+                event.returnValue = ''; 
+            }
+        });
+    </script>
+
+    <script>
+        const infoWindow = document.querySelector("#window_info");
+        const cardsWindow = document.querySelector("#window_cards");
+        const settingsWindow = document.querySelector("#window_settings");
+
+        const infoButton = document.querySelector("#button_info");
+        const cardsButton = document.querySelector("#button_cards");
+        const settingsButton = document.querySelector("#button_settings");
+        
+        const pleaseClickSomething = document.querySelector("#please_just_click_something");
+        const clickSomethingTimeout = setTimeout(() => {
+            pleaseClickSomething.style.display = "inline";
+            setTimeout(() => {
+                pleaseClickSomething.style.opacity = 1;
+            }, 20);
+        }, 10e+3);
+
+        infoButton.addEventListener('click', () => {
+            infoWindow.style.display = "inline-block";
+            cardsWindow.style.display = "none";
+            settingsWindow.style.display = "none";
+
+            infoButton.style.cssText = "opacity: 1; transform: scale(1.1)";
+            cardsButton.style.cssText = "opacity: 0.5; transform: scale(1)";
+            settingsButton.style.cssText = "opacity: 0.5; transform: scale(1)";
+
+            clearTimeout(clickSomethingTimeout);
+            pleaseClickSomething.style.opacity = "0"; 
+            setTimeout(() => { pleaseClickSomething.style.display = "none"; }, 1005);
+        });
+
+        cardsButton.addEventListener('click', () => {
+            infoWindow.style.display = "none";
+            settingsButton.style.cssText = "opacity: 1"
+            cardsWindow.style.display = "inline-block";
+            settingsWindow.style.display = "none";
+
+            infoButton.style.cssText = "opacity: 0.5; transform: scale(1)";
+            cardsButton.style.cssText = "opacity: 1; transform: scale(1.1)";
+            settingsButton.style.cssText = "opacity: 0.5; transform: scale(1)";
+
+            clearTimeout(clickSomethingTimeout);
+            pleaseClickSomething.style.opacity = "0";
+            setTimeout(() => { pleaseClickSomething.style.display = "none"; }, 1005);
+        });
+
+        settingsButton.addEventListener('click', () => {
+            infoWindow.style.display = "none";
+            cardsWindow.style.display = "none";
+            settingsWindow.style.display = "inline-block";
+            
+            infoButton.style.cssText = "opacity: 0.5; transform: scale(1)";
+            cardsButton.style.cssText = "opacity: 0.5; transform: scale(1)";
+            settingsButton.style.cssText = "opacity: 1; transform: scale(1.1)";
+
+            clearTimeout(clickSomethingTimeout);
+            pleaseClickSomething.style.opacity = "0";
+            setTimeout(() => { pleaseClickSomething.style.transform = "scale(0)"; }, 1100);
+            setTimeout(() => { pleaseClickSomething.style.display = "none"; }, 1005);
+        });
+
+        infoWindow.style.display = "none";
+        cardsWindow.style.display = "none";
+        settingsWindow.style.display = "none";
+        infoButton.style.cssText = "opacity: 0.5";
+        cardsButton.style.cssText = "opacity: 0.5";
+        settingsButton.style.cssText = "opacity: 0.5";
+    </script>
+
+    <script>
+        if(localStorage.getItem("authorName") && document.querySelector("#info-author").value.length < 1) {
+            document.querySelector("#info-author").value = localStorage.getItem("authorName");
+        }
+
+        document.querySelector("#info-author").addEventListener('change', () => {
+            localStorage.setItem("authorName", document.querySelector("#info-author").value);
+        });
+    </script>
+    
 </body>
 </html>

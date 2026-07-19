@@ -34,13 +34,12 @@
     </style>
 </head>
 <body>
-    <div id="submit_phase">
-        <button onclick="window.location.href = 'index.html'">Exit</button><br><br>
-        
+    <div id="submit_phase">    
         <h1>Import your Study Set</h1>
         <span class="note">CoreNote Set files use the file extension <i>.corenote</i>.<br><b>Please only use sets from trusted sources</b>.</span><br><br>
         <input type="file" accept=".corenote" id="file_input" style="display: none;"><br>
-        <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { showCover(); })">Upload</button>
+        <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { showCover(); })">Upload</button><br><br>
+        <button onclick="window.location.href = 'index.html'">Exit</button>
 
         <div style="height: 3vh;"></div>
         
@@ -144,6 +143,15 @@
         </div>
         <br>
         <hr>
+
+        <div>
+            <h1>Print</h1>
+            <!-- <label>Be able to print your things! WHOA!</label><br> -->
+            <button onclick="print()">Print</button>
+        </div>
+        
+        <hr>
+
         <div>
             <h1 id="set_settings_header">Set Settings</h1>
     
