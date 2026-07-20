@@ -40,7 +40,7 @@
         <input type="file" accept=".corenote" id="file_input" style="display: none;"><br>
         <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { showCover(); })">Upload</button><br><br>
 
-        <div style="height: 1.5vh;"></div>
+        <div style="height: 1vh;"></div>
 
         <div class="gray_area" style="opacity: 0; padding: 0px; max-height: 0vh;" id="cover">
             <h1 id="cover-title">~</h1>
@@ -53,6 +53,8 @@
             <b>Generation Date</b>: <span id="cover-date">~</span><br><br>
             <button onclick="submitStart()">Start</button>
         </div>
+      
+         <div style="height: 1vh;"></div>
       
          <button onclick="window.location.href = 'index.html'">Exit</button>
     </div>
