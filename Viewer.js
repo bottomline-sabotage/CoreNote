@@ -439,7 +439,7 @@ function initCardSet() {
         // document.querySelector("#info-desc").innerHTML = cardSet.json.description || "<i>Undefined</i>";
         document.querySelector("#info-num_cards").innerHTML = cardSet.json.cards.length || "<i>Undefined</i>";
         if(cardSet.json.categories.length > 0) {
-            document.querySelector("#info-categories").innerHTML = cardSet.json.categories || "<i>Undefined</i>";
+            document.querySelector("#info-categories").innerHTML = cardSet.json.categories.join(', ') || "<i>Undefined</i>";
         } else {
             document.querySelector("#info-categories").innerHTML = "<i>None</i>";
         }
