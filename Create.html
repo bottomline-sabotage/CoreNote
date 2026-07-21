@@ -116,12 +116,20 @@
             <span id="info-cateogires" class="note">...</span><br><br>
         </div>
         <div id="window_cards" class="gray_area">
-            <div style="text-align: right; text-decoration: underline; text-decoration-color: blue;"><a onclick="createCardDialogue()">+ card</a></div>
-
+            
             <div id="cards_spot">
-
+                
+            </div>
+            <div style="text-decoration: underline; text-decoration-color: blue; text-shadow: blue 1px 0 10px;">
+                <a id="create_card_link" onclick="createCardDialogue()">+ card</a>
             </div>
             
+            <!-- <div style="position: relative; overflow-y: auto;">
+                <div style="position: -webkit-sticky; position: sticky; bottom: 15px; right: 15px; text-decoration: underline; text-decoration-color: blue; text-shadow: blue 1px 0 10px;">
+                   
+                </div>
+            </div> -->
+            <div tabindex="0" class="-very_end_of_cards"></div>
         </div>
         <div id="window_settings" class="gray_area">
             <label>Save set to .corenote (you must do this to save your progress)</label><br>

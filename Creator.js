@@ -56,10 +56,15 @@ function createCardObject(randomizedFront = undefined, category = undefined, exp
        
 }
 
+let foreverCardCount = 0;
 function createCardDialogue() {
+    const index = foreverCardCount;
+    foreverCardCount++;
+
     const cardWindow = document.querySelector("#cards_spot");
     
     const card = document.createElement('div');
+    card.id = `card-${index}`;
     card.className = "cardDialogue";
 
     const top = document.createElement('div');
@@ -74,15 +79,19 @@ function createCardDialogue() {
     top.appendChild(actionShelf);
 
     const count = document.createElement('span');
-    count.textContent = `Card #${window.cardSet.cards.length + 1}`;
+    count.textContent = `Card #${document.querySelectorAll(".cardDialogue").length + 1}`;
+    count.className = "card_index";
     top.appendChild(count);
     
     const formatting = document.createElement('div');
     const front = document.createElement('textarea');
+    front.className = "front_side";
     const back = document.createElement('textarea');
+    back.className = "back_side";
+    
     document.querySelectorAll(".-focus_check_for_new").forEach((el) => {
         // You ain't the newest
-        back.className = "";
+        el.className = "";
     }); 
     back.className = "-focus_check_for_new";
     
@@ -108,15 +117,35 @@ function createCardDialogue() {
     );
     cardWindow.appendChild(card);
 
-    card.scrollTo({});
+    setTimeout(() => {
+        document.querySelector("#create_card_link").scrollIntoView({
+            behavior: "smooth",
+            block: "end"
+        });
+    }, 50);
 
-    const index = window.cardSet.cards.length;
-    window.cardSet.cards.push({});
+    
+
+    deleteButton.onclick = () => {       
+        document.querySelector(`#card-${index}`).remove();
+
+        // Re-name cards
+        document.querySelectorAll(".cardDialogue").forEach((el, i) => {
+            const count = document.querySelector(`#${el.id} .card_index`);
+            count.innerText = `Card #${i + 1}`;
+        });
+    
+    };
+    
+
+    front.focus();
 }
 
-window.addEventListener('keydown', (e) => {
-    if(e.key == 'Tab' /* && object with class 'focus_check_for_new is focused'*/) {
-
-    }
-        
-});
+// Tab create card handler
+{
+    window.addEventListener('keyup', (e) => { 
+        if(e.key === 'Tab' && (/*document.activeElement?.classList.contains('-focus_check_for_new') || */document.activeElement?.classList.contains('-very_end_of_cards'))) {
+            createCardDialogue();
+        }
+    });
+}
