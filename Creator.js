@@ -152,7 +152,7 @@ function save() {
     zip.file("data.json", JSON.stringify(data));
 
     // Generate and download the file
-    zip.generateAsync({ type: "blob" }).then((blob) => {
+    zip.generateAsync({ type: "blob", mimeType: "application/octet-stream" }).then((blob) => {
         const url = URL.createObjectURL(blob);
 
         const a = document.createElement("a");
