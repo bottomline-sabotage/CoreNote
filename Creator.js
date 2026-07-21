@@ -157,7 +157,7 @@ function save() {
 
         const a = document.createElement("a");
         a.href = url;
-        a.download = `${data.title}.corenote`;
+        a.download = `${data.title || "set"}.corenote`;
         a.click();
 
         URL.revokeObjectURL(url);
