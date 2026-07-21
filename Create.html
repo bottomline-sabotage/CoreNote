@@ -57,9 +57,21 @@
     </style>
 </head>
 <body>
-    <div id="submit_phase">    
+    <div id="submit_phase">  
+        <div style="display:inline-block;background:#8B0000;border:4px solid #FFD700;border-radius:10px;padding:16px 24px;text-align:center;font-family:Arial,Helvetica,sans-serif;box-shadow:0 0 15px rgba(255,0,0,.6);max-width: 60vw;">
+            <div style="font-size:42px;font-weight:900;color:#FFFF00;line-height:1;text-shadow:2px 2px #000;">
+                ⚠ WARNING ⚠
+            </div>
+            <div style="margin-top:8px;font-size:18px;font-weight:bold;color:#FFFFFF;">
+                THIS FEATURE ESPECIALLY IS PROVIDED IN AN UNFINISHED STATE. CERTAIN FUNCTIONALITY MAY NOT YET BE IMPLEMENTED, AND IMPLEMENTED FEATURES MAY BE INCOMPLETE, UNSTABLE, OR OTHERWISE FAIL TO OPERATE AS INTENDED.
+            </div>
+        </div>
+        
         <h1>Upload or Create New?</h1>
         <span class="note">Either upload a pre-existing set to continue working on it or start work on a brand new one.</span><br><br>
+
+        <span class="note"><b>Note:</b> Uploading is not currently supported.</span><br>
+
         <input type="file" accept=".corenote" id="file_input" style="display: none;"><br>
         <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { showCover(); })">Upload</button>
         <button onclick="start()">New</button><br><br>
@@ -116,7 +128,9 @@
             <span id="info-cateogires" class="note">...</span><br><br>
         </div>
         <div id="window_cards" class="gray_area">
-            
+
+            <span class="note"><b>Note:</b> Create does not currently support text formatting, assets (e.g., images), math expressions, or similar features.</span><br>
+
             <div id="cards_spot">
                 
             </div>
@@ -133,7 +147,7 @@
         </div>
         <div id="window_settings" class="gray_area">
             <label>Save set to .corenote (you must do this to save your progress)</label><br>
-            <button >Save</button>
+            <button onclick="save()">Save</button>
 
             <hr>
 
