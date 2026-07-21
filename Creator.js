@@ -109,6 +109,12 @@ function createCardDialogue() {
     });
 }
 
+function prettify(input) {
+    let output = input;
+
+    return output;
+}
+
 function generateJson() {
     const title = document.querySelector("#info-title");
     const description = document.querySelector("#info-description");
@@ -139,7 +145,7 @@ function generateJson() {
         const front = document.querySelector(`#${el.id} .card_front_side`);
         const back = document.querySelector(`#${el.id} .card_back_side`);
         
-        data.cards.push(createCardObject(false, 0, "", "", front.value, back.value, 0));
+        data.cards.push(createCardObject(false, 0, "", "", prettify(front.value), prettify(back.value), 0));
     });
 
     return data;
