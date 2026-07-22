@@ -193,9 +193,13 @@ a {
 }
 
 a:hover {
-    font-size: large;
+    /* font-size: large; */
     transform: scale(1.1);
     color: rgb(80, 80, 227);
+}
+
+a:active {
+    color: rgb(42, 42, 138);
 }
 
 .red {

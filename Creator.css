@@ -35,17 +35,30 @@ textarea {
 
 .cardDialogue {
     margin: 15px;
-    background-color: rgb(82, 82, 82);
+    background-color: rgb(150, 150, 150);
     border-radius: 5px;
-    color: white;
+    color: black;
     padding: 10px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
 }
 
 .cardDialogue > * {
-    color: white;
+    color: black;
 }
 
 .cardDialogue > textarea {
     height: 15vh;
     min-height: 15vh;
+}
+
+#window_cards a {
+    /* text-decoration: underline; */
+    text-decoration-color: blue;
+    /* text-shadow: blue 1px 0 10px; */
+    font-weight: bold;
+}
+
+#window_cards {
+    background-color: #d5d5d5;
+    /* overflow: visible; */
 }

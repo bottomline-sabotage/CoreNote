@@ -40,7 +40,7 @@
             margin-right: 25px;
         }
 
-        #window_info, #window_cards, #window_settings {
+        #window_info, #window_settings {
             max-width: none;
             min-width: none; 
             width: 85vw;
@@ -129,15 +129,17 @@
             <label>Categories</label><br>
             <span id="info-cateogires" class="note">...</span><br><br>
         </div>
-        <div id="window_cards" class="gray_area">
+        <div id="window_cards" class="">
 
             <span class="note"><b>Note:</b> Create does not currently support text formatting, assets (e.g., images), math expressions, or similar features.</span><br>
+
+             <button id="create_card_link_first" onclick="createCardDialogue()">+ card</button>
 
             <div id="cards_spot">
                 
             </div>
-            <div style="text-decoration: underline; text-decoration-color: blue; text-shadow: blue 1px 0 10px;">
-                <a id="create_card_link" onclick="createCardDialogue()">+ card</a>
+            <div style="position: fixed; right: 5px; bottom: 5px;">
+                <button id="create_card_link" onclick="createCardDialogue()" style="display: none; opacity: 0.4;">+ card</button>
             </div>
             
             <!-- <div style="position: relative; overflow-y: auto;">
@@ -146,6 +148,8 @@
                 </div>
             </div> -->
             <div tabindex="0" class="-very_end_of_cards"></div>
+
+            <div style="height: 4vh;"></div>
         </div>
         <div id="window_settings" class="gray_area">
             <label>Save set to .corenote (you must do this to save your progress)</label><br>

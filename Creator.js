@@ -15,6 +15,11 @@ function createCardObject(randomizedFront = undefined, category = undefined, exp
 
 let foreverCardCount = 0;
 function createCardDialogue() {
+    if(foreverCardCount == 0) {
+        document.querySelector("#create_card_link_first").style.display = "none";
+        document.querySelector("#create_card_link").style.display = "inline";
+    }
+
     const index = foreverCardCount;
     foreverCardCount++;
 
@@ -26,14 +31,14 @@ function createCardDialogue() {
 
     const top = document.createElement('div');
     top.style.cssText = `display: flex; align-items: center; justify-content: space-between;`;
-    const actionShelf = document.createElement('div');
-    actionShelf.style.cssText = `background-color: white; padding: 5px; border-radius: 4px;`;
-    const deleteButton = document.createElement('a');
-    deleteButton.textContent = 'X';
-    deleteButton.style.color = "red";
-    actionShelf.appendChild(deleteButton);
+    // const actionShelf = document.createElement('div');
+    // actionShelf.style.cssText = `background-color: white; padding: 5px; border-radius: 4px;`;
+    // const deleteButton = document.createElement('a');
+    // deleteButton.textContent = 'X';
+    // deleteButton.style.color = "red";
+    // actionShelf.appendChild(deleteButton);
 
-    top.appendChild(actionShelf);
+    // top.appendChild(actionShelf);
 
     const count = document.createElement('span');
     count.textContent = `Card #${document.querySelectorAll(".cardDialogue").length + 1}`;
@@ -51,10 +56,25 @@ function createCardDialogue() {
     // backSide.className = "-focus_check_for_new";
     
 
+    // TODO: make left aligned
     const frontLabel = document.createElement('label');
     frontLabel.textContent = "Front";
     const backLabel = document.createElement('label');
     backLabel.textContent = "Back";
+
+    const bottomHolder = document.createElement('div');
+    bottomHolder.style.cssText = `display: flex; align-items: center;justify-content: space-around;`;
+    const deleteButton = document.createElement('a');
+    deleteButton.textContent = "Delete";
+    deleteButton.style.color = "darkred";
+    const addHintButton = document.createElement('a');
+    addHintButton.textContent = "Add Hint";
+    const addExplanationButton = document.createElement('a');
+    addExplanationButton.textContent = "Add Explanation";
+
+    bottomHolder.appendChild(deleteButton);
+    bottomHolder.appendChild(addHintButton);
+    bottomHolder.appendChild(addExplanationButton);
 
     card.append(
         top,
@@ -68,7 +88,10 @@ function createCardDialogue() {
         document.createElement('br'),
         backLabel,
         document.createElement('br'),
-        backSide
+        backSide,
+        document.createElement('br'),
+        document.createElement('br'),
+        bottomHolder
     );
     cardWindow.appendChild(card);
 
