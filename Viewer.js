@@ -552,11 +552,17 @@ function initCardSet() {
     
 }
 
+let intervalLock = false; // note: this is a hack to fix old code
 async function createTimeoutInterval() {
+    while(intervalLock)
+        await sleep(500);
+
     autoScrollId++;
     const AUTO_SCROLL_ID = autoScrollId;
 
     while(autoScroll > 0 && settings.autoScroll.enabled && autoScrollId == AUTO_SCROLL_ID) {
+        intervalLock = true;
+
         await sleep(autoScroll * 1000);
         flip();
         await sleep(autoScroll * 1000);
@@ -565,6 +571,8 @@ async function createTimeoutInterval() {
         }
         next();
     }
+
+    intervalLock = false;
 }
 
 function setCard(index) {
