@@ -343,3 +343,19 @@ hr {
     opacity: 0.25;
     border-radius: 10px;
 }
+
+.options_button {
+    color: rgb(80, 80, 80);
+    transition: all 0.3s ease;
+    transform: scale(0.8);
+}
+
+.options_button:hover {
+    color: black;
+    transform: scale(1);
+}
+
+.options_button:active, .options_button:focus {
+    color: black;
+    transform: scale(0.6);
+}

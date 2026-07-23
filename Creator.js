@@ -40,12 +40,31 @@ function createCardDialogue() {
 
     // top.appendChild(actionShelf);
 
+    const moveHolder = document.createElement('div');
+    moveHolder.style.width = "100%";
+    moveHolder.style.textAlign = "left";
+    moveHolder.style.position = "relative";
+    const mover = document.createElement('span');
+    mover.textContent = "|||";
+    mover.style.letterSpacing = "-3px";
+    mover.style.marginTop = "3%";
+    mover.style.position = "absolute";
+    mover.style.cursor = "grab";
+    mover.style.color = "gray";
+    mover.style.transform = "scaleY(3)";
+    moveHolder.append(mover);
+
     const count = document.createElement('span');
     count.textContent = `Card #${document.querySelectorAll(".cardDialogue").length + 1}`;
     count.className = "card_index";
     top.appendChild(count);
+
+    const menuButton = document.createElement('span');
+    menuButton.className = "options_button";
+    menuButton.textContent = "•••";
+    top.appendChild(menuButton);
     
-    const formatting = document.createElement('div');
+    // const formatting = document.createElement('div');
     const frontSide = document.createElement('textarea');
     const backSide = document.createElement('textarea');
     
@@ -82,13 +101,13 @@ function createCardDialogue() {
     const explanationLabel = document.createElement('label');
     explanationLabel.textContent = "Explanation";
 
-    const hintContent = document.createElement('textarea');
+    const hintContent = document.createElement('input');
     hintContent.style.width = "65%";
     hintContent.style.maxHeight = "2vh";
     hintContent.style.minHeight = "2vh";
     hintContent.style.height = "2vh";
     hintContent.className = "hint_content";
-    const explanationContent = document.createElement('textarea');
+    const explanationContent = document.createElement('input');
     explanationContent.style.width = "65%";
     explanationContent.style.maxHeight = "2vh";
     explanationContent.style.minHeight = "2vh";
@@ -117,7 +136,8 @@ function createCardDialogue() {
 
     card.append(
         top,
-        formatting,
+        moveHolder,
+        // formatting,
         document.createElement('br'),
         document.createElement('br'),
         frontLabel,
