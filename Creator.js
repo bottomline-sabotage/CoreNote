@@ -36,7 +36,7 @@ function createCardDialogue() {
     const card = document.createElement('div');
     card.id = `card-${index}`;
     card.className = "cardDialogue";
-    card.draggable = true;
+    // card.draggable = true;
 
     const top = document.createElement('div');
     top.style.cssText = `display: flex; align-items: center; justify-content: space-between;`;
@@ -55,12 +55,13 @@ function createCardDialogue() {
     moveHolder.style.position = "relative";
     const mover = document.createElement('span');
     mover.textContent = "|||";
+    mover.className = 'card_mover';
     // mover.style.letterSpacing = "-3px";
     mover.style.marginTop = "3%";
     mover.style.position = "absolute";
     mover.style.cursor = "grab";
     mover.style.color = "gray";
-    mover.style.transform = "scaleY(3)";
+    mover.style.transform = "scale(0.8, 3)";
     moveHolder.append(mover);
 
     const count = document.createElement('span');
@@ -174,21 +175,6 @@ function createCardDialogue() {
             block: "end"
         });
     }, 50);
-    
-    const pointerDown = (e) => {
-        const el = e.currentTarget;
-        console.log(el)
-    };
-    const pointerMove = (e) => {
-        
-    };
-    const pointerUp = (e) => {
-        
-    };
-
-    mover.addEventListener('pointerdown', pointerDown);
-    mover.addEventListener('pointermove', pointerMove);
-    mover.addEventListener('pointerup', pointerUp);
 
     deleteButton.onclick = () => {       
         document.querySelector(`#card-${index}`).remove();
@@ -196,10 +182,6 @@ function createCardDialogue() {
         reindexCards();
     
         document.querySelector("#info-number_of_cards").textContent = document.querySelectorAll(".cardDialogue").length;
-        
-        mover.removeEventListener('pointerdown', pointerDown);
-        mover.removeEventListener('pointermove', pointerMove);
-        mover.removeEventListener('pointerup', pointerUp);
     };
 
     addHintButton.onclick = () => {
@@ -239,6 +221,29 @@ function createCardDialogue() {
             addExplanationButton.style.color = '';
         }
     };
+
+    mover.onclick = () => {
+        const cards = [...document.querySelectorAll(".cardDialogue")];
+
+        const input = parseInt(prompt(`Move to card # (1-${cards.length})`), 10);
+        if(isNaN(input))
+            return;
+
+        const newIndex = input - 1;
+
+        if (newIndex < 0 || newIndex >= cards.length) return;
+
+        const remaining = cards.filter(c => c !== card);
+
+        if(newIndex >= remaining.length) {
+            cardWindow.appendChild(card);
+        } else {
+            remaining[newIndex].before(card);
+        }
+
+        reindexCards();
+    };
+
 
     frontSide.focus();
 
@@ -321,3 +326,43 @@ function save() {
 
     console.log(data);
 }
+
+// let downEl = null;
+// const pointerDown = (e) => {
+    
+//     if(e.target.className == "card_mover" && downEl == null) {
+//         downEl = e.target.parentElement.parentElement;
+//         downEl.style.opacity = 0.5;
+//         downEl.style.position = "absolute";
+//         downEl.style.width = "2vw";
+//         downEl.style.height = "2vw";
+//         document.querySelectorAll(".cardDialogue > *").forEach((el) => {
+//             el.style.opacity = 0
+//         });
+//     }
+// };
+// const pointerMove = (e) => {
+//     if(downEl == null)
+//         return;
+
+//     downEl.style.top = `${e.clientY}px`;
+//     downEl.style.left = `${e.clientX}px`;
+// };
+// const pointerUp = (e) => {
+//     if(downEl == null)
+//         return;
+
+//     downEl.style.width = "";
+//     downEl.style.height = "";
+//     downEl.style.position = "relative";
+//     downEl.style.opacity = 1;
+//     downEl.style.left = ``;
+//     document.querySelectorAll(".cardDialogue > *").forEach((el) => {
+//         el.style.opacity = 1
+//     });
+//     downEl = null;
+// };
+
+// document.addEventListener('pointerdown', pointerDown);
+// document.addEventListener('pointermove', pointerMove);
+// document.addEventListener('pointerup', pointerUp);
