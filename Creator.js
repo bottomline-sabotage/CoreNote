@@ -87,9 +87,9 @@ function createCardDialogue() {
     deleteButton.textContent = "Delete";
     deleteButton.style.color = "darkred";
     const addHintButton = document.createElement('a');
-    addHintButton.textContent = "Add Hint";
+    addHintButton.textContent = "+ Hint";
     const addExplanationButton = document.createElement('a');
-    addExplanationButton.textContent = "Add Explanation";
+    addExplanationButton.textContent = "+ Explanation";
 
     bottomHolder.appendChild(deleteButton);
     bottomHolder.appendChild(addHintButton);
@@ -183,7 +183,7 @@ function createCardDialogue() {
         if(hintStuff.style.display == "none") {
             hintStuff.style.display = "inline"; // TODO: animation
             
-            addHintButton.textContent = "Remove Hint";
+            addHintButton.textContent = "- Hint";
             addHintButton.style.color = 'darkred';
         } 
         
@@ -192,7 +192,7 @@ function createCardDialogue() {
             hintStuff.style.display = "none"; // TODO: animation
             hintContent.value = "";
             
-            addHintButton.textContent = "Add Hint";
+            addHintButton.textContent = "+ Hint";
             addHintButton.style.color = '';
         }
     };
@@ -202,7 +202,7 @@ function createCardDialogue() {
         if(explanationStuff.style.display == "none") {
             explanationStuff.style.display = "inline"; // TODO: animation
 
-            addExplanationButton.textContent = "Remove Explanation";
+            addExplanationButton.textContent = "- Explanation";
             addExplanationButton.style.color = 'darkred';
         } 
         
@@ -211,7 +211,7 @@ function createCardDialogue() {
             explanationStuff.style.display = "none"; // TODO: animation
             explanationContent.value = "";
 
-            addExplanationButton.textContent = "Add Explanation";
+            addExplanationButton.textContent = "+ Explanation";
             addExplanationButton.style.color = '';
         }
     };
