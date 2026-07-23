@@ -232,7 +232,10 @@ function createCardDialogue() {
 }
 
 function prettify(input) {
-    let output = input;
+    let output = String(input);
+
+    // New lines
+    output = output.replaceAll('\n', '<br>');
 
     return output;
 }
