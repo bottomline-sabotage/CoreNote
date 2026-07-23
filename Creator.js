@@ -13,6 +13,14 @@ function createCardObject(randomizedFront = undefined, category = undefined, exp
        
 }
 
+function reindexCards() {
+    // Re-name cards
+    document.querySelectorAll(".cardDialogue").forEach((el, i) => {
+        const count = document.querySelector(`#${el.id} .card_index`);
+        count.innerText = `Card #${i + 1}`;
+    });
+}
+
 let foreverCardCount = 0;
 function createCardDialogue() {
     if(foreverCardCount == 0) {
@@ -28,6 +36,7 @@ function createCardDialogue() {
     const card = document.createElement('div');
     card.id = `card-${index}`;
     card.className = "cardDialogue";
+    card.draggable = true;
 
     const top = document.createElement('div');
     top.style.cssText = `display: flex; align-items: center; justify-content: space-between;`;
@@ -46,7 +55,7 @@ function createCardDialogue() {
     moveHolder.style.position = "relative";
     const mover = document.createElement('span');
     mover.textContent = "|||";
-    mover.style.letterSpacing = "-3px";
+    // mover.style.letterSpacing = "-3px";
     mover.style.marginTop = "3%";
     mover.style.position = "absolute";
     mover.style.cursor = "grab";
@@ -165,17 +174,32 @@ function createCardDialogue() {
             block: "end"
         });
     }, 50);
+    
+    const pointerDown = (e) => {
+        const el = e.currentTarget;
+        console.log(el)
+    };
+    const pointerMove = (e) => {
+        
+    };
+    const pointerUp = (e) => {
+        
+    };
+
+    mover.addEventListener('pointerdown', pointerDown);
+    mover.addEventListener('pointermove', pointerMove);
+    mover.addEventListener('pointerup', pointerUp);
 
     deleteButton.onclick = () => {       
         document.querySelector(`#card-${index}`).remove();
 
-        // Re-name cards
-        document.querySelectorAll(".cardDialogue").forEach((el, i) => {
-            const count = document.querySelector(`#${el.id} .card_index`);
-            count.innerText = `Card #${i + 1}`;
-        });
+        reindexCards();
     
         document.querySelector("#info-number_of_cards").textContent = document.querySelectorAll(".cardDialogue").length;
+        
+        mover.removeEventListener('pointerdown', pointerDown);
+        mover.removeEventListener('pointermove', pointerMove);
+        mover.removeEventListener('pointerup', pointerUp);
     };
 
     addHintButton.onclick = () => {
@@ -215,7 +239,6 @@ function createCardDialogue() {
             addExplanationButton.style.color = '';
         }
     };
-    
 
     frontSide.focus();
 
