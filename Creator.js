@@ -76,6 +76,45 @@ function createCardDialogue() {
     bottomHolder.appendChild(addHintButton);
     bottomHolder.appendChild(addExplanationButton);
 
+
+    const hintLabel = document.createElement('label');
+    hintLabel.textContent = "Hint";
+    const explanationLabel = document.createElement('label');
+    explanationLabel.textContent = "Explanation";
+
+    const hintContent = document.createElement('textarea');
+    hintContent.style.width = "65%";
+    hintContent.style.maxHeight = "2vh";
+    hintContent.style.minHeight = "2vh";
+    hintContent.style.height = "2vh";
+    hintContent.className = "hint_content";
+    const explanationContent = document.createElement('textarea');
+    explanationContent.style.width = "65%";
+    explanationContent.style.maxHeight = "2vh";
+    explanationContent.style.minHeight = "2vh";
+    explanationContent.style.height = "2vh";
+    explanationContent.className = "explanation_content";
+    
+    const hintStuff = document.createElement('div');
+    hintStuff.style.display = "none";
+    hintStuff.append(
+        hintLabel,
+            document.createElement('br'),
+            hintContent,
+            document.createElement('br'),
+            document.createElement('br'),
+    );
+      
+    const explanationStuff = document.createElement('div');
+    explanationStuff.style.display = "none";
+    explanationStuff.append(
+        explanationLabel,
+            document.createElement('br'),
+            explanationContent,
+            document.createElement('br'),
+            document.createElement('br'),
+    );
+
     card.append(
         top,
         formatting,
@@ -91,7 +130,9 @@ function createCardDialogue() {
         backSide,
         document.createElement('br'),
         document.createElement('br'),
-        bottomHolder
+        hintStuff,
+        explanationStuff,
+        bottomHolder,
     );
     cardWindow.appendChild(card);
 
@@ -115,6 +156,44 @@ function createCardDialogue() {
         });
     
         document.querySelector("#info-number_of_cards").textContent = document.querySelectorAll(".cardDialogue").length;
+    };
+
+    addHintButton.onclick = () => {
+        // Show
+        if(hintStuff.style.display == "none") {
+            hintStuff.style.display = "inline"; // TODO: animation
+            
+            addHintButton.textContent = "Remove Hint";
+            addHintButton.style.color = 'darkred';
+        } 
+        
+        // Hide and clear
+        else {
+            hintStuff.style.display = "none"; // TODO: animation
+            hintContent.value = "";
+            
+            addHintButton.textContent = "Add Hint";
+            addHintButton.style.color = '';
+        }
+    };
+
+    addExplanationButton.onclick = () => {
+        // Show
+        if(explanationStuff.style.display == "none") {
+            explanationStuff.style.display = "inline"; // TODO: animation
+
+            addExplanationButton.textContent = "Remove Explanation";
+            addExplanationButton.style.color = 'darkred';
+        } 
+        
+        // Hide and clear
+        else {
+            explanationStuff.style.display = "none"; // TODO: animation
+            explanationContent.value = "";
+
+            addExplanationButton.textContent = "Add Explanation";
+            addExplanationButton.style.color = '';
+        }
     };
     
 
@@ -167,8 +246,10 @@ function generateJson() {
     document.querySelectorAll(".cardDialogue").forEach((el, i) => {
         const front = document.querySelector(`#${el.id} .card_front_side`);
         const back = document.querySelector(`#${el.id} .card_back_side`);
+        const hint = document.querySelector(`#${el.id} .hint_content`);
+        const explanation = document.querySelector(`#${el.id} .explanation_content`);
         
-        data.cards.push(createCardObject(false, 0, "", "", prettify(front.value), prettify(back.value), 0));
+        data.cards.push(createCardObject(false, 0, explanation.value || "", hint.value || "", prettify(front.value), prettify(back.value), 0));
     });
 
     return data;
