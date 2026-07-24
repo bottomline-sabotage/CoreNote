@@ -17,7 +17,7 @@ function reindexCards() {
     // Re-name cards
     document.querySelectorAll(".cardDialogue").forEach((el, i) => {
         const count = document.querySelector(`#${el.id} .card_index`);
-        count.innerText = `Card #${i + 1}`;
+        count.innerText = `#${i + 1}`;
     });
 }
 
@@ -36,6 +36,7 @@ function createCardDialogue() {
     const card = document.createElement('div');
     card.id = `card-${index}`;
     card.className = "cardDialogue";
+    card.style.backgroundColor = "white";
     // card.draggable = true;
 
     const top = document.createElement('div');
@@ -49,16 +50,16 @@ function createCardDialogue() {
 
     // top.appendChild(actionShelf);
 
-    const mover = document.createElement('span');
-    mover.textContent = "|||";
-    mover.className = 'card_mover';
-    mover.style.cursor = "grab";
-    mover.style.color = "gray";
-    mover.style.transform = "scale(4, 0.8) rotate(90deg)"
+    // const mover = document.createElement('span');
+    // mover.textContent = "|||";
+    // mover.className = 'card_mover';
+    // mover.style.cursor = "grab";
+    // mover.style.color = "gray";
+    // mover.style.transform = "scale(4, 0.8) rotate(90deg)"
     
 
     const count = document.createElement('span');
-    count.textContent = `Card #${document.querySelectorAll(".cardDialogue").length + 1}`;
+    count.textContent = `#${document.querySelectorAll(".cardDialogue").length + 1}`;
     count.className = "card_index";
     
     const menuButtonHolder = document.createElement('div');
@@ -71,12 +72,14 @@ function createCardDialogue() {
     menuButtonHolder.appendChild(menuButton);
 
     top.appendChild(menuButtonHolder);
-    top.appendChild(mover);
+    // top.appendChild(mover);
     top.appendChild(count);
     
     // const formatting = document.createElement('div');
     const frontSide = document.createElement('textarea');
+    frontSide.placeholder = "Front Side";
     const backSide = document.createElement('textarea');
+    backSide.placeholder = "Back Side";
     
     // document.querySelectorAll(".-focus_check_for_new").forEach((el) => {
     //     // You ain't the newest
@@ -86,10 +89,10 @@ function createCardDialogue() {
     
 
     // TODO: make left aligned
-    const frontLabel = document.createElement('label');
-    frontLabel.textContent = "Front";
-    const backLabel = document.createElement('label');
-    backLabel.textContent = "Back";
+    // const frontLabel = document.createElement('label');
+    // frontLabel.textContent = "Front";
+    // const backLabel = document.createElement('label');
+    // backLabel.textContent = "Back";
 
     const bottomHolder = document.createElement('div');
     bottomHolder.style.cssText = `display: flex; align-items: center;justify-content: space-around;`;
@@ -116,17 +119,21 @@ function createCardDialogue() {
     hintContent.style.minHeight = "2vh";
     hintContent.style.height = "2vh";
     hintContent.className = "hint_content";
+    // hintContent.placeholder = "Hint";
     const explanationContent = document.createElement('input');
     explanationContent.style.width = "65%";
     explanationContent.style.maxHeight = "2vh";
     explanationContent.style.minHeight = "2vh";
     explanationContent.style.height = "2vh";
     explanationContent.className = "explanation_content";
+    // explanationContent.placeholder = "Explanation";
     
     const hintStuff = document.createElement('div');
     hintStuff.style.display = "none";
+    hintStuff.style.overflow = "hidden"
+    hintStuff.style.transition = "all 0.3s ease";
     hintStuff.append(
-        hintLabel,
+            hintLabel,
             document.createElement('br'),
             hintContent,
             document.createElement('br'),
@@ -135,8 +142,9 @@ function createCardDialogue() {
       
     const explanationStuff = document.createElement('div');
     explanationStuff.style.display = "none";
+    explanationStuff.style.transition = "all 0.3s ease";
     explanationStuff.append(
-        explanationLabel,
+            explanationLabel,
             document.createElement('br'),
             explanationContent,
             document.createElement('br'),
@@ -145,15 +153,15 @@ function createCardDialogue() {
 
     card.append(
         top,
+        // document.createElement('br'),
         document.createElement('br'),
-        document.createElement('br'),
-        frontLabel,
-        document.createElement('br'),
+        //frontLabel,
+        //document.createElement('br'),
         frontSide,
         document.createElement('br'),
         document.createElement('br'),
-        backLabel,
-        document.createElement('br'),
+        //backLabel,
+       // document.createElement('br'),
         backSide,
         document.createElement('br'),
         document.createElement('br'),
@@ -177,10 +185,34 @@ function createCardDialogue() {
         const div = document.createElement('div');
         div.className = "dropdown-content";
         div.innerHTML = ``;
+        
+        const mover = document.createElement('a');
+        mover.textContent = "Move";
+        mover.onclick = () => {
+            const cards = [...document.querySelectorAll(".cardDialogue")];
+
+            const input = parseInt(prompt(`Move to card # (1-${cards.length})`), 10);
+            if(isNaN(input))
+                return;
+    
+            const newIndex = input - 1;
+    
+            if (newIndex < 0 || newIndex >= cards.length) return;
+    
+            const remaining = cards.filter(c => c !== card);
+    
+            if(newIndex >= remaining.length) {
+                cardWindow.appendChild(card);
+            } else {
+                remaining[newIndex].before(card);
+            }
+    
+            reindexCards();
+        };
 
         const categories = document.createElement('a');
         categories.textContent = "Categories";
-
+        
         const rating = document.createElement('a');
         if(document.querySelector(`#card-${index} .star_rating`)) {
             rating.textContent = `Change Rating (${document.querySelector(`#card-${index} .star_rating`).textContent})`;
@@ -219,7 +251,7 @@ function createCardDialogue() {
 
         const deleteButton = document.createElement('a');
         deleteButton.style.color = 'darkred';
-        deleteButton.textContent = "Delete Card";
+        deleteButton.textContent = "Delete";
         deleteButton.onclick = () => {
             document.querySelector(`#card-${index}`).remove();
 
@@ -233,6 +265,7 @@ function createCardDialogue() {
             rating,
             randomFront,
             document.createElement('hr'),
+            mover,
             deleteButton
         );
 
@@ -255,6 +288,7 @@ function createCardDialogue() {
         // Show
         if(hintStuff.style.display == "none") {
             hintStuff.style.display = "inline"; // TODO: animation
+            hintStuff.style.height = "100%";
             
             addHintButton.textContent = "- Hint";
             addHintButton.style.color = 'darkred';
@@ -262,7 +296,10 @@ function createCardDialogue() {
         
         // Hide and clear
         else {
-            hintStuff.style.display = "none"; // TODO: animation
+            setTimeout(() => {
+                hintStuff.style.display = "none";
+            }, 400)
+            hintStuff.style.height = "0%";
             hintContent.value = "";
             
             addHintButton.textContent = "+ Hint";
@@ -289,27 +326,27 @@ function createCardDialogue() {
         }
     };
 
-    mover.onclick = () => {
-        const cards = [...document.querySelectorAll(".cardDialogue")];
+    // mover.onclick = () => {
+    //     const cards = [...document.querySelectorAll(".cardDialogue")];
 
-        const input = parseInt(prompt(`Move to card # (1-${cards.length})`), 10);
-        if(isNaN(input))
-            return;
+    //     const input = parseInt(prompt(`Move to card # (1-${cards.length})`), 10);
+    //     if(isNaN(input))
+    //         return;
 
-        const newIndex = input - 1;
+    //     const newIndex = input - 1;
 
-        if (newIndex < 0 || newIndex >= cards.length) return;
+    //     if (newIndex < 0 || newIndex >= cards.length) return;
 
-        const remaining = cards.filter(c => c !== card);
+    //     const remaining = cards.filter(c => c !== card);
 
-        if(newIndex >= remaining.length) {
-            cardWindow.appendChild(card);
-        } else {
-            remaining[newIndex].before(card);
-        }
+    //     if(newIndex >= remaining.length) {
+    //         cardWindow.appendChild(card);
+    //     } else {
+    //         remaining[newIndex].before(card);
+    //     }
 
-        reindexCards();
-    };
+    //     reindexCards();
+    // };
 
 
     frontSide.focus();

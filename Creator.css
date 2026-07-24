@@ -66,3 +66,14 @@ textarea {
     background-color: #d5d5d5;
     /* overflow: visible; */
 }
+
+textarea::placeholder {
+    font-style: italic;
+    
+    height: 100px;
+  line-height: 20px;       /* Set your text line height */
+  padding-top: 40px;       /* (Height - Line Height) / 2 */
+  padding-bottom: 40px;    /* Keeps the typing area symmetric */
+  box-sizing: border-box;  /* Ensures padding doesn't add to total height */
+  resize: none;  
+}
