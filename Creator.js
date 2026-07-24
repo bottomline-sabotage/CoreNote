@@ -51,7 +51,7 @@ function createCardDialogue() {
 
     const moveHolder = document.createElement('div');
     moveHolder.style.width = "100%";
-    moveHolder.style.textAlign = "left";
+    moveHolder.style.textAlign = "right";
     moveHolder.style.position = "relative";
     const mover = document.createElement('span');
     mover.textContent = "|||";
@@ -61,14 +61,13 @@ function createCardDialogue() {
     mover.style.position = "absolute";
     mover.style.cursor = "grab";
     mover.style.color = "gray";
-    mover.style.transform = "scale(0.8, 3)";
+    mover.style.transform = "scale(0.8, 3) translateX(-100%)"
     moveHolder.append(mover);
 
     const count = document.createElement('span');
     count.textContent = `Card #${document.querySelectorAll(".cardDialogue").length + 1}`;
     count.className = "card_index";
-    top.appendChild(count);
-
+    
     const menuButtonHolder = document.createElement('div');
     menuButtonHolder.className = "dropdown";
 
@@ -78,6 +77,8 @@ function createCardDialogue() {
 
     menuButtonHolder.appendChild(menuButton);
     top.appendChild(menuButtonHolder);
+    
+    top.appendChild(count);
     
     // const formatting = document.createElement('div');
     const frontSide = document.createElement('textarea');
@@ -109,7 +110,6 @@ function createCardDialogue() {
     bottomHolder.appendChild(deleteButton);
     bottomHolder.appendChild(addHintButton);
     bottomHolder.appendChild(addExplanationButton);
-
 
     const hintLabel = document.createElement('label');
     hintLabel.textContent = "Hint";

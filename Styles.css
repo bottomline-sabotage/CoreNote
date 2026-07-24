@@ -367,7 +367,6 @@ hr {
 
 .dropdown-content {
     position: absolute;
-    left: -10vw;
     background-color: #f1f1f1;
     min-width: 160px;
     overflow-x: hidden;
