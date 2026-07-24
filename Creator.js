@@ -69,10 +69,15 @@ function createCardDialogue() {
     count.className = "card_index";
     top.appendChild(count);
 
+    const menuButtonHolder = document.createElement('div');
+    menuButtonHolder.className = "dropdown";
+
     const menuButton = document.createElement('span');
     menuButton.className = "options_button";
     menuButton.textContent = "•••";
-    top.appendChild(menuButton);
+
+    menuButtonHolder.appendChild(menuButton);
+    top.appendChild(menuButtonHolder);
     
     // const formatting = document.createElement('div');
     const frontSide = document.createElement('textarea');
@@ -175,6 +180,29 @@ function createCardDialogue() {
             block: "end"
         });
     }, 50);
+
+    menuButton.onclick = () => {
+        const div = document.createElement('div');
+        div.className = "dropdown-content";
+        div.innerHTML = `
+            <a>Categories</a>
+            <a>Ratings</a>
+            <a>Random Front Side</a>
+        `;
+        div.style.opacity = 0;
+        setTimeout(() => {
+            div.style.opacity = 1;
+            div.style.display = "block";
+        }, 50);
+        menuButtonHolder.appendChild(div);
+
+        document.addEventListener('pointerup', function deleter() {
+            setTimeout(() => {
+                document.removeEventListener('pointerup', deleter);
+            }, 400);
+            div.style.opacity = 0;
+        });
+    };
 
     deleteButton.onclick = () => {       
         document.querySelector(`#card-${index}`).remove();
