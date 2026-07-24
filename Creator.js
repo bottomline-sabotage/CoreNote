@@ -49,20 +49,13 @@ function createCardDialogue() {
 
     // top.appendChild(actionShelf);
 
-    const moveHolder = document.createElement('div');
-    moveHolder.style.width = "100%";
-    moveHolder.style.textAlign = "right";
-    moveHolder.style.position = "relative";
     const mover = document.createElement('span');
     mover.textContent = "|||";
     mover.className = 'card_mover';
-    // mover.style.letterSpacing = "-3px";
-    mover.style.marginTop = "3%";
-    mover.style.position = "absolute";
     mover.style.cursor = "grab";
     mover.style.color = "gray";
-    mover.style.transform = "scale(0.8, 3) translateX(-100%)"
-    moveHolder.append(mover);
+    mover.style.transform = "scale(4, 0.8) rotate(90deg)"
+    
 
     const count = document.createElement('span');
     count.textContent = `Card #${document.querySelectorAll(".cardDialogue").length + 1}`;
@@ -76,8 +69,9 @@ function createCardDialogue() {
     menuButton.textContent = "•••";
 
     menuButtonHolder.appendChild(menuButton);
+
     top.appendChild(menuButtonHolder);
-    
+    top.appendChild(mover);
     top.appendChild(count);
     
     // const formatting = document.createElement('div');
@@ -99,15 +93,15 @@ function createCardDialogue() {
 
     const bottomHolder = document.createElement('div');
     bottomHolder.style.cssText = `display: flex; align-items: center;justify-content: space-around;`;
-    const deleteButton = document.createElement('a');
-    deleteButton.textContent = "Delete";
-    deleteButton.style.color = "darkred";
+    // const deleteButton = document.createElement('a');
+    // deleteButton.textContent = "Delete";
+    // deleteButton.style.color = "darkred";
     const addHintButton = document.createElement('a');
     addHintButton.textContent = "+ Hint";
     const addExplanationButton = document.createElement('a');
     addExplanationButton.textContent = "+ Explanation";
 
-    bottomHolder.appendChild(deleteButton);
+    // bottomHolder.appendChild(deleteButton);
     bottomHolder.appendChild(addHintButton);
     bottomHolder.appendChild(addExplanationButton);
 
@@ -151,8 +145,6 @@ function createCardDialogue() {
 
     card.append(
         top,
-        moveHolder,
-        // formatting,
         document.createElement('br'),
         document.createElement('br'),
         frontLabel,
@@ -184,11 +176,66 @@ function createCardDialogue() {
     menuButton.onclick = () => {
         const div = document.createElement('div');
         div.className = "dropdown-content";
-        div.innerHTML = `
-            <a>Categories</a>
-            <a>Ratings</a>
-            <a>Random Front Side</a>
-        `;
+        div.innerHTML = ``;
+
+        const categories = document.createElement('a');
+        categories.textContent = "Categories";
+
+        const rating = document.createElement('a');
+        if(document.querySelector(`#card-${index} .star_rating`)) {
+            rating.textContent = `Change Rating (${document.querySelector(`#card-${index} .star_rating`).textContent})`;
+        } else {
+            rating.textContent = "+ Rating";
+        }
+        rating.onclick = () => {
+            const input = window.prompt("Enter Star Difficulty Rating (0-5, zero being easy, 5 being HARD)");
+            let value = parseFloat(input);
+
+            if(Number.isNaN(value)) {
+                if(document.querySelector(`#card-${index} .star_rating`))
+                    document.querySelector(`#card-${index} .star_rating`).remove();
+                return;
+            }
+
+            value = Math.max(0, Math.min(5, value));
+            value = Math.round(value * 2) / 2;
+
+            rating.textContent = `Change Rating (${value})`;
+
+            if(document.querySelector(`#card-${index} .star_rating`)) {
+                document.querySelector(`#card-${index} .star_rating`).textContent = value;
+            } else {
+                const el = document.createElement('span');
+                el.style.display = "none";
+                el.textContent = value;
+                el.className = 'star_rating';
+                
+                card.appendChild(el);
+            }
+        };
+        
+        const randomFront = document.createElement('a');
+        randomFront.textContent = "Random Front Side";
+
+        const deleteButton = document.createElement('a');
+        deleteButton.style.color = 'darkred';
+        deleteButton.textContent = "Delete Card";
+        deleteButton.onclick = () => {
+            document.querySelector(`#card-${index}`).remove();
+
+            reindexCards();
+        
+            document.querySelector("#info-number_of_cards").textContent = document.querySelectorAll(".cardDialogue").length;
+        };
+        
+        div.append(
+            categories,
+            rating,
+            randomFront,
+            document.createElement('hr'),
+            deleteButton
+        );
+
         div.style.opacity = 0;
         setTimeout(() => {
             div.style.opacity = 1;
@@ -202,14 +249,6 @@ function createCardDialogue() {
             }, 400);
             div.style.opacity = 0;
         });
-    };
-
-    deleteButton.onclick = () => {       
-        document.querySelector(`#card-${index}`).remove();
-
-        reindexCards();
-    
-        document.querySelector("#info-number_of_cards").textContent = document.querySelectorAll(".cardDialogue").length;
     };
 
     addHintButton.onclick = () => {
@@ -327,8 +366,13 @@ function generateJson() {
         const back = document.querySelector(`#${el.id} .card_back_side`);
         const hint = document.querySelector(`#${el.id} .hint_content`);
         const explanation = document.querySelector(`#${el.id} .explanation_content`);
+        const rating = document.querySelector(`#${el.id} .star_rating`) || {textContent: 0};
+        let ratingNumber = parseFloat(rating.textContent);
+        if(Number.isNaN(ratingNumber)) {
+            ratingNumber = undefined;
+        }
         
-        data.cards.push(createCardObject(false, 0, explanation.value || "", hint.value || "", prettify(front.value), prettify(back.value), 0));
+        data.cards.push(createCardObject(false, 0, explanation.value || "", hint.value || "", prettify(front.value), prettify(back.value), ratingNumber));
     });
 
     return data;
