@@ -79,9 +79,9 @@ function createCardDialogue() {
     
     // const formatting = document.createElement('div');
     const frontSide = document.createElement('textarea');
-    frontSide.placeholder = "Front Side";
+    frontSide.placeholder = "Enter the Front Side";
     const backSide = document.createElement('textarea');
-    backSide.placeholder = "Back Side";
+    backSide.placeholder = "Enter the Back Side";
     
     // document.querySelectorAll(".-focus_check_for_new").forEach((el) => {
     //     // You ain't the newest
