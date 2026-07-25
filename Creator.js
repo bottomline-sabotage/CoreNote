@@ -103,15 +103,17 @@ function createCardDialogue() {
     // deleteButton.style.color = "darkred";
     const addHintButton = document.createElement('a');
     addHintButton.textContent = "+ Hint";
+    addHintButton.className = "add_hint_button";
     const addExplanationButton = document.createElement('a');
     addExplanationButton.textContent = "+ Explanation";
+    addExplanationButton.className = "add_explanation_button";
 
     const categoryHolder = document.createElement('div');
     categoryHolder.className = "dropdown";
     categoryHolder.className = "category_holder";
     const category = document.createElement('a');
 
-    console.log(previousCategory, categories);
+    // console.log(previousCategory, categories);
 
     if(previousCategory) {
         category.textContent = categories[previousCategory] || "No Category";
@@ -465,6 +467,8 @@ function createCardDialogue() {
     frontSide.focus();
 
     document.querySelector("#info-number_of_cards").textContent = document.querySelectorAll(".cardDialogue").length;
+
+    return card;
 }
 
 // Tab create card handler
@@ -474,6 +478,15 @@ function createCardDialogue() {
             createCardDialogue();
         }
     });
+}
+
+function inversePrettify(input) {
+    let output = String(input);
+
+    // New lines
+    output.replaceAll('<br>', '\n');
+
+    return output;
 }
 
 function prettify(input) {
@@ -507,8 +520,8 @@ function generateJson() {
     data.cards = [];
 
     if(document.querySelectorAll(".cardDialogue").length < 1) {
-        window.alert("You have no cards to save.");
-        return;
+        // window.alert("You have no cards to save.");
+        return undefined;
     }
 
     document.querySelectorAll(".cardDialogue").forEach((el, i) => {
@@ -550,6 +563,11 @@ function generateJson() {
 }
 
 function save() {
+    if(document.querySelectorAll(".cardDialogue").length < 1) {
+        window.alert("You have no cards to save.");
+        return;
+    }
+
     const data = generateJson();
 
     const zip = new JSZip();
@@ -568,7 +586,96 @@ function save() {
     });
 
     console.log(data);
+
+    setTimeout(() => {
+        console.log("Cleared emergency backup");
+        localStorage.removeItem("e-emergencyBackup");
+    }, 40e+3);
 }
+
+function loadFromJson(data) {
+    // The easy part: *Metadata*
+    {
+        const title = document.querySelector("#info-title");
+        const description = document.querySelector("#info-description");
+        const classInfo = document.querySelector("#info-class");
+        const unit = document.querySelector("#info-unit_info");
+        const author = document.querySelector("#info-author");
+
+        title.value = data.title;
+        description.value = data.description;
+        classInfo.value = data.class;
+        unit.value = data.unitInfo;
+        author.value = data.creator;
+
+        categories = data.categories;
+    }
+
+    for(let i = 0; i < data.cards.length; i++) {
+        const card = data.cards[i];
+        const el = createCardDialogue();
+        
+        const front = document.querySelector(`#${el.id} .card_front_side`);
+        const back = document.querySelector(`#${el.id} .card_back_side`);
+        const hint = document.querySelector(`#${el.id} .hint_content`);
+        const explanation = document.querySelector(`#${el.id} .explanation_content`);
+        const rating = document.querySelector(`#${el.id} .star_rating`) || {textContent: null};
+        const categoryHolder = document.querySelector(`#${el.id} .category_holder`);
+        const category = categoryHolder.firstElementChild;
+
+        if(card.randomizedFront) {
+            card.front.forEach((_el, i) => {
+                card.front[i] = inversePrettify(card.front[i]);
+            });
+            front.value = card.front.join('\n');
+            const id = document.createElement('span');
+            id.className = "using_random";
+            el.appendChild(id);
+            front.placeholder = "Enter the Randomized Front Side\n\nEach line here will be treated as its own side. When viewed, any one of the lines can be shown.";
+        } else 
+            front.value = inversePrettify(card.front);
+        back.value = inversePrettify(card.back);
+
+        if(card.hint) {
+            document.querySelector(`#${el.id} .add_hint_button`).onclick();
+            hint.value = card.hint;
+        }
+
+        if(card.explanation) {
+            document.querySelector(`#${el.id} .add_explanation_button`).onclick();
+            explanation.value = card.explanation;
+        }
+
+        if(card.difficultyWeight) {
+            const stars = document.createElement('span');
+            stars.textContent = card.difficultyWeight;
+            stars.style.display = "none";
+            stars.className = "star_rating";
+            el.appendChild(stars);
+        }
+
+        category.textContent = categories[card.category] || "No Category";
+        category.className = `category-${card.category}`
+    }
+}
+
+let backupTimeout = null;
+
+document.addEventListener('keydown', () => {
+    try {
+        const js = generateJson();
+        if(!js)
+            return;
+        if(backupTimeout !== null)
+            return;
+        localStorage.setItem("e-emergencyBackup", JSON.stringify(js));
+        backupTimeout = setTimeout(() => {
+            backupTimeout = null;
+        }, 20e+3);
+    } catch (err) {
+        console.error(err);
+    }
+});
 
 // let downEl = null;
 // const pointerDown = (e) => {

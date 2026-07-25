@@ -69,8 +69,16 @@
         <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { showCover(); })">Upload</button>
         <button onclick="start()">New</button><br><br>
         <button onclick="window.location.href = 'index.html'">Exit</button>
+        
 
         <div style="height: 3vh;"></div>
+
+        <div id="emergency_backup_holder" style="display: none;">
+            <hr>
+    
+            <label>You've made a set previously but we don't know if you save it. For the most part, everything (except for its assets, like images) should still be preserved. <b>Note:</b> by not selecting this, the backup will be deleted. </label><br>
+            <button onclick="loadFromJson(JSON.parse(localStorage.getItem('e-emergencyBackup'))); start();">Use Emergency Backup</button>
+        </div>
         
         <!-- <div class="gray_area" style="opacity: 0; padding: 0px; max-height: 0vh;" id="cover">
             <h1 id="cover-title">~</h1>
@@ -84,14 +92,14 @@
             <button onclick="submitStart()">Start</button>
         </div> -->
 
-        <div style="display:inline-block;background:#8B0000;border:4px solid #FFD700;border-radius:10px;padding:16px 24px;text-align:center;font-family:Arial,Helvetica,sans-serif;box-shadow:0 0 15px rgba(255,0,0,.6);max-width: 60vw;">
+        <!-- <div style="display:inline-block;background:#8B0000;border:4px solid #FFD700;border-radius:10px;padding:16px 24px;text-align:center;font-family:Arial,Helvetica,sans-serif;box-shadow:0 0 15px rgba(255,0,0,.6);max-width: 60vw;">
             <div style="font-size:42px;font-weight:900;color:#FFFF00;line-height:1;text-shadow:2px 2px #000;">
                 ⚠ WARNING ⚠
             </div>
             <div style="margin-top:8px;font-size:18px;font-weight:bold;color:#FFFFFF;">
                 THIS FEATURE ESPECIALLY IS PROVIDED IN AN UNFINISHED STATE. CERTAIN FUNCTIONALITY MAY NOT YET BE IMPLEMENTED, AND IMPLEMENTED FEATURES MAY BE INCOMPLETE, UNSTABLE, OR OTHERWISE FAIL TO OPERATE AS INTENDED.
             </div>
-        </div>
+        </div> -->
     </div>
 
     <div id="progress_bar_container">
@@ -123,8 +131,8 @@
             <label>Number of Cards</label><br>
             <span id="info-number_of_cards" class="note">None</span><br><br>
 
-            <label>Average Difficulty</label><br>
-            <span id="info-difficulty" class="note">?</span><br><br>
+            <!-- <label>Average Difficulty</label><br>
+            <span id="info-difficulty" class="note">?</span><br><br> -->
 
             <!-- <label>Categories</label><br>
             <span id="info-cateogires" class="note">...</span><br><br> -->
@@ -175,7 +183,18 @@
     <script src="Creator.js"> </script>
 
     <script>
+        if(localStorage.getItem("e-emergencyBackup")) {
+            document.querySelector("#emergency_backup_holder").style.display = "inline";
+        } else {
+            document.querySelector("#emergency_backup_holder").style.display = "none";
+        }
+
         function start() {
+            setTimeout(() => {
+                console.log("Cleared emergency backup");
+                localStorage.removeItem("e-emergencyBackup");
+            }, 5000);
+
             const preSubmit = document.querySelector("#submit_phase");
             const afterSubmit = document.querySelector("#past_submit");
             preSubmit.style.opacity = 0;
