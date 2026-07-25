@@ -292,6 +292,7 @@ function createCardDialogue() {
             
             addHintButton.textContent = "- Hint";
             addHintButton.style.color = 'darkred';
+            hintContent.focus();
         } 
         
         // Hide and clear
@@ -314,6 +315,7 @@ function createCardDialogue() {
 
             addExplanationButton.textContent = "- Explanation";
             addExplanationButton.style.color = 'darkred';
+            explanationContent.focus();
         } 
         
         // Hide and clear
