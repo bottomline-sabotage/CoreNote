@@ -457,6 +457,9 @@ function initCardSet() {
             case 1: 
                 document.querySelector("#info-version").innerHTML = `1 <span class="note">(Sunshine)</span>`;
                 break;
+            case 2:
+                document.querySelector("#info-version").innerHTML = `2 <span class="note">(Nullify The Dream)</span>`;
+                break;
             case NaN: 
                 document.querySelector("#info-version").innerHTML = `<i>Undefined</i>`;
                 break;
@@ -636,19 +639,29 @@ function showCard() {
         hintButton.style.display = "none";
 
     // Stars
-    let stars = "";
-    for(let i = 0; i < Math.floor(currentCard.difficultyWeight); i++) {
-        stars += "★";
+    if(currentCard.difficultyWeight !== null) {
+        document.querySelector("#the_stars_of_northern_travel").style.opacity = 1;
+        let stars = "";
+        for(let i = 0; i < Math.floor(currentCard.difficultyWeight); i++) {
+            stars += "★";
+        }
+        if(Math.floor(currentCard.difficultyWeight) != currentCard.difficultyWeight) {
+            stars += '☆';
+        }
+        stars += ` ${Number(currentCard.difficultyWeight).toFixed(1)}/5 `;
+    
+        difficultyStars.innerHTML = stars;
+    } else {
+        document.querySelector("#the_stars_of_northern_travel").style.opacity = 0;
     }
-    if(Math.floor(currentCard.difficultyWeight) != currentCard.difficultyWeight) {
-        stars += '☆';
-    }
-    stars += ` ${Number(currentCard.difficultyWeight).toFixed(1)}/5 `;
-
-    difficultyStars.innerHTML = stars;
 
     // Category
-    category.textContent = cardSet.json.categories[currentCard.category];
+    if(currentCard.category !== null && cardSet.json.categories[currentCard.category]) {
+        category.textContent = cardSet.json.categories[currentCard.category];
+        document.querySelector("#category_button").style.opacity = "1";
+    } else {
+        document.querySelector("#category_button").style.opacity = "0";
+    }
     
     // Handle global variables
     if(window?.coreNote?.onunload) {

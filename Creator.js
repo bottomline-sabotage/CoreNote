@@ -387,7 +387,7 @@ function generateJson() {
         "class": classInfo.value,
         "unitInfo": unit.value,
         "title": title.value,
-        "version": 1,
+        "version": 2,
         "description": description.value,
         "generationDate": Math.floor(Date.now() / 1000),
 
@@ -405,13 +405,13 @@ function generateJson() {
         const back = document.querySelector(`#${el.id} .card_back_side`);
         const hint = document.querySelector(`#${el.id} .hint_content`);
         const explanation = document.querySelector(`#${el.id} .explanation_content`);
-        const rating = document.querySelector(`#${el.id} .star_rating`) || {textContent: 0};
+        const rating = document.querySelector(`#${el.id} .star_rating`) || {textContent: null};
         let ratingNumber = parseFloat(rating.textContent);
         if(Number.isNaN(ratingNumber)) {
-            ratingNumber = undefined;
+            ratingNumber = null;
         }
         
-        data.cards.push(createCardObject(false, 0, explanation.value || "", hint.value || "", prettify(front.value), prettify(back.value), ratingNumber));
+        data.cards.push(createCardObject(false, null, explanation.value || "", hint.value || "", prettify(front.value), prettify(back.value), ratingNumber));
     });
 
     return data;
