@@ -69,11 +69,21 @@ textarea {
 
 textarea::placeholder {
     font-style: italic;
-    
     height: 100px;
-  line-height: 20px;       /* Set your text line height */
-  padding-top: 40px;       /* (Height - Line Height) / 2 */
-  padding-bottom: 40px;    /* Keeps the typing area symmetric */
-  box-sizing: border-box;  /* Ensures padding doesn't add to total height */
-  resize: none;  
+    line-height: 20px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    box-sizing: border-box;
+    resize: none;  
+}
+
+
+#card_sidebar {
+    margin-left: auto;
+    width: 90vw;
+    height: 5vh;
+    background-color: black;
+    position: fixed;
+    bottom: -6px;
+    border-radius: 5px;
 }

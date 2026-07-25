@@ -76,7 +76,7 @@
         <div id="emergency_backup_holder" style="display: none;">
             <hr>
     
-            <label>You've made a set previously but we don't know if you save it. For the most part, everything (except for its assets, like images) should still be preserved. <b>Note:</b> by not selecting this, the backup will be deleted. </label><br>
+            <label>You've made a set previously but we don't know if you save it. For the most part, everything (except for its assets, like images) should still be preserved. <b>Note:</b> by not selecting this, the backup will be. </label><br>
             <button onclick="loadFromJson(JSON.parse(localStorage.getItem('e-emergencyBackup'))); start();">Use Emergency Backup</button>
         </div>
         
@@ -142,6 +142,10 @@
             <span class="note"><b>Note:</b> Create does not currently support text formatting, assets (e.g., images), math expressions, or similar features.</span><br>
 
              <button id="create_card_link_first" onclick="createCardDialogue()">+ card</button>
+
+            <div id="card_sidebar">
+
+            </div>
 
             <div id="cards_spot">
                 
@@ -215,6 +219,26 @@
                 event.returnValue = ''; 
             }
         });
+    </script>
+    
+    <script>
+        const sidebar = document.querySelector("#card_sidebar");
+
+        function updatePosition() {
+            if(window.visualViewport) {
+                const offset =
+                window.innerHeight -
+                window.visualViewport.height -
+                window.visualViewport.offsetTop;
+
+                sidebar.style.transform = `translateY(-${offset}px)`;
+            }
+        }
+
+        visualViewport.addEventListener("resize", updatePosition);
+        visualViewport.addEventListener("scroll", updatePosition);
+        updatePosition();
+
     </script>
 
     <script>
