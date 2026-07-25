@@ -285,7 +285,7 @@ function createCardDialogue() {
                 existence.className = "using_random";
                 existence.style.display = "none";
                 card.append(existence);
-                frontSide.placeholder = "Enter the Randomized Front Side\n\nEach line here will be treated as its own side. When viewed, any one of the lines can be shown.";
+                frontSide.placeholder = "Enter the Randomized Front Side\n\nEach line here will be treated as its own front side. When viewed, any one of the lines can be shown.";
 
                 // sendNotification("Every line will be treated as its own randomized front.<br><br>When viewed, anyone of the fronts may be shown.", 4500);
             }
@@ -631,7 +631,7 @@ function loadFromJson(data) {
             const id = document.createElement('span');
             id.className = "using_random";
             el.appendChild(id);
-            front.placeholder = "Enter the Randomized Front Side\n\nEach line here will be treated as its own side. When viewed, any one of the lines can be shown.";
+            front.placeholder = "Enter the Randomized Front Side\n\nEach line here will be treated as its own front side. When viewed, any one of the lines can be shown.";
         } else 
             front.value = inversePrettify(card.front);
         back.value = inversePrettify(card.back);
