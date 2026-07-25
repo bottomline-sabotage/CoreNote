@@ -296,9 +296,9 @@ function createCardDialogue() {
         
         // Hide and clear
         else {
-            setTimeout(() => {
+            // setTimeout(() => {
                 hintStuff.style.display = "none";
-            }, 400)
+            // }, 400)
             hintStuff.style.height = "0%";
             hintContent.value = "";
             
