@@ -263,7 +263,37 @@ function createCardDialogue() {
         };
         
         const randomFront = document.createElement('a');
-        randomFront.textContent = "Random Front Side";
+        if(document.querySelector(`#card-${index} .using_random`)) {
+            randomFront.textContent = "Disable Random Front";
+        } else {
+            randomFront.textContent = "Enable Random Front";
+        }
+        randomFront.onclick = () => {
+            // Disable
+            if(document.querySelector(`#card-${index} .using_random`)) {
+                document.querySelector(`#card-${index} .using_random`).remove();
+                randomFront.textContent = "Enable Random Front";
+                frontSide.placeholder = "Enter the Front Side";
+            }
+
+            // Enable
+            else {
+                randomFront.textContent = "Disable Random Front";
+                const existence = document.createElement('span');
+                existence.className = "using_random";
+                existence.style.display = "none";
+                card.append(existence);
+                frontSide.placeholder = "Enter the Randomized Front Side\n\nEach line here will be treated as its own side. When viewed, any one of the lines can be shown.";
+
+                // sendNotification("Every line will be treated as its own randomized front.<br><br>When viewed, anyone of the fronts may be shown.", 4500);
+            }
+        };
+
+        // const duplicate = document.createElement('a');
+        // duplicate.textContent = "Duplicate";
+        // duplicate.onclick = () => {
+        //     cardWindow.appendChild(card);
+        // };
 
         const deleteButton = document.createElement('a');
         deleteButton.style.color = 'darkred';
@@ -281,6 +311,7 @@ function createCardDialogue() {
             randomFront,
             document.createElement('hr'),
             mover,
+            // duplicate,
             deleteButton
         );
 
@@ -488,6 +519,7 @@ function generateJson() {
         const rating = document.querySelector(`#${el.id} .star_rating`) || {textContent: null};
         const categoryHolder = document.querySelector(`#${el.id} .category_holder`);
         const category = categoryHolder.firstElementChild;
+        const isUsingRandom = document.querySelector(`#${el.id} .using_random`) != null;
 
         let categoryIndex = parseInt(String(category.className).replace("category-", ""), 10);
         if(Number.isNaN(categoryIndex))
@@ -497,8 +529,21 @@ function generateJson() {
         if(Number.isNaN(ratingNumber)) {
             ratingNumber = null;
         }
+
+        let randomEntries = [];
+        if(isUsingRandom) {
+            randomEntries = String(front.value).split('\n');
+            for(let i = randomEntries.length - 1; i >= 0; i--) {
+                if(!randomEntries[i]) {
+                    randomEntries.splice(i, 1);
+                    continue;
+                }
+
+                randomEntries[i] = prettify(randomEntries[i]);
+            }
+        }
         
-        data.cards.push(createCardObject(false, categoryIndex, explanation.value || "", hint.value || "", prettify(front.value), prettify(back.value), ratingNumber));
+        data.cards.push(createCardObject(isUsingRandom, categoryIndex, explanation.value || "", hint.value || "", !isUsingRandom ? prettify(front.value) : randomEntries, prettify(back.value), ratingNumber));
     });
 
     return data;

@@ -439,7 +439,11 @@ function initCardSet() {
         // document.querySelector("#info-desc").innerHTML = cardSet.json.description || "<i>Undefined</i>";
         document.querySelector("#info-num_cards").innerHTML = cardSet.json.cards.length || "<i>Undefined</i>";
         if(cardSet.json.categories.length > 0) {
-            document.querySelector("#info-categories").innerHTML = cardSet.json.categories.join(' | ') || "<i>Undefined</i>";
+            if(cardSet.json.categories[0] === null) {
+                document.querySelector("#info-categories").innerHTML = cardSet.json.categories.slice(1, cardSet.json.categories.length - 1).join(' | ') || "<i>Undefined</i>";
+            } else {
+                document.querySelector("#info-categories").innerHTML = cardSet.json.categories.join(' | ') || "<i>Undefined</i>";
+            }
         } else {
             document.querySelector("#info-categories").innerHTML = "<i>None</i>";
         }
@@ -532,13 +536,10 @@ function initCardSet() {
         }
         btn.textContent = category;
         btn.onclick = () => {
-			goCategory(index - 3);
+		    let state = goCategory(index - 3);
+            if(state === false)
+                return;
             document.querySelector("#current_category").textContent = category;
-            if(index  != 0) {
-                // sendNotification(`Switching to category "${category}"`, 1.5e+3);
-            } else {
-                // sendNotification(`Using no category`, 1.5e+3);
-            }
             document.querySelectorAll(".category_buttons").forEach((el) => {
                 el.className = "category_buttons deactivated_button";
             });
@@ -1074,6 +1075,12 @@ function goCategory(category) {
 		if(cardSet.json.cards[i].category != category)
 			cardSet.json.cards.splice(i, 1);
 	}
+
+    if(cardSet.json.cards.length < 1) {
+        sendNotification("This category has no cards", 2e+3);
+        goCategory(-3);
+        return false;
+    }
 	
 	if(settings.shuffledCards)
 		shuffle();
@@ -1286,3 +1293,43 @@ function print() {
     else 
         console.error("Failed to render math (renderMathInElement doesn't exist");
 }
+
+
+// KEYBOARD EVENTS
+window.addEventListener('keydown', (e) => {
+    if(cardSet && cardSet.json) {
+        console.log(e.code);
+        if(e.code == 'Space' || e.code == 'ArrowUp') {
+            e.preventDefault();
+            e.stopPropagation();
+            flip();
+        }
+
+        // These let you go back and fourth with answer sorting too
+        else if(e.altKey && e.code == "ArrowRight") {
+            e.preventDefault();
+            e.stopPropagation();
+            next();
+        } else if(e.altKey && e.code == "ArrowLeft") {
+            e.preventDefault();
+            e.stopPropagation();
+            previous();
+        }
+        
+        else if(e.code == "ArrowRight" && !settings.answerSorting) {
+            next();
+        } 
+        else if(e.code == "ArrowLeft" && !settings.answerSorting) {
+            previous();
+        }
+
+        else if(e.code == "ArrowRight") {
+            markRight();
+            next();
+        } 
+        else if(e.code == "ArrowLeft") {
+            markWrong();
+            next();
+        }
+    }
+});

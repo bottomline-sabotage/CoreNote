@@ -1,3 +1,5 @@
+Note: if this ever implemented, it will be outside of the app mostly. The user would press a button to say "I wanna use AI," they will paste this prompt over to GPT, then pasting what it returns back.
+
 Write a formatted (format illustrated below) online flash card set from the attached file.
 
 The format is JSON. Since it's JSON, I will describe the keys, ranges, descriptions, etc. as something like `"key": FLOAT - RANGING FROM 1 THROUGH 5 DOING XYZ`. If it's in strict uppercase, it's a placeholder. Also note that I include inline comments in my examples, as well as '...'. Do not do that in your generated JSON.
