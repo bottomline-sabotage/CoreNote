@@ -22,6 +22,8 @@ function reindexCards() {
 }
 
 let foreverCardCount = 0;
+let categories = [null];
+let previousCategory = 0;
 function createCardDialogue() {
     if(foreverCardCount == 0) {
         document.querySelector("#create_card_link_first").style.display = "none";
@@ -104,8 +106,25 @@ function createCardDialogue() {
     const addExplanationButton = document.createElement('a');
     addExplanationButton.textContent = "+ Explanation";
 
+    const categoryHolder = document.createElement('div');
+    categoryHolder.className = "dropdown";
+    categoryHolder.className = "category_holder";
+    const category = document.createElement('a');
+
+    console.log(previousCategory, categories);
+
+    if(previousCategory) {
+        category.textContent = categories[previousCategory] || "No Category";
+        category.className = `category-${previousCategory}`;
+    } else {
+        category.className = `category-0`;
+        category.textContent = "No Category";
+    }
+    categoryHolder.append(category);
+
     // bottomHolder.appendChild(deleteButton);
     bottomHolder.appendChild(addHintButton);
+    bottomHolder.appendChild(categoryHolder);
     bottomHolder.appendChild(addExplanationButton);
 
     const hintLabel = document.createElement('label');
@@ -210,9 +229,6 @@ function createCardDialogue() {
             reindexCards();
         };
 
-        const categories = document.createElement('a');
-        categories.textContent = "Categories";
-        
         const rating = document.createElement('a');
         if(document.querySelector(`#card-${index} .star_rating`)) {
             rating.textContent = `Change Rating (${document.querySelector(`#card-${index} .star_rating`).textContent})`;
@@ -261,7 +277,6 @@ function createCardDialogue() {
         };
         
         div.append(
-            categories,
             rating,
             randomFront,
             document.createElement('hr'),
@@ -279,6 +294,71 @@ function createCardDialogue() {
         document.addEventListener('pointerup', function deleter() {
             setTimeout(() => {
                 document.removeEventListener('pointerup', deleter);
+                div.remove();
+            }, 400);
+            div.style.opacity = 0;
+        });
+    };
+
+    category.onclick = () => {
+        const div = document.createElement('div');
+        div.className = "dropdown-content";
+    
+        
+        let hadEmpty = false;
+        for(let i = 0; i < categories.length; i++) {
+            const el = document.createElement('a');
+            if(!el.textContent && !hadEmpty) {
+                el.textContent = "No Category"
+                div.appendChild(el);
+                hadEmpty = true;
+                el.onclick = () => {
+                    category.textContent = "No Category";
+                    category.className = `category-${i}`;
+                    previousCategory = 0; 
+                };
+                continue;
+            }    
+
+            el.onclick = () => {
+                category.textContent = categories[i];
+                category.className = `category-${i}`;
+                console.log("Setting category to index of " + i);
+                previousCategory = i; 
+            };
+
+            el.textContent = categories[i];
+            div.appendChild(el);
+        }
+
+        const newCategory = document.createElement('a');
+        newCategory.textContent = "New Category";
+        newCategory.style.color = "blue";
+        newCategory.onclick = () => {
+            const ans = window.prompt("New Category");
+            if(!ans) return;
+            categories.push(ans);
+            category.className = `category-${categories.length - 1}`;
+            category.textContent = ans;
+            previousCategory = categories.length - 1; 
+        };
+
+        div.append(
+            document.createElement('hr'),            
+            newCategory
+        );
+
+        div.style.opacity = 0;
+        setTimeout(() => {
+            div.style.opacity = 1;
+            div.style.display = "block";
+        }, 50);
+        categoryHolder.appendChild(div);
+
+        document.addEventListener('pointerup', function deleter() {
+            setTimeout(() => {
+                document.removeEventListener('pointerup', deleter);
+                div.remove();
             }, 400);
             div.style.opacity = 0;
         });
@@ -391,7 +471,7 @@ function generateJson() {
         "description": description.value,
         "generationDate": Math.floor(Date.now() / 1000),
 
-        "categories": [ ], 
+        "categories": categories, 
     };
     data.cards = [];
 
@@ -406,12 +486,19 @@ function generateJson() {
         const hint = document.querySelector(`#${el.id} .hint_content`);
         const explanation = document.querySelector(`#${el.id} .explanation_content`);
         const rating = document.querySelector(`#${el.id} .star_rating`) || {textContent: null};
+        const categoryHolder = document.querySelector(`#${el.id} .category_holder`);
+        const category = categoryHolder.firstElementChild;
+
+        let categoryIndex = parseInt(String(category.className).replace("category-", ""), 10);
+        if(Number.isNaN(categoryIndex))
+            categoryIndex = 0;
+
         let ratingNumber = parseFloat(rating.textContent);
         if(Number.isNaN(ratingNumber)) {
             ratingNumber = null;
         }
         
-        data.cards.push(createCardObject(false, null, explanation.value || "", hint.value || "", prettify(front.value), prettify(back.value), ratingNumber));
+        data.cards.push(createCardObject(false, categoryIndex, explanation.value || "", hint.value || "", prettify(front.value), prettify(back.value), ratingNumber));
     });
 
     return data;
