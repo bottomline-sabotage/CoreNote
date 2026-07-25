@@ -523,6 +523,8 @@ function initCardSet() {
     //     ordersList.appendChild(document.createElement('br'));
     // }
     for(const [index, category] of categories.entries()) {
+        if(category === null)
+            continue;
         const btn = document.createElement('button');
         btn.className = "category_buttons";
         if(index != 0) {
