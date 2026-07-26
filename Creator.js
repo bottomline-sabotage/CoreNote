@@ -92,7 +92,8 @@ function createCardDialogue() {
     top.appendChild(count);
     
     // const formatting = document.createElement('div');
-    const frontSide = document.createElement('textarea');
+    const frontSide = document.createElement('div');
+    frontSide.contentEditable = true;
     frontSide.placeholder = "Enter the Front Side";
     // frontSide.onfocus = () => {
     //     showCardTopBar(); // The problem is this shifts content. So, this may or may not work that well.
@@ -100,7 +101,8 @@ function createCardDialogue() {
     // frontSide.onblur = () => {
     //     hideCardTopBar();
     // }
-    const backSide = document.createElement('textarea');
+    const backSide = document.createElement('div');
+    backSide.contentEditable = true;
     backSide.placeholder = "Enter the Back Side";
     // backSide.onfocus = () => {
     //     showCardTopBar();
@@ -218,8 +220,8 @@ function createCardDialogue() {
     );
     cardWindow.appendChild(card);
 
-    frontSide.className = "card_front_side";
-    backSide.className = "card_back_side";
+    frontSide.className = "card_front_side editable_div";
+    backSide.className = "card_back_side editable_div";
 
     setTimeout(() => {
         document.querySelector("#create_card_link").scrollIntoView({
@@ -494,7 +496,6 @@ function createCardDialogue() {
     //     reindexCards();
     // };
 
-
     frontSide.focus();
 
     document.querySelector("#info-number_of_cards").textContent = document.querySelectorAll(".cardDialogue").length;
@@ -576,7 +577,7 @@ function generateJson() {
 
         let randomEntries = [];
         if(isUsingRandom) {
-            randomEntries = String(front.value).split('\n');
+            randomEntries = String(front.innerHTML).split('\n');
             for(let i = randomEntries.length - 1; i >= 0; i--) {
                 if(!randomEntries[i]) {
                     randomEntries.splice(i, 1);
@@ -587,7 +588,7 @@ function generateJson() {
             }
         }
         
-        data.cards.push(createCardObject(isUsingRandom, categoryIndex, explanation.value || "", hint.value || "", !isUsingRandom ? prettify(front.value) : randomEntries, prettify(back.value), ratingNumber));
+        data.cards.push(createCardObject(isUsingRandom, categoryIndex, explanation.value || "", hint.value || "", !isUsingRandom ? prettify(front.innerHTML) : randomEntries, prettify(back.innerHTML), ratingNumber));
     });
 
     return data;
@@ -658,14 +659,14 @@ function loadFromJson(data) {
             card.front.forEach((_el, i) => {
                 card.front[i] = inversePrettify(card.front[i]);
             });
-            front.value = card.front.join('\n');
+            front.innerHTML = card.front.join('\n');
             const id = document.createElement('span');
             id.className = "using_random";
             el.appendChild(id);
             front.placeholder = "Enter the Randomized Front Side\n\nEach line here will be treated as its own front side. When viewed, any one of the lines can be shown.";
         } else 
-            front.value = inversePrettify(card.front);
-        back.value = inversePrettify(card.back);
+            front.innerHTML = inversePrettify(card.front);
+        back.innerHTML = inversePrettify(card.back);
 
         if(card.hint) {
             document.querySelector(`#${el.id} .add_hint_button`).onclick();
