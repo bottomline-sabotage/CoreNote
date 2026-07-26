@@ -1,3 +1,5 @@
+window.HIGH_ASSET_COUNT = 25;
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }

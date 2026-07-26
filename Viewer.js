@@ -169,6 +169,8 @@ async function combineMore() {
         date.innerHTML += '... ';;
         date.textContent += epochToDate(set.json.generationDate * 1000);
 
+        set.cardZip = cardZip;
+
         combinedSets.push(set);
     }
 
@@ -440,6 +442,23 @@ async function load() {
                 cardSet.json.generationDate = otherSet.json.generationDate; // Just take the newest one
             cardSet.json.unitInfo += `... ${otherSet.json.unitInfo}`;
             cardSet.json.id += `... ${otherSet.json.id}`;
+
+            // Assets
+            if(!JSON.parse(localStorage.getItem("globalSettings")).disableSetAssets) {
+                for(const file of Object.values(otherSet.cardZip.files)) {
+                    if(file.dir || !String(file.name).startsWith("Assets/")) 
+                        continue;
+                    const id = `#${String(file.name).replaceAll('/', '-_-').replaceAll('\\', '-_-').replaceAll('.', "\\.")}`;
+                    // document.querySelectorAll(id).forEach(async (el) => {
+                    cardAssets[id] = URL.createObjectURL(await file.async("blob")); // FIXME: ram crash?
+                    // });
+                }
+            }
+
+            if(Object.entries(cardAssets).length > window.HIGH_ASSET_COUNT && !window.alreadyHadSizeWarning) {
+                window.alert("This card set has a lot of assets. Some devices might not keep up.");
+                window.alreadyHadSizeWarning = true;
+            }
         }
     }
 
@@ -458,6 +477,11 @@ async function load() {
             // document.querySelectorAll(id).forEach(async (el) => {
             cardAssets[id] = URL.createObjectURL(await file.async("blob")); // FIXME: ram crash?
             // });
+        }
+
+        if(Object.entries(cardAssets).length > window.HIGH_ASSET_COUNT && !window.alreadyHadSizeWarning) {
+            window.alert("This card set has a lot of assets. Some devices might not keep up.");
+            window.alreadyHadSizeWarning = true;
         }
     }
 	
