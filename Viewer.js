@@ -109,6 +109,72 @@ async function showCover() {
     cover.style.cssText = "opacity: 1; padding: 20px; max-height: 100vh;";
 }
 
+const usedIds = [];
+const combinedSets = [];
+
+async function combineMore() {
+    const combinationInput = document.querySelector("#more_file_input");
+
+    // DO NOT SET INNERHTML FOR ANY OF THESE!
+    const title = document.querySelector("#cover-title");
+    const description = document.querySelector("#cover-description");
+    const classInfo = document.querySelector("#cover-class");
+    const unitInfo = document.querySelector("#cover-unit_info");
+    const author = document.querySelector("#cover-author");
+    const date = document.querySelector("#cover-date");
+
+    // console.log(cardSet?.json?.id);
+
+    if(cardSet?.json?.id && !usedIds.includes(cardSet?.json?.id))
+        usedIds.push(cardSet?.json?.id);
+
+    
+    for(const file of combinationInput.files) {
+        const set = new CardSet();
+
+        let cardZip = null;
+        try {
+            cardZip = await JSZip.loadAsync(file);
+            set.json = JSON.parse(await cardZip.file("data.json").async("string"));	
+            if(usedIds.includes(set.json.id)) {
+                window.alert("You already have this set uploaded");
+                continue;
+            }
+            // for(let i = 0; i < set.json.cards.length; i++) {
+            //     set.json.cards[i].index = i; // Set index
+            // }
+            usedIds.push(set.json.id);
+        } catch (err) {
+            console.error(err);
+            window.alert("Failed to load set. Please upload another.");
+            cover.style.cssText = "opacity: 0; padding: 0px; max-height: 0vh;";
+            return;
+        }
+
+        title.innerHTML += '... ';; // has no user input, so I can set innerhtml safely
+        title.textContent += `combined with "${set.json.title}"`;
+
+        description.innerHTML += '... ';
+        description.textContent += set.json.description || "";
+
+        classInfo.innerHTML += '... ';;
+        classInfo.textContent += set.json.class || "";
+
+        unitInfo.innerHTML += '... ';;
+        unitInfo.textContent += set.json.unitInfo;
+
+        author.innerHTML += '... ';
+        author.textContent += set.json.creator;
+
+        date.innerHTML += '... ';;
+        date.textContent += epochToDate(set.json.generationDate * 1000);
+
+        combinedSets.push(set);
+    }
+
+    // console.log(usedIds);
+}
+
 function doTTS(text) {
     if(settings.tts)
         speakWebText(text);
@@ -233,7 +299,7 @@ function loadSettings() {
     cardFlip.onclick = () => {
                 settings.cardFlip = cardFlip.checked;
                 cleanup();
-            };
+    };
     cardShuffle.onclick = () => {
         settings.shuffledCards = cardShuffle.checked;
         cleanup();
@@ -307,6 +373,7 @@ function refreshSettings() {
         shuffle();
     } else if(!settings.shuffledCards && isShuffled) {
         unshuffle();
+        unshuffle(); // uh... just do it twice. good measure
     }
 
     if(!settings.autoScroll.enabled) {
@@ -346,6 +413,35 @@ async function load() {
     
     if(!cardZip)
         return;
+
+    if(combinedSets.length > 0) {
+        
+        
+        for(const otherSet of combinedSets) {
+            
+            const virginCategoryCount = cardSet.json.categories.length;
+            for(let category of otherSet.json.categories) {
+                if(category !== null)
+                    category += ` - ${otherSet.json.title}`
+                cardSet.json.categories.push(category);
+            }
+
+            for(const card of otherSet.json.cards) {
+                card.category += virginCategoryCount;
+                card.index = cardSet.json.cards.length;
+                cardSet.json.cards.push(card);
+            }
+
+            cardSet.json.title +=       `... ${otherSet.json.title}`;
+            cardSet.json.description += `... ${otherSet.json.description}`;
+            cardSet.json.class +=       `... ${otherSet.json.class}`;
+            cardSet.json.creator += `... ${otherSet.json.creator}`;
+            if(otherSet.json.generationDate > cardSet.json.generationDate)
+                cardSet.json.generationDate = otherSet.json.generationDate; // Just take the newest one
+            cardSet.json.unitInfo += `... ${otherSet.json.unitInfo}`;
+            cardSet.json.id += `... ${otherSet.json.id}`;
+        }
+    }
 
     if(localStorage.getItem(`V_settings-${cardSet.json.id}`)) {
         settings = JSON.parse(localStorage.getItem(`V_settings-${cardSet.json.id}`));
@@ -1297,8 +1393,8 @@ function print() {
 
 // KEYBOARD EVENTS
 window.addEventListener('keydown', (e) => {
-    if(cardSet && cardSet.json) {
-        console.log(e.code);
+    if(cardSet && cardSet.json && settings) {
+        // console.log(e.code);
         if(e.code == 'Space' || e.code == 'ArrowUp') {
             e.preventDefault();
             e.stopPropagation();

@@ -44,10 +44,10 @@
         <h1>Import your Study Set</h1>
         <span class="note">CoreNote Set files use the file extension <i>.corenote</i>.<br><b>Please only use sets from trusted sources</b>.</span><br><br>
         <input type="file" accept=".corenote" id="file_input" style="display: none;"><br>
-        <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { showCover(); })">Upload</button><br>
-
+        <button onclick="document.querySelector('#more_file_input').input = null; document.querySelector('#file_input').input = null; document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', function change () { showCover(); document.querySelector('#file_input').removeEventListener('change', change); })">Upload</button><br>
+        
         <div style="height: 1vh;"></div>
-
+        
         <div class="gray_area" style="opacity: 0; padding: 0px; max-height: 0vh;" id="cover">
             <h1 id="cover-title">~</h1>
             <span class="note" id="cover-description">~</span>
@@ -57,7 +57,11 @@
             <b>Unit Info</b>: <span id="cover-unit_info">~</span><br>
             <b>Author</b>: <span id="cover-author">~</span><br>
             <b>Generation Date</b>: <span id="cover-date">~</span><br><br>
-            <button onclick="submitStart()">Start</button>
+            <button onclick="submitStart()">Start</button><br>
+            <div>
+                <input type="file" accept=".corenote" id="more_file_input" multiple style="display: none;"><br>
+                <label class="note" style="pointer-events: all;">If you want to review multiple sets at once, you <a onclick="document.querySelector('#more_file_input').input = null; document.querySelector('#more_file_input').click(); document.querySelector('#more_file_input').addEventListener('change', function change() { combineMore(); document.querySelector('#more_file_input').removeEventListener('change', change); })"> can upload more here</a>.</label>
+            </div>
         </div>
       
          <div style="height: 1vh;"></div>
