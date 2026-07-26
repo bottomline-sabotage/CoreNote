@@ -102,10 +102,12 @@
         </div> -->
     </div>
 
-    <div id="progress_bar_container">
+    <!-- <div id="progress_bar_container">
         <div id="progress_bar"></div>
-    </div>
+    </div> -->
     <div id="past_submit" style="min-height: none; height: 100vh;">
+        <div id="card_bar_separator"></div>
+
         <div style="display: flex; align-items: center; justify-content: space-between;margin-bottom: 0;"><h2 id="button_info">Info</h2><h2 id="button_cards">Cards</h2><h2 id="button_settings">Settings</h2></div>
 
         <span class="note" id="please_just_click_something" style="display: none; opacity: 0; transition: all 1s ease; margin: 0; padding: 0;">To enter a window (Info, Cards, or Settings), select a tab at the top. If you're just starting, I'd recommend "Info." Whenever you want to save your set, do so in "Settings."<br></span>
@@ -137,15 +139,45 @@
             <!-- <label>Categories</label><br>
             <span id="info-cateogires" class="note">...</span><br><br> -->
         </div>
+
+        <div id="card_topbar">
+            <a><b>B</b></a>
+            <a><i>i</i></a>
+            <a><u>U</u></a>
+            <a style="color: blue">C</a>
+            <a style="background-color: rgba(0, 0, 255, 0.485); padding: 5px; border-radius: 3px;">H</a>
+            <select value="Arial" style="width: min-content;">
+                <option value="Arial" style="font-family: Arial, sans-serif;">Arial</option>
+                <option value="Verdana" style="font-family: Verdana, sans-serif;">Verdana</option>
+                <option value="Tahoma" style="font-family: Tahoma, sans-serif;">Tahoma</option>
+                <option value="Trebuchet MS" style="font-family: 'Trebuchet MS', sans-serif;">Trebuchet MS</option>
+                <option value="Times New Roman" style="font-family: 'Times New Roman', serif;">Times New Roman</option>
+                <option value="Georgia" style="font-family: Georgia, serif;">Georgia</option>
+                <option value="Garamond" style="font-family: Garamond, serif;">Garamond</option>
+                <option value="Courier New" style="font-family: 'Courier New', monospace;">Courier New</option>
+                <option value="Lucida Console" style="font-family: 'Lucida Console', monospace;">Lucida Console</option>
+                <option value="Segoe UI" style="font-family: 'Segoe UI', sans-serif;">Segoe UI</option>
+                <option value="Helvetica" style="font-family: Helvetica, Arial, sans-serif;">Helvetica</option>
+                <option value="Palatino Linotype" style="font-family: 'Palatino Linotype', 'Book Antiqua', Palatino, serif;">Palatino Linotype</option>
+                <option value="Impact" style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">Impact</option>
+                <option value="Comic Sans MS" style="font-family: 'Comic Sans MS', cursive;">Comic Sans MS</option>
+                <option value="Brush Script MT" style="font-family: 'Brush Script MT', cursive;">Brush Script MT</option>
+            </select>
+
+
+            <input type="number" style="width: 20%">  <!--TODO: size properly-->
+         
+            <a id="math_notater_button">\( f(x) \)</a>
+            <a style="min-width: fit-content;">&lt;/&gt;</a>
+        </div>
+
         <div id="window_cards" class="">
 
             <span class="note"><b>Note:</b> Create does not currently support text formatting, assets (e.g., images), math expressions, or similar features.</span><br>
 
              <button id="create_card_link_first" onclick="createCardDialogue()">+ card</button>
 
-            <div id="card_sidebar">
-
-            </div>
+            
 
             <div id="cards_spot">
                 
@@ -221,7 +253,7 @@
         });
     </script>
     
-    <script>
+    <!-- <script>
         const sidebar = document.querySelector("#card_sidebar");
 
         function updatePosition() {
@@ -239,7 +271,7 @@
         visualViewport.addEventListener("scroll", updatePosition);
         updatePosition();
 
-    </script>
+    </script> -->
 
     <script>
         const infoWindow = document.querySelector("#window_info");
@@ -266,6 +298,7 @@
             infoButton.style.cssText = "opacity: 1; transform: scale(1.1)";
             cardsButton.style.cssText = "opacity: 0.5; transform: scale(1)";
             settingsButton.style.cssText = "opacity: 0.5; transform: scale(1)";
+            hideCardTopBar();
 
             clearTimeout(clickSomethingTimeout);
             pleaseClickSomething.style.opacity = "0"; 
@@ -281,6 +314,8 @@
             infoButton.style.cssText = "opacity: 0.5; transform: scale(1)";
             cardsButton.style.cssText = "opacity: 1; transform: scale(1.1)";
             settingsButton.style.cssText = "opacity: 0.5; transform: scale(1)";
+            showCardTopBar();
+
 
             clearTimeout(clickSomethingTimeout);
             pleaseClickSomething.style.opacity = "0";
@@ -295,6 +330,7 @@
             infoButton.style.cssText = "opacity: 0.5; transform: scale(1)";
             cardsButton.style.cssText = "opacity: 0.5; transform: scale(1)";
             settingsButton.style.cssText = "opacity: 1; transform: scale(1.1)";
+            hideCardTopBar();
 
             clearTimeout(clickSomethingTimeout);
             pleaseClickSomething.style.opacity = "0";
@@ -318,7 +354,20 @@
         document.querySelector("#info-author").addEventListener('change', () => {
             localStorage.setItem("authorName", document.querySelector("#info-author").value);
         });
+
+        // setTimeout(() => {
+            renderMathInElement(document.querySelector("#card_topbar"));
+        // }, 1000);
     </script>
+
+    <!-- <script>
+        const els = document.querySelector("#card_topbar");
+        els.childNodes.forEach((el) => {
+            el.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+            })
+        });
+    </script> -->
     
 </body>
 </html>

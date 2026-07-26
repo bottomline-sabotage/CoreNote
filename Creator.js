@@ -1,4 +1,18 @@
+function showCardTopBar() {
+    const separator = document.querySelector("#card_bar_separator");
+    const topBar = document.querySelector("#card_topbar");
 
+    separator.style.height = "10.5vh";
+    topBar.style.height = "10vh";
+}
+
+function hideCardTopBar() {
+    const separator = document.querySelector("#card_bar_separator");
+    const topBar = document.querySelector("#card_topbar");
+
+    separator.style.height = "0vh";
+    topBar.style.height = "0vh";
+}
 
 function createCardObject(randomizedFront = undefined, category = undefined, explanation = undefined, hint = undefined, front = undefined, back = undefined, difficultyWeight = undefined ) {
     return {
@@ -80,8 +94,20 @@ function createCardDialogue() {
     // const formatting = document.createElement('div');
     const frontSide = document.createElement('textarea');
     frontSide.placeholder = "Enter the Front Side";
+    // frontSide.onfocus = () => {
+    //     showCardTopBar(); // The problem is this shifts content. So, this may or may not work that well.
+    // };
+    // frontSide.onblur = () => {
+    //     hideCardTopBar();
+    // }
     const backSide = document.createElement('textarea');
     backSide.placeholder = "Enter the Back Side";
+    // backSide.onfocus = () => {
+    //     showCardTopBar();
+    // };
+    // backSide.onblur = () => {
+    //     hideCardTopBar();
+    // }
     
     // document.querySelectorAll(".-focus_check_for_new").forEach((el) => {
     //     // You ain't the newest
@@ -231,6 +257,9 @@ function createCardDialogue() {
             reindexCards();
         };
 
+        const uploadAsset = document.createElement('a');
+        uploadAsset.textContent = "Upload Asset";
+
         const rating = document.createElement('a');
         if(document.querySelector(`#card-${index} .star_rating`)) {
             rating.textContent = `Change Rating (${document.querySelector(`#card-${index} .star_rating`).textContent})`;
@@ -291,6 +320,7 @@ function createCardDialogue() {
             }
         };
 
+
         // const duplicate = document.createElement('a');
         // duplicate.textContent = "Duplicate";
         // duplicate.onclick = () => {
@@ -309,6 +339,7 @@ function createCardDialogue() {
         };
         
         div.append(
+            uploadAsset,
             rating,
             randomFront,
             document.createElement('hr'),
