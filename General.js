@@ -156,3 +156,32 @@ function resetToDefault() {
 
 if(!localStorage.getItem("globalSettings"))
     resetToDefault();
+
+function insertHtmlAtRange(range, html) {
+    if (!range) return;
+
+    // Work on a clone so the caller's copy isn't modified
+    range = range.cloneRange();
+
+    // Remove selected content
+    range.deleteContents();
+
+    // Create fragment from HTML
+    const fragment = range.createContextualFragment(html);
+
+    // Keep track of the last inserted node
+    const lastNode = fragment.lastChild;
+
+    // Insert HTML
+    range.insertNode(fragment);
+
+    // Restore the cursor after the inserted content
+    if (lastNode) {
+        range.setStartAfter(lastNode);
+        range.collapse(true);
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+}

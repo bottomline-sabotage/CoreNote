@@ -101,6 +101,12 @@ textarea::placeholder, .editable_div::placeholder {
     padding-bottom: 40px;
     box-sizing: border-box;
     resize: none;  
+    
+}
+
+.editable_div > img {
+    width: 100px;
+    height: auto;
 }
 
 #card_topbar {
@@ -123,6 +129,17 @@ textarea::placeholder, .editable_div::placeholder {
 
 #card_topbar * {
     color: white;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.46);
+    font-weight: bold;
+}
+
+#color_text {
+    /* text-shadow: 0px 0px 4px rgba(255, 255, 255, 1); */
+    text-shadow: 
+        -1px -1px 0 #ffffff,  
+        1px -1px 0 #ffffff,
+        -1px  1px 0 #ffffff,
+        1px  1px 0 #ffffff;
 }
 
 #card_topbar a {
@@ -133,4 +150,20 @@ textarea::placeholder, .editable_div::placeholder {
     transition: height 0.5s ease;
     width: 100vw;
     height: 0vh;
+}
+
+#html_raw_edit {
+    background-color: rgba(0, 0, 0, 0.888);
+    box-shadow: 0px 0px 2px 1px rgba(61, 61, 61, 0.2);
+    overflow: hidden;
+    height: 0vh;
+    transition: height 0.5s ease, opacity 2.0s ease;
+    align-content: center;
+
+}
+
+
+
+#html_raw_edit > * {
+    color: white;
 }

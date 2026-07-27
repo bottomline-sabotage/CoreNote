@@ -95,6 +95,7 @@ function createCardDialogue() {
     const frontSide = document.createElement('div');
     frontSide.contentEditable = true;
     frontSide.placeholder = "Enter the Front Side";
+    // frontSide.innerHTML = "<span class=\"note\">Enter the Front Side</span>";
     // frontSide.onfocus = () => {
     //     showCardTopBar(); // The problem is this shifts content. So, this may or may not work that well.
     // };
@@ -556,6 +557,13 @@ function generateJson() {
         return undefined;
     }
 
+    // // Save the LaTeX other than the formatted math
+    // document.querySelectorAll(".inline_math_friend").forEach((el) => {
+    //     const temp = el.innerHTML; // Move rendered to text
+    //     el.innerHTML = el.title; // Move latex to innerHTML
+    //     el.title = temp; // set rendered to title
+    // });
+
     document.querySelectorAll(".cardDialogue").forEach((el, i) => {
         const front = document.querySelector(`#${el.id} .card_front_side`);
         const back = document.querySelector(`#${el.id} .card_back_side`);
@@ -577,19 +585,26 @@ function generateJson() {
 
         let randomEntries = [];
         if(isUsingRandom) {
-            randomEntries = String(front.innerHTML).split('\n');
+            randomEntries = Array.from(front.childNodes);
             for(let i = randomEntries.length - 1; i >= 0; i--) {
-                if(!randomEntries[i]) {
+                if(!randomEntries[i].innerHTML || String(randomEntries[i].innerHTML).toLowerCase() == '<br>' ) {
                     randomEntries.splice(i, 1);
                     continue;
                 }
 
-                randomEntries[i] = prettify(randomEntries[i]);
+                randomEntries[i] = prettify(randomEntries[i].innerHTML);
             }
         }
         
         data.cards.push(createCardObject(isUsingRandom, categoryIndex, explanation.value || "", hint.value || "", !isUsingRandom ? prettify(front.innerHTML) : randomEntries, prettify(back.innerHTML), ratingNumber));
     });
+
+    // // Reorganize LaTeX
+    // document.querySelectorAll(".inline_math_friend").forEach((el) => {
+    //     const temp = el.innerHTML;
+    //     el.innerHTML = el.title; 
+    //     el.title = temp;
+    // });
 
     return data;
 }
@@ -747,4 +762,258 @@ document.addEventListener('keydown', () => {
 
 // document.addEventListener('pointerdown', pointerDown);
 // document.addEventListener('pointermove', pointerMove);
-// document.addEventListener('pointerup', pointerUp);
+// document.addEventListener('pointerup', pointerUp);]
+
+// document.querySelector("#bolden_text").addEventListener('pointerdown', (e) => {
+//     e.preventDefault();
+//     console.log(document.activeElement);
+
+//     if(!document.activeElement.className.endsWith("editable_div"))
+//         return;
+
+//     const focusOffset = window.getSelection().focusOffset;
+
+    
+    
+// });
+
+function inlineFormattingManager(wrapperEl) {
+    const editor = document.activeElement;
+
+    if(!editor?.className.endsWith("editable_div"))
+        return;
+
+    const sel = window.getSelection();
+
+    if (!sel.rangeCount || sel.isCollapsed)
+        return;
+
+    const range = sel.getRangeAt(0);
+
+    if (!editor.contains(range.commonAncestorContainer))
+        return;
+
+    try {
+        range.surroundContents(wrapperEl);
+    } catch {
+        // Selection partially overlaps elements.
+        const fragment = range.extractContents();
+        wrapperEl.appendChild(fragment);
+        range.insertNode(wrapperEl);
+    }
+
+    sel.removeAllRanges();
+    const newRange = document.createRange();
+    newRange.selectNodeContents(wrapperEl);
+    sel.addRange(newRange);
+}
+
+document.querySelector("#bolden_text").addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+
+    const el = document.createElement('B');
+    inlineFormattingManager(el);
+});
+
+document.querySelector("#italic_text").addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+
+    const el = document.createElement('I');
+    inlineFormattingManager(el);
+});
+
+document.querySelector("#underline_text").addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+
+    const el = document.createElement('U');
+    inlineFormattingManager(el);
+});
+
+document.querySelector("#color_text").addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+
+    const colorInput = document.querySelector("#color_text_input");
+    colorInput.click();
+    
+    const el = document.createElement('U');
+    inlineFormattingManager(el);
+
+});
+
+document.querySelector("#highlight_text").addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+
+    const colorInput = document.querySelector("#highlight_text_input");
+    colorInput.click();
+
+    const el = document.createElement('U');
+    inlineFormattingManager(el);
+});
+
+// Math and HTML are different
+
+let inMathMode = false;
+let mathEditFor = null;
+document.querySelector("#math_notater_button").addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+
+    let savedRange = null;;
+    const selection = window.getSelection();
+    if(selection.rangeCount) {
+        savedRange = selection.getRangeAt(0).cloneRange();
+    }
+
+    
+    if(!document.activeElement.className.endsWith("editable_div"))
+        return;
+
+    const holder = document.querySelector("#html_raw_edit");
+
+    const editor = document.querySelector("#html_raw_editor");
+
+    document.querySelector("#html_raw_edit_math").style.display = "inline";
+
+    const mathPreview = document.querySelector("#math_preview");
+    mathPreview.innerHTML = "";
+
+    function change () {
+        mathPreview.innerHTML = `\\( ${editor.value} \\)`;
+
+        try {
+            console.log(renderMathInElement(mathPreview));
+        } catch (err) { }
+    }
+
+    editor.addEventListener('keyup', change);
+
+    function disabler() {
+        inMathMode = false;
+        holder.style.height = "0vh";
+
+        mathEditFor.contentEditable = true;
+        mathEditFor.style.opacity = 1;
+
+        change();
+        editor.removeEventListener('keyup', change);
+        
+        mathEditFor.focus();
+
+        mathEditFor = null;
+    }
+
+    document.querySelector('#math_add').onclick = () => {
+        insertHtmlAtRange(savedRange, `<span class="inline_math_friend">\\(${editor.value}\\)</\( ${editor.value} \\)span>`);
+        disabler();
+
+        if(!localStorage.getItem('c-mathLatexWarning')) {
+            sendNotification("To make your formatting easier, your formula will be condensed to LaTeX while editing.", 5e+3);
+            localStorage.setItem('c-mathLatexWarning', true);
+        }
+    };
+
+    // Disable
+    if(inMathMode) {
+        disabler();
+    }
+
+    // Enable
+    else {
+        mathEditFor = document.activeElement;
+
+        editor.value = '';
+
+        editor.focus();
+
+        document.querySelector("#html_raw_edit_desc").innerHTML = "Math Editor, <a href=\"https://www.overleaf.com/learn/latex/Mathematical_expressions\">see this guide</a>";
+
+        holder.style.height = "40vh";
+        inMathMode = true;
+
+        mathEditFor.contentEditable = false;
+        mathEditFor.style.opacity = 0.7;
+    }
+});
+
+let htmlEditMode = false;
+let htmlEditFor = null;
+document.querySelector("#html_edit").addEventListener("pointerdown", function doer (e) {
+    e.preventDefault();
+
+    if(!document.activeElement.className.endsWith("editable_div") && document.activeElement.id != ("html_raw_editor"))
+        return;
+
+    const holder = document.querySelector("#html_raw_edit");
+
+    const editor = document.querySelector("#html_raw_editor");
+
+    document.querySelector("#html_raw_edit_math").style.display = "none";
+
+    document.querySelector("#math_preview").innerHTML = "";
+
+    function change () {
+        htmlEditFor.innerHTML = String(editor.value).replaceAll('\n', "<br>");
+
+        // try {
+        //     renderMathInElement(htmlEditFor);
+        // } catch (err) { }
+    }
+
+    editor.addEventListener('keyup', change);
+
+    function disabler() {
+        htmlEditMode = false;
+        holder.style.height = "0vh";
+
+        htmlEditFor.contentEditable = true;
+        htmlEditFor.style.opacity = 1;
+
+        change();
+        editor.removeEventListener('keyup', change);
+        
+        htmlEditFor.focus();
+
+        htmlEditFor = null;
+    }
+
+    // Disable
+    if(htmlEditMode) {
+        disabler();
+    }
+
+    // Enable
+    else {
+        htmlEditFor = document.activeElement;
+        editor.value = htmlEditFor.innerHTML;
+
+        editor.focus();
+
+        document.querySelector("#html_raw_edit_desc").textContent = "HTML Editor";
+
+        holder.style.height = "30vh";
+        htmlEditMode = true;
+
+        htmlEditFor.contentEditable = false;
+        htmlEditFor.style.opacity = 0.7;
+
+        const oldHtmlEditFor = htmlEditFor;
+        editor.addEventListener('blur', function blur() {
+            if(oldHtmlEditFor != htmlEditFor) {
+                editor.removeEventListener('blur', blur);
+                return;
+            }
+
+            disabler();
+
+            editor.removeEventListener('blur', blur);
+        });
+    }
+
+});
+
+// Coloring for Color and Highlight
+document.querySelector("#color_text_input").addEventListener('change', () => {
+    document.querySelector("#color_text").style.color = document.querySelector("#color_text_input").value;
+});
+document.querySelector("#highlight_text_input").addEventListener('change', () => {
+    document.querySelector("#highlight_text").style.backgroundColor = document.querySelector("#highlight_text_input").value;
+});
