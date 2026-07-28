@@ -111,7 +111,7 @@ textarea::placeholder, .editable_div::placeholder {
 
 #card_topbar {
     position: fixed;
-    height: 0vh;
+    max-height: 8vh;
     width: 100vw;
     background-color: rgba(0, 0, 0, 0.888);
     top: 0px;
@@ -125,6 +125,9 @@ textarea::placeholder, .editable_div::placeholder {
     align-items: center;
     overflow-x: scroll;
     gap: 10px;
+    z-index: 1000;
+    transform: translateY(var(--vv-offset-top, 0px));
+    padding-top: env(safe-area-inset-top);
 }
 
 #card_topbar * {

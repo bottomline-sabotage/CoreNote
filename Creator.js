@@ -1142,3 +1142,15 @@ document.querySelector("#color_text_input").addEventListener('change', () => {
 document.querySelector("#highlight_text_input").addEventListener('change', () => {
     document.querySelector("#highlight_text").style.backgroundColor = document.querySelector("#highlight_text_input").value;
 });
+
+const vv = window.visualViewport;
+
+function update() {
+  document.querySelector("#card_topbar").style.transform =
+    `translateY(${vv.offsetTop}px)`;
+}
+
+vv.addEventListener("resize", update);
+vv.addEventListener("scroll", update);
+
+update();
