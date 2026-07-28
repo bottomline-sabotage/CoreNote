@@ -385,3 +385,9 @@ hr {
 }
 
 .dropdown a:hover {background-color: #ddd;}
+
+.highlighter {
+    padding: 5px; 
+    border-radius: 3px;
+    
+}

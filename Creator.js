@@ -777,10 +777,111 @@ document.addEventListener('keydown', () => {
     
 // });
 
+function closestMatchingWrapper(node, wrapperEl) {
+    while(node && node.nodeType !== Node.ELEMENT_NODE)
+        node = node.parentNode;
+
+    while(node) {
+        if(sameFormatting(node, wrapperEl))
+            return node;
+        node = node.parentNode;
+    }
+
+    return null;
+}
+
+function sameFormatting(a, b) {
+    if (a.tagName !== b.tagName)
+        return false;
+
+    // Compare attributes
+    if (a.attributes.length !== b.attributes.length)
+        return false;
+
+    for (const attr of a.attributes) {
+        if (a.getAttribute(attr.name) !== b.getAttribute(attr.name))
+            return false;
+    }
+
+    return true;
+}
+
+// Opinions on AI Code:
+/*
+    This function was AI Generated, and so were a few others (you can tell because I am insistent on using `if()` rather than `if ()`)... so here's a rant. Now, my opinions on using AI for coding is "most of the time, no." Mainly because I like development because I get to figure stuff out; that's fun. However, JavaScript and CSS are two clear exceptions to that rule for me. I always go back to web dev... and it sucks. While C++ may be "hard," at least there aren't two null types (well, there actually is, but we don't need to think about that). What I'm trying to say is I don't typically use AI except for when it makes literally no sense for me not to; the same way I'd steal code from StackOverflow otherwise. When you have AI design things, it's usually horrible. But when you come up with the design and what it does and you just tell it to DO THINGS, it usually works. And, for a language like JavaScript, I don't care enough to know the exact implementation details. 
+
+    I used to think learning with AI was a good idea. It's not. Go pick up a book. The problem is it's just so easy to get it to do it for you. Can you use an AI to reinforce ideas? Yeah! That's rad, bro! However, it's not good at introducing said ideas. Don't believe me? I learned JS/HTML/CSS from ChatGPT and--look--I'm still dependent on it. I learned C++ from a book and Vulkan from a series of articles, and I have no AI usage over there. I would go read a book on web dev, but I really hate it and don't want to use it past this project. Alas, I've been saying that for the past 2 years.
+*/
+function removeFormatting(wrapper, range) {
+
+    const before = document.createRange();
+    before.setStart(wrapper, 0);
+    before.setEnd(range.startContainer, range.startOffset);
+
+    const middle = range.extractContents();
+
+    const after = document.createRange();
+    after.setStart(range.endContainer, range.endOffset);
+    after.setEnd(wrapper, wrapper.childNodes.length);
+
+    const beforeFrag = before.cloneContents();
+    const afterFrag = after.cloneContents();
+
+    const parent = wrapper.parentNode;
+
+    if (beforeFrag.childNodes.length) {
+        const left = wrapper.cloneNode(false);
+        left.append(beforeFrag);
+        parent.insertBefore(left, wrapper);
+    }
+
+    parent.insertBefore(middle, wrapper);
+
+    if (afterFrag.childNodes.length) {
+        const right = wrapper.cloneNode(false);
+        right.append(afterFrag);
+        parent.insertBefore(right, wrapper);
+    }
+
+    parent.removeChild(wrapper);
+}
+
+// function inlineFormattingManager(wrapperEl) {
+//     const editor = document.activeElement;
+
+//     if(!editor?.className.endsWith("editable_div"))
+//         return;
+
+//     const sel = window.getSelection();
+
+//     if(!sel.rangeCount || sel.isCollapsed)
+//         return;
+
+//     const range = sel.getRangeAt(0);
+
+//     if(!editor.contains(range.commonAncestorContainer))
+//         return;
+
+
+//     try {
+//         range.surroundContents(wrapperEl);
+//     } catch {
+//         // Selection partially overlaps elements.
+//         const fragment = range.extractContents();
+//         wrapperEl.appendChild(fragment);
+//         range.insertNode(wrapperEl);
+//     }
+
+//     sel.removeAllRanges();
+//     const newRange = document.createRange();
+//     newRange.selectNodeContents(wrapperEl);
+//     sel.addRange(newRange);
+// }
+
 function inlineFormattingManager(wrapperEl) {
     const editor = document.activeElement;
 
-    if(!editor?.className.endsWith("editable_div"))
+    if (!editor?.className.endsWith("editable_div"))
         return;
 
     const sel = window.getSelection();
@@ -793,10 +894,19 @@ function inlineFormattingManager(wrapperEl) {
     if (!editor.contains(range.commonAncestorContainer))
         return;
 
+    const existing = closestMatchingWrapper(
+        range.commonAncestorContainer,
+        wrapperEl
+    );
+
+    if (existing && existing.contains(range.startContainer) && existing.contains(range.endContainer)) {
+        removeFormatting(existing, range);
+        return;
+    }
+
     try {
         range.surroundContents(wrapperEl);
     } catch {
-        // Selection partially overlaps elements.
         const fragment = range.extractContents();
         wrapperEl.appendChild(fragment);
         range.insertNode(wrapperEl);
@@ -833,10 +943,18 @@ document.querySelector("#color_text").addEventListener("pointerdown", (e) => {
     e.preventDefault();
 
     const colorInput = document.querySelector("#color_text_input");
-    colorInput.click();
     
-    const el = document.createElement('U');
-    inlineFormattingManager(el);
+
+    colorInput.addEventListener("change", function onChange() {
+        colorInput.removeEventListener("change", onChange);
+
+        const el = document.createElement("span");
+        el.style.color = `${colorInput.value}`;
+        inlineFormattingManager(el);
+    }, { once: true });
+
+
+    colorInput.click();
 
 });
 
@@ -844,10 +962,17 @@ document.querySelector("#highlight_text").addEventListener("pointerdown", (e) =>
     e.preventDefault();
 
     const colorInput = document.querySelector("#highlight_text_input");
-    colorInput.click();
 
-    const el = document.createElement('U');
-    inlineFormattingManager(el);
+    colorInput.addEventListener("change", function onChange() {
+        colorInput.removeEventListener("change", onChange);
+
+        const el = document.createElement("span");
+        el.className = "highlighter";
+        el.style.backgroundColor = `${colorInput.value}`;
+        inlineFormattingManager(el);
+    }, { once: true });
+
+    colorInput.click();
 });
 
 // Math and HTML are different
@@ -864,7 +989,7 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
     }
 
     
-    if(!document.activeElement.className.endsWith("editable_div"))
+    if(!document.activeElement.className.endsWith("editable_div") )
         return;
 
     const holder = document.querySelector("#html_raw_edit");
