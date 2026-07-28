@@ -1143,6 +1143,66 @@ document.querySelector("#highlight_text_input").addEventListener('change', () =>
     document.querySelector("#highlight_text").style.backgroundColor = document.querySelector("#highlight_text_input").value;
 });
 
+// Keyboard shortcuts
+window.addEventListener('keydown', (e) => {
+if(!document.activeElement.className.endsWith("editable_div"))
+        return;
+
+    const isMac = navigator.platform.toLowerCase().includes("mac");
+
+    if(!(isMac ? e.metaKey : e.ctrlKey))
+       return;
+
+    // console.log("MOVING");
+    
+
+    switch(e.key) {
+    case 'i':
+        document.querySelector("#italic_text").dispatchEvent(
+    new PointerEvent("pointerdown", {
+                bubbles: true,
+                cancelable: true,
+                pointerId: 1,
+                pointerType: "mouse",
+                isPrimary: true,
+                button: 0,
+                buttons: 1,
+            })
+        );
+        break;
+    case 'b':
+        // console.log("yep");
+        document.querySelector("#bolden_text").dispatchEvent(
+    new PointerEvent("pointerdown", {
+                bubbles: true,
+                cancelable: true,
+                pointerId: 1,
+                pointerType: "mouse",
+                isPrimary: true,
+                button: 0,
+                buttons: 1,
+            })
+        );
+        break;
+    case 'u':
+        document.querySelector("#underline_text").dispatchEvent(
+    new PointerEvent("pointerdown", {
+                bubbles: true,
+                cancelable: true,
+                pointerId: 1,
+                pointerType: "mouse",
+                isPrimary: true,
+                button: 0,
+                buttons: 1,
+            })
+        );
+        break;
+    default: return;
+    }
+
+    e.preventDefault();
+});
+
 const vv = window.visualViewport;
 
 function update() {
