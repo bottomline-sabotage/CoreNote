@@ -111,6 +111,10 @@
     font-size: 2.7rem;
 }
 
+#raw_html > * {
+    margin: 0px;
+}
+
 #div_for_segment_stuff {
     font-weight: bold;
 }
