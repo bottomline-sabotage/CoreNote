@@ -731,6 +731,7 @@ function showHelpPopup(text) {
 }
 
 function showCard() {
+    
     let innerHTML = currentCard.front;
 
     let ourFront = onFront;
@@ -811,6 +812,12 @@ function showCard() {
     
     // Set innerHTML
     rawCardView.innerHTML = innerHTML;
+    // rawCardView.scrollTop = 0;
+    // document.querySelector("#inline_card_stuff").scrollTop = 0;
+    // document.querySelector("#this_scary").scrollTop = 0;
+    document.querySelectorAll("*").forEach((el) => { // HACKS!
+        el.scroll({top: 0, behavior: "smooth"})
+    });
 
     // Asset rendering
     for(const [key, src] of Object.entries(cardAssets)) {

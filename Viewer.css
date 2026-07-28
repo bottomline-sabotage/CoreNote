@@ -73,10 +73,11 @@
     /*align-content: center;*/
     margin-top: 2%;
     width: 90%;
-	height: 90%;
+	height: 100%;
     padding: 1.5%;
     
     text-align: center;
+
 }
 
 #raw_html > * {
@@ -180,6 +181,8 @@
 	justify-content: space-between;
 	align-items: center;
 	margin: auto;
+    position: relative;
+    overflow: scroll;
 }
 
 #wrong_button:hover, #previous_button:hover, #next_button:hover, #right_button:hover {
@@ -228,4 +231,17 @@ code {
     border-radius: 5px;
     font-family: 'Courier New', Courier, monospace;
     color: #ffcc99;
+}
+
+/* <div id="raw_html" class="selectable">Work "is done when... <img src="test" style="width: 80vw; height: auto;"></div> */
+#inline_card_stuff {
+    position: sticky; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: auto;
+    width: 100%;
+    bottom: 0.5vh;
+    transform: translateY(-0%);
+    margin-bottom: 0.8vh;
 }
