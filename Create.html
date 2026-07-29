@@ -259,13 +259,11 @@
     </script>
 
     <script>
-        window.isDirty = false;
-
         window.addEventListener('beforeunload', (event) => {
-            if(isDirty) {
+            // if(localStorage.getItem("e-emergencyBackup")) {
                 event.preventDefault();  
                 event.returnValue = ''; 
-            }
+            // }
         });
     </script>
     
