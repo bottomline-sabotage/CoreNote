@@ -273,9 +273,13 @@ function createCardDialogue() {
 
             input.addEventListener('change', () => {
                 for(const file of input.files) {
+                    if(file.size > 5e+6)
+                        window.alert("This file is really large (>5MB). While we will let you use it, just note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
+
                     let el;
 
                     if (file.type.startsWith('image/')) {
+                        // const blob = createPngBlobFromImage(file); // Convert to PNG
                         el = document.createElement('img');
                         el.src = URL.createObjectURL(file);
                     }
@@ -742,8 +746,6 @@ async function save() {
             fetch(url)
                 .then(res => res.blob())
                 .then(blob => {
-                    if(blob.size > 5e+6)
-                        window.alert("This file is really large (>5MB). While we will let you use it, just note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
                     assetsFolder.file(fileName, blob);
                     el.src = oldSrc;
                     el.href = oldHref;

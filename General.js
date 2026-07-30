@@ -185,3 +185,28 @@ function insertHtmlAtRange(range, html) {
         selection.addRange(range);
     }
 }
+
+async function createPngBlobFromImage(file) {
+    // Ensure it's an image
+    if(!file.type.startsWith("image/")) {
+        return null;
+    }
+
+    // Load the image
+    const bitmap = await createImageBitmap(file);
+
+    // Draw it to a canvas
+    const canvas = document.createElement("canvas");
+    canvas.width = bitmap.width;
+    canvas.height = bitmap.height;
+
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(bitmap, 0, 0);
+
+    // Convert to PNG Blob
+    const pngBlob = await new Promise((resolve) =>
+        canvas.toBlob(resolve, "image/png")
+    );
+
+    return pngBlob;
+}
