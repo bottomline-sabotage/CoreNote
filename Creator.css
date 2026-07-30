@@ -51,7 +51,7 @@ select:hover:not(:focus):not(:active) {
 textarea, .editable_div {
     margin: auto;
     width: 80%;
-    height: 15vh;
+    height: 22vh;
     resize: none;
 }
 
@@ -90,6 +90,7 @@ textarea, .editable_div {
 
 #window_cards {
     background-color: #d5d5d5;
+    width: 100vw;
     /* overflow: visible; */
 }
 
@@ -102,11 +103,6 @@ textarea::placeholder, .editable_div::placeholder {
     box-sizing: border-box;
     resize: none;  
     
-}
-
-.editable_div > img {
-    width: 100px;
-    height: auto;
 }
 
 #card_topbar {
@@ -165,8 +161,25 @@ textarea::placeholder, .editable_div::placeholder {
 
 }
 
+.editable_div > * {
+    margin: 3.5%;
+}
 
+.editable_div img, .editable_div video, .editable_div canvas, .editable_div iframe {
+    width: 80%;
+    height: auto;
+}
 
-#html_raw_edit > * {
-    color: white;
+.editable_div > * {
+    margin: 0px;
+}
+
+.editable_div > input, .editable_div > textarea {
+    border-radius: 10px;
+    box-shadow: 0px 0px 2px 1px rgba(61, 61, 61, 0.2);
+    font-size: medium;
+    width: 80%;
+    border: 2px solid #555;
+    /* transition: all 0.3s ease; */
+    background-color: rgba(58, 58, 58, 0.211);
 }

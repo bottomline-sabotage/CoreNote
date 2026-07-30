@@ -40,8 +40,8 @@ let categories = [null];
 let previousCategory = 0;
 function createCardDialogue() {
     if(foreverCardCount == 0) {
-        document.querySelector("#create_card_link_first").style.display = "none";
-        document.querySelector("#create_card_link").style.display = "inline";
+        // document.querySelector("#create_card_link_first").style.display = "none";
+        // document.querySelector("#create_card_link").style.display = "inline";
     }
 
     const index = foreverCardCount;
@@ -262,6 +262,105 @@ function createCardDialogue() {
 
         const uploadAsset = document.createElement('a');
         uploadAsset.textContent = "Upload Asset";
+        uploadAsset.onclick = () => {
+            const input = document.querySelector("#asset_upload");
+            if(!localStorage.getItem("c-hadAssetPrompt")) {
+                localStorage.setItem("c-hadAssetPrompt", true);
+                // window.alert("");
+            }
+
+            input.click();
+
+            input.addEventListener('change', () => {
+                for(const file of input.files) {
+                    let el;
+
+                    if (file.type.startsWith('image/')) {
+                        el = document.createElement('img');
+                        el.src = URL.createObjectURL(file);
+                    }
+                    else if (file.type.startsWith('video/')) {
+                        el = document.createElement('video');
+                        el.src = URL.createObjectURL(file);
+                        el.controls = true;
+                    }
+                    else if (file.type.startsWith('audio/')) {
+                        el = document.createElement('audio');
+                        el.src = URL.createObjectURL(file);
+                        el.controls = true;
+                    }
+                    else {
+                        el = document.createElement('a');
+                        el.href = URL.createObjectURL(file);
+                        el.download = file.name;
+                        el.textContent = `📄 ${file.name}`;
+                    }
+
+                    el.className = "uploaded_asset";
+                    el.id = `Assets-_-${String(file.name).replaceAll('/', '-_-').replaceAll(' ', '_-_')}`;
+                    el.src = URL.createObjectURL(file);
+                    // el.onload = () => {URL.revokeObjectURL(el.src)}; // Nope, you Fool! You uppercase f FOOL! Kill yourself... but not right now! We're BUSY! 
+
+                    const raper = document.createElement('div');
+                    raper.append(el);
+                    
+                    sendNotification("Click either the Front or Back Side to insert it.", 50e+3);
+
+                    let first = true;
+                    let addFront = () => {
+                        if(!first)
+                            return
+                        first = false;
+
+                        const spacerForTypingAround1 = document.createElement('div');
+                        spacerForTypingAround1.innerHTML = "&nbsp;";
+                        const spacerForTypingAround2 = document.createElement('div');
+                        spacerForTypingAround2.innerHTML = "&nbsp;";
+                        
+                        
+                        frontSide.append(
+                            spacerForTypingAround1,
+                            raper,
+                            spacerForTypingAround2
+                        );
+
+                        document.querySelectorAll('.notification').forEach((e) => {
+                            e.remove();
+                        });
+                    };
+                    let addBack = () => {
+                        if(!first)
+                            return
+                        first = false;
+
+                        const spacerForTypingAround1 = document.createElement('div');
+                        spacerForTypingAround1.innerHTML = "&nbsp;";
+                        const spacerForTypingAround2 = document.createElement('div');
+                        spacerForTypingAround2.innerHTML = "&nbsp;";
+                        
+                        
+                        backSide.append(
+                            spacerForTypingAround1,
+                            raper,
+                            spacerForTypingAround2
+                        );
+
+                        document.querySelectorAll('.notification').forEach((e) => {
+                            e.remove();
+                        });
+                    };
+
+                    frontSide.addEventListener('click', () => {
+                        addFront();
+                    }, {once: true});
+                    backSide.addEventListener('click', () => {
+                        addBack();
+                    }, {once: true});
+                }
+            }, {once: true});
+
+            
+        };
 
         const rating = document.createElement('a');
         if(document.querySelector(`#card-${index} .star_rating`)) {
@@ -609,7 +708,7 @@ function generateJson() {
     return data;
 }
 
-function save() {
+async function save() {
     if(document.querySelectorAll(".cardDialogue").length < 1) {
         window.alert("You have no cards to save.");
         return;
@@ -620,17 +719,44 @@ function save() {
     const zip = new JSZip();
     zip.file("data.json", JSON.stringify(data));
 
-    // Generate and download the file
-    zip.generateAsync({ type: "blob", mimeType: "application/octet-stream" }).then((blob) => {
-        const url = URL.createObjectURL(blob);
+    const assetsFolder = zip.folder("Assets");
+    const promises = [];
 
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `${data.title || "set"}.corenote`;
-        a.click();
+    document.querySelectorAll(".uploaded_asset").forEach((el) => {
+        const url = el.src || el.href; // Object URL (blob:)
+        const fileName = String(el.id).split("Assets-_-")[1];
+        
+        const oldSrc = el.src;
+        const oldHref = el.href;
 
-        URL.revokeObjectURL(url);
+        el.src = null;
+        el.href = null;
+
+        // I Love then chains!
+        promises.push(
+            fetch(url)
+                .then(res => res.blob())
+                .then(blob => {
+                    assetsFolder.file(fileName, blob);
+                    el.src = oldSrc;
+                    el.href = oldHref;
+                })
+        );
     });
+
+    await Promise.all(promises);
+
+
+    // Generate and download the file
+    const blob = await zip.generateAsync({ type: "blob", mimeType: "application/octet-stream" })
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${data.title || "set"}.corenote`;
+    a.click();
+
+    URL.revokeObjectURL(url);
 
     console.log(data);
 

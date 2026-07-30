@@ -188,10 +188,7 @@
         </div>
 
         <div id="window_cards" class="">
-
-            <span class="note"><b>Note:</b> Create does not currently support text formatting, assets (e.g., images), math expressions, or similar features.</span><br>
-
-             <button id="create_card_link_first" onclick="createCardDialogue()">+ card</button>
+            <!-- <button id="create_card_link_first" onclick="createCardDialogue()">+ card</button> -->
 
             
 
@@ -199,7 +196,7 @@
                 
             </div>
             <div style="position: fixed; right: 5px; bottom: 5px;">
-                <button id="create_card_link" onclick="createCardDialogue()" style="display: none; opacity: 0.85;">+ card</button>
+                <button id="create_card_link" onclick="createCardDialogue()">+ card</button>
             </div>
             
             <!-- <div style="position: relative; overflow-y: auto;">
@@ -225,6 +222,8 @@
     </div>
 
     <!-- <span style="z-index: 1; font-size: 3rem; position: fixed; left: 50%; bottom: 2vh; transform: translate(-50%); opacity: 0; transition: 0.5s opacity ease;" id="scroll_arrow">↓</span> -->
+
+    <input type="file" multiple id="asset_upload" style="display: none;">
 
     <script src="jszip/jszip.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>

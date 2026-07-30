@@ -68,26 +68,6 @@
     overflow: scroll;
 }
 
-#raw_html {
-    margin: auto;
-    /*align-content: center;*/
-    margin-top: 2%;
-    width: 90%;
-	height: 100%;
-    padding: 1.5%;
-    
-    text-align: center;
-
-}
-
-#raw_html > * {
-    margin: 3.5%;
-}
-
-#raw_html > img {
-    width: 80%;
-}
-
 #progress_bar_container {
     position: fixed;
     width: 100vw;
@@ -110,10 +90,6 @@
     font-family: norwester, Arial, Helvetica, sans-serif;
     font-weight: 100;
     font-size: 2.7rem;
-}
-
-#raw_html > * {
-    margin: 0px;
 }
 
 #div_for_segment_stuff {
@@ -244,4 +220,36 @@ code {
     bottom: 0.5vh;
     transform: translateY(-0%);
     margin-bottom: 0.8vh;
+}
+
+#raw_html {
+    margin: auto;
+    margin-top: 2%;
+    width: 90%;
+	height: 100%;
+    padding: 1.5%;
+    text-align: center;
+}
+
+#raw_html > * {
+    margin: 3.5%;
+}
+
+#raw_html img, #raw_html video, #raw_html canvas, #raw_html iframe {
+    width: 80%;
+    border-radius: 5px;
+}
+
+#raw_html > * {
+    margin: 0px;
+}
+
+#raw_html input, #raw_html textarea {
+    border-radius: 10px;
+    box-shadow: 0px 0px 2px 1px rgba(61, 61, 61, 0.2);
+    font-size: medium;
+    width: 80%;
+    border: 2px solid #555;
+    /* transition: all 0.3s ease; */
+    background-color: rgba(58, 58, 58, 0.211);
 }

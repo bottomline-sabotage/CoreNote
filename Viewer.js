@@ -445,14 +445,7 @@ async function load() {
 
             // Assets
             if(!JSON.parse(localStorage.getItem("globalSettings")).disableSetAssets) {
-                for(const file of Object.values(otherSet.cardZip.files)) {
-                    if(file.dir || !String(file.name).startsWith("Assets/")) 
-                        continue;
-                    const id = `#${String(file.name).replaceAll('/', '-_-').replaceAll('\\', '-_-').replaceAll('.', "\\.")}`;
-                    // document.querySelectorAll(id).forEach(async (el) => {
-                    cardAssets[id] = URL.createObjectURL(await file.async("blob")); // FIXME: ram crash?
-                    // });
-                }
+                await createCardAssets(otherSet.cardZip.files)
             }
 
             if(Object.entries(cardAssets).length > window.HIGH_ASSET_COUNT && !window.alreadyHadSizeWarning) {
@@ -470,23 +463,37 @@ async function load() {
 
     
     if(!JSON.parse(localStorage.getItem("globalSettings")).disableSetAssets) {
-        for(const file of Object.values(cardZip.files)) {
-            if(file.dir || !String(file.name).startsWith("Assets/")) 
-                continue;
-            const id = `#${String(file.name).replaceAll('/', '-_-').replaceAll('\\', '-_-').replaceAll('.', "\\.")}`;
-            // document.querySelectorAll(id).forEach(async (el) => {
-            cardAssets[id] = URL.createObjectURL(await file.async("blob")); // FIXME: ram crash?
-            // });
-        }
-
-        if(Object.entries(cardAssets).length > window.HIGH_ASSET_COUNT && !window.alreadyHadSizeWarning) {
-            window.alert("This card set has a lot of assets. Some devices might not keep up.");
-            window.alreadyHadSizeWarning = true;
-        }
+        await createCardAssets(cardZip.files)
     }
 	
 	refreshSettings(); // Done after disabling set assets
 	initCardSet();
+}
+
+async function createCardAssets(cardZipFiles) {
+    for(const file of Object.values(cardZipFiles)) {
+        if(file.dir || !String(file.name).startsWith("Assets/")) 
+            continue;
+        const id = `#${String(file.name).replaceAll('/', '-_-').replaceAll('\\', '-_-').replaceAll('.', "\\.").replaceAll(' ', '_-_')}`;
+
+        const bytes = await file.async("uint8array");
+
+        const blob = new Blob([bytes], {
+            // type: "video/quicktime" 
+        });
+
+        const url = URL.createObjectURL(blob);
+        console.log();
+
+        console.log(`Created blob for ${file.name} at ${url}`);
+
+        cardAssets[id] = url;
+    }
+
+    if(Object.entries(cardAssets).length > window.HIGH_ASSET_COUNT && !window.alreadyHadSizeWarning) {
+        window.alert("This card set has a lot of assets. Some devices might not keep up.");
+        window.alreadyHadSizeWarning = true;
+    }
 }
 
 let glowWrongTimeout;
@@ -820,9 +827,17 @@ function showCard() {
     });
 
     // Asset rendering
+
     for(const [key, src] of Object.entries(cardAssets)) {
         document.querySelectorAll(key).forEach(async (el) => {
+            el.href = src;
             el.src = src;
+            if(el.load)
+                el.load();
+            if(el.onerror)
+                el.onerror = () => {
+                    console.log(el.error);
+                };
         });
     }
 	
@@ -1408,7 +1423,11 @@ function print() {
     console.log(cardAssets);
     for(const [key, src] of Object.entries(cardAssets)) {
         document.querySelectorAll(key).forEach(async (el) => {
-            el.src = src;
+            if(String(el.tagName).toLowerCase() == 'a') {
+                el.href = src;
+            } else {
+                el.src = src;
+            }
             el.style.maxWidth = "175px";
             el.style.maxHeight = "175px";
         });
@@ -1424,7 +1443,12 @@ function print() {
 
 // KEYBOARD EVENTS
 window.addEventListener('keydown', (e) => {
-    if(cardSet && cardSet.json && settings) {
+    if(cardSet
+        && cardSet.json
+        && settings
+        && String(e.target.tagName).toLowerCase() != "input"
+        && String(e.target.tagName).toLowerCase() != "textarea"
+    ) {
         // console.log(e.code);
         if(e.code == 'Space' || e.code == 'ArrowUp') {
             e.preventDefault();
