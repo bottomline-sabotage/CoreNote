@@ -472,6 +472,7 @@ async function load() {
 
 async function createCardAssets(cardZipFiles) {
     for(const file of Object.values(cardZipFiles)) {
+        sessionStorage.setItem("v-storageConcerns", true);
         if(file.dir || !String(file.name).startsWith("Assets/")) 
             continue;
         const id = `#${String(file.name).replaceAll('/', '-_-').replaceAll('\\', '-_-').replaceAll('.', "\\.").replaceAll(' ', '_-_')}`;
@@ -489,11 +490,7 @@ async function createCardAssets(cardZipFiles) {
 
         cardAssets[id] = url;
     }
-
-    if(Object.entries(cardAssets).length > window.HIGH_ASSET_COUNT && !window.alreadyHadSizeWarning) {
-        window.alert("This card set has a lot of assets. Some devices might not keep up.");
-        window.alreadyHadSizeWarning = true;
-    }
+    sessionStorage.removeItem("v-storageConcerns");
 }
 
 let glowWrongTimeout;

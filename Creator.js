@@ -722,6 +722,11 @@ async function save() {
     const assetsFolder = zip.folder("Assets");
     const promises = [];
 
+    if(document.querySelectorAll(".uploaded_asset").length > window.HIGH_ASSET_COUNT) {
+        window.alert("This card set has a lot of assets (>20). Note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
+        window.alreadyHadSizeWarning = true;
+    }
+
     document.querySelectorAll(".uploaded_asset").forEach((el) => {
         const url = el.src || el.href; // Object URL (blob:)
         const fileName = String(el.id).split("Assets-_-")[1];
@@ -737,6 +742,8 @@ async function save() {
             fetch(url)
                 .then(res => res.blob())
                 .then(blob => {
+                    if(blob.size > 5e+6)
+                        window.alert("This file is really large (>5MB). While we will let you use it, just note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
                     assetsFolder.file(fileName, blob);
                     el.src = oldSrc;
                     el.href = oldHref;
