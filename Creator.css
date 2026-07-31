@@ -124,6 +124,7 @@ textarea::placeholder, .editable_div::placeholder {
     z-index: 1000;
     transform: translateY(var(--vv-offset-top, 0px));
     padding-top: env(safe-area-inset-top);
+    transition: transform 0.2s ease-out;
 }
 
 #card_topbar * {

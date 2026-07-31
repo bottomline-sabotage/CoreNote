@@ -391,3 +391,30 @@ hr {
     border-radius: 3px;
     
 }
+
+.pop_up {
+    position: fixed;
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%);
+    
+    overflow: scroll; 
+    box-shadow: 0 0 900px black, 0px 6px 10px rgba(0, 0, 0, 0.4) ;
+    background-color: rgb(48, 48, 80);
+    padding: 30px;
+    width: 50%;
+    max-height: 45%;
+
+    border-radius: 5px;
+
+    transition: all 0.3s ease;
+}
+
+.pop_up a {
+    text-decoration: underline;
+}
+
+.pop_up a:hover {
+    
+    color: lightgray;
+}

@@ -158,7 +158,6 @@
             <a id="bolden_text" title="Bold"><b>B</b></a>
             <a id="italic_text" title="Italics"><i>i</i></a>
             <a id="underline_text" title="Underline"><u>U</u></a>
-            <input type="color" style="display: none;" id="color_text_input">
             <a id="color_text" style="color: rgb(0, 0, 0)" title="Color">C</a>
             <input type="color" style="display: none;" id="highlight_text_input">
             <a class="highlighter" id="highlight_text" title="Highlight">H</a>
@@ -258,12 +257,12 @@
     </script>
 
     <script>
-        window.addEventListener('beforeunload', (event) => {
-            // if(localStorage.getItem("e-emergencyBackup")) {
-                event.preventDefault();  
-                event.returnValue = ''; 
-            // }
-        });
+        // window.addEventListener('beforeunload', (event) => {
+        //     // if(localStorage.getItem("e-emergencyBackup")) {
+        //         event.preventDefault();  
+        //         event.returnValue = ''; 
+        //     // }
+        // });
     </script>
     
     <!-- <script>
@@ -371,6 +370,10 @@
         // setTimeout(() => {
             renderMathInElement(document.querySelector("#card_topbar"));
         // }, 1000);
+    </script>
+
+    <script>
+        hideCardTopBar();
     </script>
 
     <!-- <script>

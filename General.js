@@ -210,3 +210,19 @@ async function createPngBlobFromImage(file) {
 
     return pngBlob;
 }
+
+function createPopup(content, widthStr = undefined, heightStr = undefined) {
+    const div = document.createElement('div');
+    div.className = "pop_up";
+    div.innerHTML = content;
+    
+    if(widthStr) {
+        div.style.width = widthStr
+    }
+    if(heightStr) {
+        div.style.height = heightStr;
+        div.style.maxHeight = heightStr;
+    }
+
+    return div;
+} 
