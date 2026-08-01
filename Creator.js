@@ -237,7 +237,9 @@ function createCardDialogue() {
         if(window.assetUploadLock) return;
         window.assetUploadLock = true;
         
-        for(const file of input.files) {
+        for(const theFile of input.files) {
+            const file = renameFile(theFile, `${crypto.randomUUID()}`);
+
             if(file.size > 5e+6)
                 window.alert("This file is really large (>5MB). While we will let you use it, just note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
 
@@ -262,7 +264,7 @@ function createCardDialogue() {
                 el = document.createElement('a');
                 el.href = URL.createObjectURL(file);
                 el.download = file.name;
-                el.textContent = `📄 ${file.name}`;
+                el.textContent = `📄 ${theFile.name}`;
             }
 
             el.className = "uploaded_asset";
@@ -370,6 +372,7 @@ function createCardDialogue() {
                 // window.alert("");
             }
 
+            input.value = null;
             input.click();
             
             input.oncancel = () => {

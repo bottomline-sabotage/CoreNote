@@ -226,3 +226,14 @@ function createPopup(content, widthStr = undefined, heightStr = undefined) {
 
     return div;
 } 
+
+function renameFile(file, newBaseName) {
+    const ext = file.name.includes(".")
+        ? file.name.slice(file.name.lastIndexOf("."))
+        : "";
+
+    return new File([file], `${newBaseName}${ext}`, {
+        type: file.type,
+        lastModified: file.lastModified
+    });
+}
