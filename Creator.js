@@ -1116,6 +1116,13 @@ document.querySelector("#bolden_text").addEventListener("pointerdown", (e) => {
     inlineFormattingManager(el);
 });
 
+document.querySelector("#strikethrough_text").addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+
+    const el = document.createElement('DEL');
+    inlineFormattingManager(el);
+});
+
 document.querySelector("#italic_text").addEventListener("pointerdown", (e) => {
     e.preventDefault();
 
