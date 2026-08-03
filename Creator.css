@@ -5,7 +5,7 @@ input, textarea, .editable_div {
     width: 80%;
     border: 2px solid #555;
     transition: all 0.3s ease;
-    background-color: rgba(58, 58, 58, 0.211);
+    background-color: #ebebeb
 }
 
 input:focus, input:active, textarea:focus, textarea:active, .editable_div:active {
@@ -68,12 +68,14 @@ textarea, .editable_div {
     color: black;
     padding: 10px;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+    
 
     transition: opacity 0.3s ease;
 }
 
 .cardDialogue > * {
     color: black;
+    /* font-size: 1.5vh; */
 }
 
 .cardDialogue > textarea {

@@ -386,11 +386,23 @@ hr {
 
 .dropdown a:hover {background-color: #ddd;}
 
-.highlighter {
+.highlighter:not(:has(.highlighter)) {
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.highlighter:has(.highlighter) {
+    background: transparent !important;
+}
+
+/* .highlighter {
     padding: 5px; 
     border-radius: 3px;
-    
-}
+} */
+
+/* .highlighter:empty {
+    padding: 0;
+} */
 
 .pop_up {
     position: fixed;

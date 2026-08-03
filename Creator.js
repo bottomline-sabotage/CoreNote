@@ -935,7 +935,32 @@ document.addEventListener('keydown', () => {
     
 // });
 
-function closestMatchingWrapper(node, wrapperEl) {
+function unwrapHighlighter(element) {
+    if (!element || element.tagName.toLowerCase() !== "highlight") {
+        throw new Error("Expected a <highlighter> element.");
+    }
+
+    // Remove all descendant highlighters first.
+    for (const child of [...element.querySelectorAll("highlight")]) {
+        while (child.firstChild) {
+            child.parentNode.insertBefore(child.firstChild, child);
+        }
+        child.remove();
+    }
+
+    let current = element;
+    let parent = current.parentElement;
+
+    while (parent && parent.tagName.toLowerCase() === "highlight") {
+        const nextParent = parent.parentElement;
+        parent.replaceWith(current);
+        parent = nextParent;
+    }
+
+    return parent;
+}
+
+function closestMatchingWrapperInline(node, wrapperEl) {
     while(node && node.nodeType !== Node.ELEMENT_NODE)
         node = node.parentNode;
 
@@ -964,7 +989,7 @@ function sameFormatting(a, b) {
     return true;
 }
 
-function removeFormatting(wrapper, range) {
+function removeFormatting(wrapper, range) {fdsa
     const selection = window.getSelection();
 
     // Preserve the original selection
@@ -1022,6 +1047,14 @@ function removeFormatting(wrapper, range) {
     }
 }
 
+function closestMatchingWrapper(node, tagName) {
+    let el = node.nodeType === Node.ELEMENT_NODE
+        ? node
+        : node.parentElement;
+
+    return el?.closest(tagName) ?? null;
+}
+
 function inlineFormattingManager(wrapperEl, sel = undefined, editor = undefined) {
     if(!editor)
         editor = document.activeElement;
@@ -1046,10 +1079,18 @@ function inlineFormattingManager(wrapperEl, sel = undefined, editor = undefined)
     if (!editor.contains(range.commonAncestorContainer))
         return;
 
-    const existing = closestMatchingWrapper(
-        range.commonAncestorContainer,
-        wrapperEl
-    );
+    if(wrapperEl.tagName == 'highlight')
+        unwrapHighlighter(wrapperEl);
+
+    let existing;
+    // if(String(wrapperEl.tagName) == "" || String(wrapperEl.tagName) == "") {
+
+    // } else {
+        existing = closestMatchingWrapperInline(
+            range.commonAncestorContainer,
+            wrapperEl
+        );
+    // }
 
     if (existing && existing.contains(range.startContainer) && existing.contains(range.endContainer)) {
         removeFormatting(existing, range);
@@ -1178,9 +1219,8 @@ document.querySelector("#color_text").addEventListener("pointerdown", async (e) 
 
                 
                 document.removeEventListener('pointerdown', fds);
-
-
                 colorInput.removeEventListener("change", onChange);
+                
                 popup.style.opacity = 0;
                 setTimeout(() => {
                     popup.remove();
@@ -1253,8 +1293,9 @@ document.querySelector("#highlight_text").addEventListener("pointerdown", async 
 
             highlightInput.click();
         } else if(e.target.id == "highlight_pick-none") {
-            const el = document.createElement("span");
-            el.style.color = ``;
+            const el = document.createElement("highlighter");
+            el.className = "highlighter";
+            el.style.backgroundColor = ``;
             document.querySelector("#highlight_text").style.backgroundColor = "";
 
             popup.style.opacity = 0;
