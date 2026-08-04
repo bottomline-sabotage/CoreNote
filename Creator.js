@@ -526,8 +526,9 @@ function createCardDialogue() {
         
         let hadEmpty = false;
         for(let i = 0; i < categories.length; i++) {
-            const el = document.createElement('a');
-            if(!el.textContent && !hadEmpty) {
+            console.log(categories[i]);
+            if(!categories[i] && !hadEmpty) {
+                const el = document.createElement('a');
                 el.textContent = "No Category"
                 div.appendChild(el);
                 hadEmpty = true;
@@ -537,8 +538,9 @@ function createCardDialogue() {
                     previousCategory = 0; 
                 };
                 continue;
-            }    
-
+            } else if(!categories[i] && hadEmpty) continue;
+            
+            const el = document.createElement('a');
             el.onclick = () => {
                 category.textContent = categories[i];
                 category.className = `category-${i}`;
@@ -557,6 +559,7 @@ function createCardDialogue() {
             const ans = window.prompt("New Category");
             if(!ans) return;
             categories.push(ans);
+            loadCategoriesToSettings();
             category.className = `category-${categories.length - 1}`;
             category.textContent = ans;
             previousCategory = categories.length - 1; 
@@ -888,7 +891,81 @@ function loadFromJson(data) {
         category.textContent = categories[card.category] || "No Category";
         category.className = `category-${card.category}`
     }
+
+    loadCategoriesToSettings()
 }
+
+function refreshCategories(i) {
+    // for(let i = 0; i < categories.length; i++) {
+    document.querySelectorAll(`.category-${i}`).forEach((el) => {
+        if(!categories[i]) {
+            el.textContent = "No Category";
+            el.className = "category-0"; // Just try to point them all to zero. 
+        } else {
+            el.textContent = categories[i];
+        }
+    });
+    // }
+}
+
+function loadCategoriesToSettings() {
+    const container = document.querySelector("#categories_queen");
+    container.innerHTML = '';
+    let hadNull = false;
+    
+    function generator(name, index, haveStuff = true) {
+        const div = document.createElement('div');
+        div.className = "category_description";
+        div.style.width = "100%";
+        if(haveStuff) 
+            div.innerHTML = `<b>${name}, </b>`;
+        else
+            div.innerHTML = `<b>${name}</b>`;
+
+        if(!haveStuff) {
+            // We done earliy boys!
+            container.append(div);
+            return;
+        }
+
+        console.log(name);
+
+        const rename = document.createElement('a');
+        rename.textContent = "Rename";
+        rename.style.marginRight = "6px";
+        rename.onclick = () => {
+            const prompt = window.prompt("Rename");
+            if(!prompt) return;
+            categories[index] = prompt;
+            refreshCategories(index);
+            loadCategoriesToSettings();
+        };
+        const remove = document.createElement('a');
+        remove.textContent = "Remove";
+        remove.onclick = () => {
+            categories[index] = null; // Logical removing, bby
+            refreshCategories(index);
+            loadCategoriesToSettings();
+        };
+
+        div.append(rename, remove);
+
+        container.append(div);
+    }
+
+    for(let i = 0; i < categories.length; i++) {
+        if(hadNull && !categories[i]) {
+            continue;
+        } else if(!hadNull && !categories[i]) {
+            generator("No Category", i, false);
+            hadNull = true;
+            continue;
+        }
+
+        generator(categories[i], i, true);
+    }
+}
+loadCategoriesToSettings(); // For no category
 
 let backupTimeout = null;
 
@@ -1263,8 +1340,6 @@ document.querySelector("#color_text").addEventListener("pointerdown", async (e) 
             document.removeEventListener('pointerdown', fds);
         }
     });
-
-
 });
 
 document.querySelector("#highlight_text").addEventListener("pointerdown", async (e) => {

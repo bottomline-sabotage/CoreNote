@@ -563,11 +563,18 @@ function initCardSet() {
         // document.querySelector("#info-desc").innerHTML = cardSet.json.description || "<i>Undefined</i>";
         document.querySelector("#info-num_cards").innerHTML = cardSet.json.cards.length || "<i>Undefined</i>";
         if(cardSet.json.categories.length > 0) {
-            if(cardSet.json.categories[0] === null) {
-                document.querySelector("#info-categories").innerHTML = cardSet.json.categories.slice(1, cardSet.json.categories.length - 1).join(' | ') || "<i>Undefined</i>";
-            } else {
-                document.querySelector("#info-categories").innerHTML = cardSet.json.categories.join(' | ') || "<i>Undefined</i>";
-            }
+                const categoriesList = document.querySelector("#info-categories");
+                let txt = "";
+                for(let i = 0; i < cardSet.json.categories.length; i++) {
+                    const category = cardSet.json.categories[i];
+
+                    if(!category) continue;
+
+                    txt += category;
+                    if(i + 1 != cardSet.json.categories.length) txt += " | ";
+                }
+                categoriesList.textContent = txt;
+                // innerHTML = cardSet.json.categories.join(' | ')
         } else {
             document.querySelector("#info-categories").innerHTML = "<i>None</i>";
         }
