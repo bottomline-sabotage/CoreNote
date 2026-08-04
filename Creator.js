@@ -1504,6 +1504,10 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
     // Enable
     else {
         mathEditFor = document.activeElement;
+        if(!mathEditFor.classList.contains('editable_div')) {
+            mathEditFor = null;
+            return;
+        }
 
         editor.value = '';
 
@@ -1531,10 +1535,16 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
     else
         return;
 
-    console.log()
-
+    
     if(!document.activeElement.classList.contains("editable_div") && document.activeElement.id != ("html_raw_editor") && e.currentTarget.id != "html_edit")
         return;
+    
+    // console.log(
+    //     !document.activeElement.classList.contains("editable_div"),
+    //     document.activeElement.id != ("html_raw_editor"),
+    //     e.currentTarget.id != "html_edit",
+    //     !document.activeElement.classList.contains("editable_div") && document.activeElement.id != ("html_raw_editor") && e.currentTarget.id != "html_edit"
+    // )
 
     const holder = document.querySelector("#html_raw_edit");
 
@@ -1583,6 +1593,10 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
     // Enable
     else {
         htmlEditFor = document.activeElement;
+        if(!htmlEditFor.classList.contains('editable_div')) {
+            htmlEditFor = null;
+            return;
+        }
         editor.value = htmlEditFor.innerHTML;
 
         editor.focus();
@@ -1664,6 +1678,15 @@ if(!document.activeElement.className.endsWith("editable_div"))
     }
 
     e.preventDefault();
+});
+
+document.addEventListener('focusin', (e) => {
+    // console.log(e.target)
+    // if(e.target.contentEditable) {
+    //     showCardTopBar();
+    // } else {
+    //     hideCardTopBar();
+    // }
 });
 
 const vv = window.visualViewport;
