@@ -231,6 +231,12 @@ function createCardDialogue() {
     backSide.addEventListener('keyup', editable);
     updatePlaceholder(frontSide);
     updatePlaceholder(backSide);
+    
+    // For copy and paste... I don't know how else to do this?
+    const hackyInterval = setInterval(() => {
+        updatePlaceholder(frontSide);
+        updatePlaceholder(backSide);
+    }, 500)
 
     setTimeout(() => {
         document.querySelector("#create_card_link").scrollIntoView({
@@ -468,7 +474,7 @@ function createCardDialogue() {
         deleteButton.style.color = 'darkred';
         deleteButton.textContent = "Delete";
         deleteButton.onclick = () => {
-            
+            clearInterval(hackyInterval);
 
             document.querySelector(`#card-${index}`).remove();
 
@@ -1345,7 +1351,12 @@ document.querySelector("#highlight_text").addEventListener("pointerdown", async 
 
 let inMathMode = false;
 let mathEditFor = null;
+let htmlEditMode = false;
+let htmlEditFor = null;
 document.querySelector("#math_notater_button").addEventListener("pointerdown", (e) => {
+    if(htmlEditMode) 
+        return;
+
     document.querySelector("#html_only_api_view").style.display = "none";
 
     e.preventDefault();
@@ -1356,8 +1367,7 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
         savedRange = selection.getRangeAt(0).cloneRange();
     }
 
-    
-    if(!document.activeElement.className.endsWith("editable_div") )
+    if(!document.activeElement.classList.contains("editable_div") && e.currentTarget.id != "math_notater_button")
         return;
 
     const holder = document.querySelector("#html_raw_edit");
@@ -1427,9 +1437,11 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
     }
 });
 
-let htmlEditMode = false;
-let htmlEditFor = null;
+
 document.querySelector("#html_edit").addEventListener("pointerdown", function doer (e) {
+    if(inMathMode) 
+        return;
+
     document.querySelector("#html_only_api_view").style.display = "inline";
 
     if(document.activeElement.id != "click_me_html_please")
@@ -1437,7 +1449,9 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
     else
         return;
 
-    if(!document.activeElement.className.endsWith("editable_div") && document.activeElement.id != ("html_raw_editor"))
+    console.log()
+
+    if(!document.activeElement.classList.contains("editable_div") && document.activeElement.id != ("html_raw_editor") && e.currentTarget.id != "html_edit")
         return;
 
     const holder = document.querySelector("#html_raw_edit");
@@ -1498,21 +1512,6 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
 
         htmlEditFor.contentEditable = false;
         htmlEditFor.style.opacity = 0.7;
-
-        // const oldHtmlEditFor = htmlEditFor;
-        // editor.addEventListener('blur', function blur(e) {
-        //     if(e.activeElement.id == "click_me_html_please")
-        //         return;
-
-        //     if(oldHtmlEditFor != htmlEditFor) {
-        //         editor.removeEventListener('blur', blur);
-        //         return;
-        //     }
-
-        //     disabler();
-
-        //     editor.removeEventListener('blur', blur);
-        // });
     }
 
 });
