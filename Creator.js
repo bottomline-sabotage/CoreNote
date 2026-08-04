@@ -436,6 +436,12 @@ function createCardDialogue() {
             }
         };
         
+        // const hyperlink = document.createElement('a');
+        // hyperlink.textContent = "+ Hyperlink";
+        // hyperlink.onclick = () => {
+        //     //.TIDIL
+        // };
+
         const randomFront = document.createElement('a');
         if(document.querySelector(`#card-${index} .using_random`)) {
             randomFront.textContent = "Disable Random Front";
@@ -489,6 +495,7 @@ function createCardDialogue() {
         div.append(
             uploadAsset,
             rating,
+            // hyperlink,
             randomFront,
             document.createElement('hr'),
             mover,
@@ -1600,7 +1607,67 @@ vv.addEventListener("scroll", update);
 
 update();
 
+function linkify(el) {
+    const sel = window.getSelection();
+    const activeNode =
+        sel && sel.rangeCount
+            ? sel.getRangeAt(0).startContainer
+            : null;
+
+    const walker = document.createTreeWalker(
+        el,
+        NodeFilter.SHOW_TEXT
+    );
+
+    const urlRegex = /\b(https?:\/\/[^\s<]+|www\.[^\s<]+)/gi;
+
+    const textNodes = [];
+
+    while(walker.nextNode()) {
+        const node = walker.currentNode;
+
+        // DONT BE STUPID
+        if(node === activeNode) continue;
+
+        if(urlRegex.test(node.textContent)) {
+            textNodes.push(node);
+        }
+
+        urlRegex.lastIndex = 0;
+    }
+
+    for(const node of textNodes) {
+        const frag = document.createDocumentFragment();
+
+        let last = 0;
+        node.textContent.replace(urlRegex, (url, _, index) => {
+            if(index > last) {
+                frag.append(node.textContent.slice(last, index));
+            }
+
+            const a = document.createElement("a");
+            a.href = url.startsWith("http") ? url : `https://${url}`;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.textContent = url;
+            frag.append(a);
+
+            last = index + url.length;
+        });
+
+        if(last < node.textContent.length) {
+            frag.append(node.textContent.slice(last));
+        }
+
+        node.replaceWith(frag);
+    }
+}
+
 function updatePlaceholder(el) {
-    const empty = String(el.textContent).trim() === "";
+    const empty = el.textContent.trim() === "";
     el.classList.toggle("is-empty", empty);
+
+    if(!empty) {
+        linkify(el);
+    }
 }
