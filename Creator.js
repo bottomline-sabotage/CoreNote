@@ -94,7 +94,7 @@ function createCardDialogue() {
     // const formatting = document.createElement('div');
     const frontSide = document.createElement('div');
     frontSide.contentEditable = true;
-    frontSide.placeholder = "Enter the Front Side";
+    frontSide.setAttribute('placeholder', "Enter the Front Side");
     // frontSide.innerHTML = "<span class=\"note\">Enter the Front Side</span>";
     // frontSide.onfocus = () => {
     //     showCardTopBar(); // The problem is this shifts content. So, this may or may not work that well.
@@ -104,7 +104,7 @@ function createCardDialogue() {
     // }
     const backSide = document.createElement('div');
     backSide.contentEditable = true;
-    backSide.placeholder = "Enter the Back Side";
+    backSide.setAttribute('placeholder', "Enter the Back Side");
     // backSide.onfocus = () => {
     //     showCardTopBar();
     // };
@@ -223,6 +223,14 @@ function createCardDialogue() {
 
     frontSide.className = "card_front_side editable_div";
     backSide.className = "card_back_side editable_div";
+
+    const editable = (e) => {
+        updatePlaceholder(e.currentTarget)
+    };
+    frontSide.addEventListener('keyup', editable);
+    backSide.addEventListener('keyup', editable);
+    updatePlaceholder(frontSide);
+    updatePlaceholder(backSide);
 
     setTimeout(() => {
         document.querySelector("#create_card_link").scrollIntoView({
@@ -433,7 +441,7 @@ function createCardDialogue() {
             if(document.querySelector(`#card-${index} .using_random`)) {
                 document.querySelector(`#card-${index} .using_random`).remove();
                 randomFront.textContent = "Enable Random Front";
-                frontSide.placeholder = "Enter the Front Side";
+                frontSide.setAttribute("placeholder", "Enter the Front Side")
             }
 
             // Enable
@@ -443,7 +451,7 @@ function createCardDialogue() {
                 existence.className = "using_random";
                 existence.style.display = "none";
                 card.append(existence);
-                frontSide.placeholder = "Enter the Randomized Front Side\n\nEach line here will be treated as its own front side. When viewed, any one of the lines can be shown.";
+                frontSide.setAttribute("placeholder", "Enter the Randomized Front Side\n\nEach line here will be treated as its own front side. When viewed, any one of the lines can be shown.");
 
                 // sendNotification("Every line will be treated as its own randomized front.<br><br>When viewed, anyone of the fronts may be shown.", 4500);
             }
@@ -460,11 +468,16 @@ function createCardDialogue() {
         deleteButton.style.color = 'darkred';
         deleteButton.textContent = "Delete";
         deleteButton.onclick = () => {
+            
+
             document.querySelector(`#card-${index}`).remove();
 
             reindexCards();
         
             document.querySelector("#info-number_of_cards").textContent = document.querySelectorAll(".cardDialogue").length;
+
+            frontSide.removeEventListener('change', editable);
+            backSide.removeEventListener('change', editable);     
         };
         
         div.append(
@@ -836,7 +849,7 @@ function loadFromJson(data) {
             const id = document.createElement('span');
             id.className = "using_random";
             el.appendChild(id);
-            front.placeholder = "Enter the Randomized Front Side\n\nEach line here will be treated as its own front side. When viewed, any one of the lines can be shown.";
+            front.setAttribute("placeholder", "Enter the Randomized Front Side\n\nEach line here will be treated as its own front side. When viewed, any one of the lines can be shown.");
         } else 
             front.innerHTML = inversePrettify(card.front);
         back.innerHTML = inversePrettify(card.back);
@@ -1587,3 +1600,8 @@ vv.addEventListener("resize", update);
 vv.addEventListener("scroll", update);
 
 update();
+
+function updatePlaceholder(el) {
+    const empty = String(el.textContent).trim() === "";
+    el.classList.toggle("is-empty", empty);
+}

@@ -186,3 +186,13 @@ textarea::placeholder, .editable_div::placeholder {
     /* transition: all 0.3s ease; */
     background-color: rgba(58, 58, 58, 0.211);
 }
+
+[contenteditable][placeholder].is-empty::before {
+    content: attr(placeholder);
+    color: #888;
+    pointer-events: none;
+
+    font-style: italic;
+    box-sizing: border-box;
+    resize: none;  
+}

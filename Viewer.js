@@ -1481,10 +1481,3 @@ window.addEventListener('keydown', (e) => {
         }
     }
 });
-
-// Really hacky way of making placeholders work
-setInterval(() => {
-    document.querySelectorAll('.editable_div').forEach((el) => {
-        
-    });
-}, 500);
