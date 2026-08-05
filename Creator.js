@@ -895,6 +895,58 @@ function loadFromJson(data) {
     loadCategoriesToSettings()
 }
 
+async function uploadSet() {
+    const fileInput = document.querySelector("#file_input");
+    const file = fileInput.files[0];
+
+    let cardZip = null;
+    let json;
+	try {
+		cardZip = await JSZip.loadAsync(file);
+	    json = JSON.parse(await cardZip.file("data.json").async("string"));	
+        for(let i = 0; i < json.cards.length; i++) {
+            json.cards[i].index = i; // Set index
+        }
+	} catch (err) {
+		console.error(err);
+		window.alert("Failed to load set. Please upload another.");
+        cover.style.cssText = "opacity: 0; padding: 0px; max-height: 0vh;";
+        return;
+	}
+
+    const cardAssets = {};
+    for(const file of Object.values(cardZip.files)) {
+        if(file.dir || !String(file.name).startsWith("Assets/")) 
+            continue;
+        const id = `${String(file.name).replaceAll('/', '-_-').replaceAll('\\', '-_-').replaceAll(' ', '_-_')}`;
+
+        // if(json.version < 2) {
+        //     id = id.replaceAll('.', '\\.'); // This should never be a problem, however my sets made before the creator for whatever need this
+        // }
+
+        const bytes = await file.async("uint8array");
+
+        const blob = new Blob([bytes], { });
+
+        const url = URL.createObjectURL(blob);
+        cardAssets[id] = url;
+    }
+
+    loadFromJson(json);
+    start();
+
+    if(json.version < 2) {
+        document.querySelectorAll('img').forEach((el) => { // pre version 2 didn't have .uploaded_asset
+            el.src = cardAssets[el.id];
+        });
+    } else {
+        document.querySelectorAll('.uploaded_asset').forEach((el) => {
+            el.src = cardAssets[el.id];
+            el.href = cardAssets[el.id];
+        });
+    }
+}
+
 function refreshCategories(i) {
     // for(let i = 0; i < categories.length; i++) {
     document.querySelectorAll(`.category-${i}`).forEach((el) => {
@@ -1762,10 +1814,12 @@ function linkify(el) {
 }
 
 function updatePlaceholder(el) {
-    const empty = el.textContent.trim() === "";
-    el.classList.toggle("is-empty", empty);
+    const hasText = el.textContent.trim() !== "";
+    const hasContent = hasText || el.querySelector("img, video, canvas, svg, iframe, embed, object");
 
-    if(!empty) {
+    el.classList.toggle("is-empty", !hasContent);
+
+    if(hasContent) {
         linkify(el);
     }
 }

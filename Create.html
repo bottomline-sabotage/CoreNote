@@ -62,12 +62,12 @@
 <body>
     <div id="submit_phase">       
         <h1>Upload or Create New?</h1>
-        <span class="note">Either upload a pre-existing set to continue working on it or start work on a brand new one.</span><br><br>
+        <span class="note">Either upload a pre-existing set to continue working on it or start work on a brand new one.</span><br>
 
-        <span class="note"><b>Note:</b> Uploading is not currently supported.</span><br>
+        <!-- <span class="note"><b>Note:</b> Uploading is not currently supported.</span><br> -->
 
         <input type="file" accept=".corenote" id="file_input" style="display: none;"><br>
-        <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { showCover(); })">Upload</button>
+        <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { uploadSet(); })">Upload</button>
         <button onclick="start()">New</button><br><br>
         <button onclick="window.location.href = 'index.html'">Exit</button>
         
