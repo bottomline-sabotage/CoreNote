@@ -1528,7 +1528,7 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
         } catch (err) { }
     }
 
-    editor.addEventListener('keyup', change);
+    editor.addEventListener('input', change);
 
     function disabler() {
         inMathMode = false;
