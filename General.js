@@ -237,3 +237,36 @@ function renameFile(file, newBaseName) {
         lastModified: file.lastModified
     });
 }
+
+let emergencyTimeout = null;
+function callLoad(timeout = 10e+3) {
+    clearTimeout(emergencyTimeout);
+    emergencyTimeout = null;
+
+    const el = document.createElement('div');
+    el.className = "loader";
+    el.style.opacity = 0;
+    requestAnimationFrame(() => {
+        el.style.opacity = 1;
+    });
+
+    document.body.append(el);
+    setTimeout(() => {
+        endLoad();
+    }, timeout);
+}
+
+function endLoad() {
+    clearTimeout(emergencyTimeout);
+    emergencyTimeout = null;
+
+    document.querySelectorAll('.loader').forEach((el) => {
+        requestAnimationFrame(() => {
+            el.style.opacity = 0;
+        });
+
+        setTimeout(() => {
+            el.remove();
+        }, 500);
+    });
+}

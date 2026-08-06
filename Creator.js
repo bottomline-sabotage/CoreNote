@@ -772,8 +772,11 @@ function generateJson() {
 }
 
 async function save() {
+    callLoad();
+
     if(document.querySelectorAll(".cardDialogue").length < 1) {
         window.alert("You have no cards to save.");
+        endLoad();
         return;
     }
 
@@ -832,6 +835,8 @@ async function save() {
         console.log("Cleared emergency backup");
         localStorage.removeItem("e-emergencyBackup");
     }, 40e+3);
+
+    endLoad();
 }
 
 function loadFromJson(data) {
@@ -903,6 +908,8 @@ function loadFromJson(data) {
 }
 
 async function uploadSet() {
+    callLoad();
+
     const fileInput = document.querySelector("#file_input");
     const file = fileInput.files[0];
 
@@ -918,6 +925,7 @@ async function uploadSet() {
 		console.error(err);
 		window.alert("Failed to load set. Please upload another.");
         cover.style.cssText = "opacity: 0; padding: 0px; max-height: 0vh;";
+        endLoad();
         return;
 	}
 
@@ -952,6 +960,8 @@ async function uploadSet() {
             el.href = cardAssets[el.id];
         });
     }
+
+    endLoad();
 }
 
 function refreshCategories(i) {

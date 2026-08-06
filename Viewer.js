@@ -68,6 +68,8 @@ let answerSorting_missedCards = [];
 let cardsBackUp = [];
 
 async function showCover() {
+    callLoad();
+
     const title = document.querySelector("#cover-title");
     const description = document.querySelector("#cover-description");
     const classInfo = document.querySelector("#cover-class");
@@ -413,8 +415,10 @@ function refreshSettings() {
 async function load() {
     cardAssets = {};
     
-    if(!cardZip)
+    if(!cardZip) {
+        endLoad();
         return;
+    }
 
     if(combinedSets.length > 0) {
         
@@ -687,6 +691,7 @@ function initCardSet() {
     setCard(currentIndex);
 	cardsBackUp = structuredClone(cardSet.json.cards);
     
+    endLoad();
 }
 
 let intervalLock = false; // note: this is a hack to fix old code
