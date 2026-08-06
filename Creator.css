@@ -196,3 +196,29 @@ textarea::placeholder, .editable_div::placeholder {
     box-sizing: border-box;
     resize: none;  
 }
+
+.inline_math_friend {
+    position: relative;
+}
+
+.math_area {
+    position: absolute;
+    bottom: calc(100% + 8px); /* Above parent */
+    left: 50%;
+    /* transform: translateX(50%); */
+
+    transition: opacity 0.5s ease;
+    width: fit-content;
+    max-width: 40vw;
+    height: fit-content;
+    max-height: 15vh;
+    padding: 10px;
+    border-radius: 3px;
+    background-color: #555;
+    box-shadow: 0px 0px 2px 1px rgba(61, 61, 61, 0.2);
+    overflow: scroll;
+}
+
+.math_area * {
+    color: rgba(255, 255, 255, 0.706);
+}

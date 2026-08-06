@@ -93,7 +93,7 @@ function createCardDialogue() {
     
     // const formatting = document.createElement('div');
     const frontSide = document.createElement('div');
-    frontSide.contentEditable = true;
+    frontSide.contentEditable = "plaintext-only";
     frontSide.setAttribute('placeholder', "Enter the Front Side");
     // frontSide.innerHTML = "<span class=\"note\">Enter the Front Side</span>";
     // frontSide.onfocus = () => {
@@ -103,7 +103,7 @@ function createCardDialogue() {
     //     hideCardTopBar();
     // }
     const backSide = document.createElement('div');
-    backSide.contentEditable = true;
+    backSide.contentEditable = "plaintext-only";
     backSide.setAttribute('placeholder', "Enter the Back Side");
     // backSide.onfocus = () => {
     //     showCardTopBar();
@@ -687,6 +687,13 @@ function prettify(input) {
 }
 
 function generateJson() {
+    document.querySelectorAll(".math_area").forEach((e) => {
+        e.opacity = 0;
+        setTimeout(() => {
+            e.remove();
+        }, 500);
+    });
+
     const title = document.querySelector("#info-title");
     const description = document.querySelector("#info-description");
     const classInfo = document.querySelector("#info-class");
@@ -1527,7 +1534,7 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
         inMathMode = false;
         holder.style.height = "0vh";
 
-        mathEditFor.contentEditable = true;
+        mathEditFor.contentEditable = "plaintext-only";
         mathEditFor.style.opacity = 1;
 
         change();
@@ -1543,7 +1550,7 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
         disabler();
 
         if(!localStorage.getItem('c-mathLatexWarning')) {
-            sendNotification("To make your formatting easier, your formula will be condensed to LaTeX while editing.", 5e+3);
+            sendNotification("To make your formatting easier, your formula will be condensed to LaTeX while editing. When you edit it or click/tap on it, you can see the math preview again", 7e+3);
             localStorage.setItem('c-mathLatexWarning', true);
         }
     };
@@ -1623,7 +1630,7 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
         htmlEditMode = false;
         holder.style.height = "0vh";
 
-        htmlEditFor.contentEditable = true;
+        htmlEditFor.contentEditable = "plaintext-only";
         htmlEditFor.style.opacity = 1;
 
         change();
@@ -1756,6 +1763,143 @@ vv.addEventListener("resize", update);
 vv.addEventListener("scroll", update);
 
 update();
+
+
+function inlineMathHover(el, wasClick, remove = false, time = 10e+3, force = false) {
+    if (el.className !== "inline_math_friend") return;
+
+    let mathArea = document.querySelector(
+        `.math_area[data-owner="${el.dataset.mathId}"]`
+    );
+
+    if(remove) {
+        if(!mathArea) return;   
+
+        if(el._mathObserver) {
+            el._mathObserver.disconnect();
+            delete el._mathObserver;
+        }
+
+        if(el._mathTimeout) {
+            clearTimeout(el._mathTimeout);
+            delete el._mathTimeout;
+        }
+
+        if(force) {
+            mathArea.remove();
+        } else {
+            mathArea.style.opacity = "0";
+
+            setTimeout(() => {
+                mathArea.remove();
+            }, 500);
+        }
+
+        return;
+    }
+
+    // If one already exists, DIE (but later).
+    if(mathArea) return;
+
+    if(!el.dataset.mathId ) {
+        el.dataset.mathId = Math.random().toString(36).slice(2);
+    }
+
+    mathArea = document.createElement("div");
+    mathArea.className = "math_area";
+    mathArea.dataset.owner = el.dataset.mathId;
+    mathArea.style.opacity = "0";
+
+    document.body.appendChild(mathArea);
+
+    function render() {
+        mathArea.innerHTML = "";
+        mathArea.textContent = (String(el.textContent).split('\\)')[0].replaceAll('\\(', '') + "\\)");
+        mathArea.textContent = "\\(" + mathArea.textContent;
+        renderMathInElement(mathArea);
+
+        const rect = el.getBoundingClientRect();
+
+        mathArea.style.position = "fixed";
+        mathArea.style.left =
+            rect.left + rect.width / 2 - mathArea.offsetWidth / 2 + "px";
+        mathArea.style.top =
+            rect.top - mathArea.offsetHeight - 8 + "px";
+    }
+
+    render();
+
+    const updateThePositionPLEASE = () => {render()};
+
+    window.addEventListener("scroll", updateThePositionPLEASE, true);
+    window.addEventListener("resize", updateThePositionPLEASE);
+
+    requestAnimationFrame(() => {
+        mathArea.style.opacity = "1";
+    });
+
+    // REmove old stuff
+    if(el._mathObserver) {
+        el._mathObserver.disconnect();
+        clearTimeout(el._mathTimeout);
+    }
+
+    const stopWatching = () => {
+        observer.disconnect();
+        delete el._mathObserver;
+        delete el._mathTimeout;
+
+        inlineMathHover(el, false, true);
+
+        window.removeEventListener("scroll", updateThePositionPLEASE, true);
+        window.removeEventListener("resize", updateThePositionPLEASE);
+    };
+
+    const resetTimeout = () => {
+        clearTimeout(el._mathTimeout);
+        el._mathTimeout = setTimeout(stopWatching, time);
+    };
+
+    const observer = new MutationObserver(() => {
+        // Weird things happen if you try to re-render, so just recrteate it
+        inlineMathHover(el, false, true, 10e+3, true);
+
+        requestAnimationFrame(() => {  // This is like my first time using animation frames. 10/10, totally worth it
+            inlineMathHover(el, false);
+        });
+    });
+
+    observer.observe(el, {
+        characterData: true,
+        childList: true,
+        subtree: true
+    });
+
+    el._mathObserver = observer;
+    resetTimeout();
+}
+
+document.addEventListener('click', (e) => {
+    inlineMathHover(e.target, true, false);
+});
+
+document.addEventListener("input", (e) => {
+    const editor = e.target.closest("[contenteditable]");
+    if(!editor) return;
+
+    const sel = window.getSelection();
+    if(!sel.rangeCount) return;
+
+    let node = sel.anchorNode;
+    if(node.nodeType === Node.TEXT_NODE) node = node.parentElement;
+
+    const current = node?.closest(".inline_math_friend");
+    if(!current) return;
+
+    if(current === editor.querySelector(".inline_math_friend:last-of-type")) {
+        inlineMathHover(current, true, false);
+    }
+});
 
 function linkify(el) {
     const sel = window.getSelection();
