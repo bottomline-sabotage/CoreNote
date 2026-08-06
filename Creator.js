@@ -1817,14 +1817,24 @@ function inlineMathHover(el, wasClick, remove = false, time = 10e+3, force = fal
         mathArea.textContent = (String(el.textContent).split('\\)')[0].replaceAll('\\(', '') + "\\)");
         mathArea.textContent = "\\(" + mathArea.textContent;
         renderMathInElement(mathArea);
-
+        
         const rect = el.getBoundingClientRect();
-
+        const vv = window.visualViewport;
+        
         mathArea.style.position = "fixed";
         mathArea.style.left =
             rect.left + rect.width / 2 - mathArea.offsetWidth / 2 + "px";
+        
         mathArea.style.top =
-            rect.top - mathArea.offsetHeight - 8 + "px";
+            rect.top - mathArea.offsetHeight - 8 + vv.offsetTop + "px";
+
+            // The iOS keyboard sucks
+
+        // mathArea.style.position = "fixed";
+        // mathArea.style.left =
+        //     rect.left + rect.width / 2 - mathArea.offsetWidth / 2 + "px";
+        // mathArea.style.top =
+        //     rect.top - mathArea.offsetHeight - 8 + "px";
     }
 
     render();
