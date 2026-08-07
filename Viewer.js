@@ -68,8 +68,6 @@ let answerSorting_missedCards = [];
 let cardsBackUp = [];
 
 async function showCover() {
-    callLoad();
-
     const title = document.querySelector("#cover-title");
     const description = document.querySelector("#cover-description");
     const classInfo = document.querySelector("#cover-class");
@@ -413,6 +411,7 @@ function refreshSettings() {
 }
 
 async function load() {
+    callLoad();
     cardAssets = {};
     
     if(!cardZip) {
@@ -467,7 +466,7 @@ async function load() {
 
     
     if(!JSON.parse(localStorage.getItem("globalSettings")).disableSetAssets) {
-        await createCardAssets(cardZip.files)
+        await createCardAssets(cardZip.files);
     }
 	
 	refreshSettings(); // Done after disabling set assets
@@ -475,11 +474,28 @@ async function load() {
 }
 
 async function createCardAssets(cardZipFiles) {
+    // While I was inclined to make this a Promise.all(), the problem with that is the blob creation; it scares me. There's probably a way to get around that, though.
+
     for(const file of Object.values(cardZipFiles)) {
         sessionStorage.setItem("v-storageConcerns", true);
         if(file.dir || !String(file.name).startsWith("Assets/")) 
             continue;
         const id = `#${String(file.name).replaceAll('/', '-_-').replaceAll('\\', '-_-').replaceAll('.', "\\.").replaceAll(' ', '_-_')}`;
+
+        // JSZip doesn't expose this directly, which is really weird. Anyway, what I'm trying to say is DO NOT UPGRADE JSZIP.
+        if(file?._data?.uncompressedSize && file?._data?.uncompressedSize && file?._data?.uncompressedSize >= 5e+6 && sessionStorage.getItem('v-dontLoadOver5')) {
+            cardAssets[id] = null;
+            continue;
+        }
+
+
+        // TODO: perhaps move to another array so it's less annoying to do this?
+        if(file?._data?.uncompressedSize && file?._data?.uncompressedSize && file?._data?.uncompressedSize >= 5e+6 && !sessionStorage.getItem('v-stopInlineSizeWarning')) {
+            if(await CoreNote.confirm("A certain asset is above 5 MB. Mobile devices may not like this. <b style=\"color: white\">Do you want to skip this asset?</b> <br><br> <a onclick=\"document.querySelector('.alert_overlay .no').click(); sessionStorage.setItem('v-stopInlineSizeWarning', true)\"> Stop this warning for now and load all assets </a> <br> <a onclick=\"document.querySelector('.alert_overlay .yes').click(); sessionStorage.setItem('v-dontLoadOver5', true)\">Stop this warning for now, but skip loading all assets over >5 MB</a>.")) {
+                cardAssets[id] = null;
+                continue;
+            }
+        }
 
         const bytes = await file.async("uint8array");
 
@@ -488,11 +504,11 @@ async function createCardAssets(cardZipFiles) {
         });
 
         const url = URL.createObjectURL(blob);
-        console.log();
-
+        
         console.log(`Created blob for ${file.name} at ${url}`);
-
+        
         cardAssets[id] = url;
+
     }
     sessionStorage.removeItem("v-storageConcerns");
 }
@@ -690,7 +706,7 @@ function initCardSet() {
 
     setCard(currentIndex);
 	cardsBackUp = structuredClone(cardSet.json.cards);
-    
+
     endLoad();
 }
 

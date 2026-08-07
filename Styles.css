@@ -455,6 +455,17 @@ input:hover:not(:focus):not(:active) {
     transform: scale(1.05);
 }
 
+.loader {
+    background-color: black;
+    transition: all 0.5s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999 !important; /* Less than alert_overlay */
+}
+
 .alert_overlay {
     position: fixed;
     inset: 0;
@@ -472,8 +483,8 @@ input:hover:not(:focus):not(:active) {
     margin-right: 2vw;
     background: rgb(45, 45, 45);
     color: white;
-     min-width: 300px;
-    max-width: 500px; 
+    min-width: 50vw;
+    max-width: 80vw; 
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);

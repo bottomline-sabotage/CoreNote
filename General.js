@@ -278,8 +278,10 @@ class CoreNote {
     static prompt(text) {
         // THIS SHOULDN'T HAPPEN, but just in case...
         if(CoreNote.lock) {
-            console.error("Failed to acquire the alert/prompt lock");
-            return window.prompt(text);
+            console.error("Failed to acquire the alert/prompt/confirm lock");
+            new Promise((resolve) => {
+                resolve(window.prompt(text))
+            });
         }
 
         CoreNote.lock = true;
@@ -289,6 +291,10 @@ class CoreNote {
                 const overlay = document.createElement('div');
                 overlay.className = "alert_overlay";
                 overlay.style.opacity = 0;
+
+                if(document.querySelector('.loader')) {
+                    overlay.style.backgroundColor = 'black';
+                }
         
                 overlay.innerHTML = `
                     <div class="alert_overlay">
@@ -334,7 +340,7 @@ class CoreNote {
     static alert(text) {
         // THIS SHOULDN'T HAPPEN, but just in case...
         if(CoreNote.lock) {
-            console.error("Failed to acquire the alert/prompt lock");
+            console.error("Failed to acquire the alert/prompt/confirm lock");
             window.alert(text);
             return;
         }
@@ -346,6 +352,10 @@ class CoreNote {
             overlay.className = "alert_overlay";
             overlay.style.opacity = 0;
     
+            if(document.querySelector('.loader')) {
+                overlay.style.backgroundColor = 'black';
+            }
+
             overlay.innerHTML = `
                 <div class="alert_overlay">
                     <div class="alert_box">
@@ -375,4 +385,72 @@ class CoreNote {
 
     }
     
+    static confirm(text) {
+        // THIS SHOULDN'T HAPPEN, but just in case...
+        if(CoreNote.lock) {
+            console.error("Failed to acquire the alert/prompt/confirm lock");
+            new Promise((resolve) => {
+                resolve(window.confirm(text))
+            });
+            return;
+        }
+
+        CoreNote.lock = true;
+
+        return new Promise((resolve, reject) => {
+            try {
+                const overlay = document.createElement('div');
+                overlay.className = "alert_overlay";
+                overlay.style.opacity = 0;
+
+                if(document.querySelector('.loader')) {
+                    overlay.style.backgroundColor = 'black';
+                }
+        
+                overlay.innerHTML = `
+                    <div class="alert_overlay">
+                        <div class="alert_box">
+                                <p>${text}</p>
+                                <button class="yes">Yes</button>
+                                <button class="no">No</button>
+                        </div>
+                    </div>
+                
+                `;
+        
+                document.body.appendChild(overlay);
+                setTimeout(() => {
+                    overlay.style.opacity = 1;
+                }, 50);
+    
+
+                overlay.querySelectorAll('button').forEach((el) => {
+                    el.onclick = () => {
+                        overlay.style.opacity = 0;
+                        setTimeout(() => {
+                            overlay.remove();
+                        }, 1000);
+                        CoreNote.lock = false;
+
+                        resolve(el.className == "yes");
+                    };
+                });
+            } catch (err) {
+                console.error(err);
+                CoreNote.lock = false;
+            }
+        });
+
+        
+    }
+    
+    static killOverlay() {
+        document.querySelectorAll('.alert_overlay').forEach((overlay) => {
+            overlay.style.opacity = 0;
+            setTimeout(() => {
+                overlay.remove();
+            }, 1000);
+        });
+        CoreNote.lock = false;
+    }
 }
