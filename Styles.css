@@ -489,3 +489,8 @@ input:hover:not(:focus):not(:active) {
     color: white;
     border-width: 2px;
 }
+
+#html_raw_edit textarea {
+    background-color: black;
+    border-color: gray;
+}
