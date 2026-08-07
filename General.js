@@ -306,7 +306,11 @@ class CoreNote {
                     overlay.style.opacity = 1;
                 }, 50);
 
-                overlay.querySelector('textarea').focus();
+
+                overlay.querySelector('textarea').scroll();
+                setTimeout(() => {
+                    overlay.querySelector('textarea').focus();
+                }, 300);
         
                 overlay.querySelector('button').onclick = () => {
                     overlay.style.opacity = 0;
