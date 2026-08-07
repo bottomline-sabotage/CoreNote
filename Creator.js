@@ -997,8 +997,6 @@ function loadCategoriesToSettings() {
             return;
         }
 
-        console.log(name);
-
         const rename = document.createElement('a');
         rename.textContent = "Rename";
         rename.style.marginRight = "6px";
