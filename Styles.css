@@ -459,18 +459,21 @@ input:hover:not(:focus):not(:active) {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    /* display: flex; */
+    /* justify-content: center;
+    align-items: center; */
     z-index: 9999;
     transition: opacity 0.2s ease;
 }
 
 .alert_box {
+    margin-top: 15vh;
+    margin-left: 2vw;
+    margin-right: 2vw;
     background: rgb(45, 45, 45);
     color: white;
-    min-width: 300px;
-    max-width: 500px;
+    /* min-width: 300px;
+    max-width: 500px; */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
