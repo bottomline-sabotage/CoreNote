@@ -505,3 +505,15 @@ input:hover:not(:focus):not(:active) {
     background-color: black;
     border-color: gray;
 }
+
+.coloredtext {
+  color: inherit;
+}
+
+.coloredtext:is(.coloredtext .coloredtext) {
+    color: var(--coloredtext-color);
+}
+
+div {
+    color: inherit;
+}

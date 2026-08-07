@@ -1159,7 +1159,7 @@ function sameFormatting(a, b) {
     return true;
 }
 
-function removeFormatting(wrapper, range) {fdsa
+function removeFormatting(wrapper, range) {
     const selection = window.getSelection();
 
     // Preserve the original selection
@@ -1351,66 +1351,53 @@ document.querySelector("#underline_text").addEventListener("pointerdown", (e) =>
 document.querySelector("#color_text").addEventListener("pointerdown", async (e) => {
     e.preventDefault();
 
-    const sel = window.getSelection();
-    const editor = document.activeElement;
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
 
-    const popup = createPopup(`
-        <h1>Color Style</h1>
-        <input id="color_text_input" type="color" style="opacity: 0; height: 0vh; overflow: hidden; "><br>
-        <a id="color_pick">Pick a Color</a><br><br>
-        <a>Cancel</a>
-    `);
+    document.querySelectorAll('.color_texter').forEach((el ) => {
+        el.remove();
+    })
 
-    popup.style.opacity = 0;
-    document.body.append(popup);
-    setTimeout(() => {
-        popup.style.opacity = 1;
-    }, 50);
+    const color = document.createElement('input');
+    color.type = "color";
+    color.className = "color_texter";
+    color.style.position = "fixed";
+    color.style.left = "50%"; 
+    color.style.transform = "translate(-50%)"; 
+    color.style.top = "10px";
+    color.value = document.querySelector("#color_text").style.color;
+
+    const cancel = () => {
+        color.remove();
+    };
+
+    color.onchange = () => {    
+        const wrap = document.createElement('span');
+        wrap.className = 'coloredtext';
+        wrap.style.setProperty('--coloredtext-color', color.value);
+        document.querySelector("#color_text").style.color = color.value;
     
-    await sleep(500);
+        try {
+            range.surroundContents(wrap);
+        } catch (err) {
+            wrap.appendChild(range.extractContents());
+            range.insertNode(wrap);
+        };    
 
-    document.addEventListener('pointerdown', function fds (e) {
-        if(e.target.id == "color_text_input") {
-            return;
-        }
+        cancel();
+    }
 
-        if(e.target.id == "color_pick") {
-            const colorInput = document.querySelector("#color_text_input");
+    color.oncancel = cancel;  
+    color.onabort = cancel;
 
-            colorInput.addEventListener("change", function onChange() {
-                
-                const el = document.createElement("coloredText");
-                el.style.color = `${colorInput.value}`;
-                document.querySelector("#color_text").style.color = el.style.color;
+    document.body.append(color);
 
-                console.log(el);
-
-                inlineFormattingManager(el, sel, editor);
-
-                
-                document.removeEventListener('pointerdown', fds);
-                colorInput.removeEventListener("change", onChange);
-                
-                popup.style.opacity = 0;
-                setTimeout(() => {
-                    popup.remove();
-                }, 500);
-            });
-
-            colorInput.click();
-        } else {
-            popup.style.opacity = 0;
-            setTimeout(() => {
-                popup.remove();
-            }, 500);
-
-            document.removeEventListener('pointerdown', fds);
-        }
-    });
+    color.focus();
+    color.showPicker(); 
 });
 
 document.querySelector("#highlight_text").addEventListener("pointerdown", async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
 
     const sel = window.getSelection();
     const editor = document.activeElement;
