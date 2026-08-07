@@ -472,8 +472,8 @@ input:hover:not(:focus):not(:active) {
     margin-right: 2vw;
     background: rgb(45, 45, 45);
     color: white;
-    /* min-width: 300px;
-    max-width: 500px; */
+     min-width: 300px;
+    max-width: 500px; 
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.5);
