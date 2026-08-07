@@ -255,7 +255,7 @@ function createCardDialogue() {
             const file = renameFile(theFile, `${crypto.randomUUID()}`);
 
             if(file.size > 5e+6)
-                window.alert("This file is really large (>5MB). While we will let you use it, just note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
+                CoreNote.alert("This file is really large (>5MB). While we will let you use it, just note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
 
             let el;
 
@@ -383,7 +383,7 @@ function createCardDialogue() {
             const input = document.querySelector("#asset_upload");
             if(!localStorage.getItem("c-hadAssetPrompt")) {
                 localStorage.setItem("c-hadAssetPrompt", true);
-                // window.alert("");
+                // CoreNote.alert("");
             }
 
             input.value = null;
@@ -409,8 +409,8 @@ function createCardDialogue() {
         } else {
             rating.textContent = "+ Rating";
         }
-        rating.onclick = () => {
-            const input = window.prompt("Enter Star Difficulty Rating (0-5, zero being easy, 5 being HARD)");
+        rating.onclick = async () => {
+            const input = await CoreNote.prompt("Enter Star Difficulty Rating (0-5, zero being easy, 5 being HARD)");
             let value = parseFloat(input);
 
             if(Number.isNaN(value)) {
@@ -555,8 +555,8 @@ function createCardDialogue() {
         const newCategory = document.createElement('a');
         newCategory.textContent = "New Category";
         newCategory.style.color = "blue";
-        newCategory.onclick = () => {
-            const ans = window.prompt("New Category");
+        newCategory.onclick = async () => {
+            const ans = await CoreNote.prompt("New Category");
             if(!ans) return;
             categories.push(ans);
             loadCategoriesToSettings();
@@ -715,7 +715,7 @@ function generateJson() {
     data.cards = [];
 
     if(document.querySelectorAll(".cardDialogue").length < 1) {
-        // window.alert("You have no cards to save.");
+        // CoreNote.alert("You have no cards to save.");
         return undefined;
     }
 
@@ -775,7 +775,7 @@ async function save() {
     callLoad();
 
     if(document.querySelectorAll(".cardDialogue").length < 1) {
-        window.alert("You have no cards to save.");
+        CoreNote.alert("You have no cards to save.");
         endLoad();
         return;
     }
@@ -789,7 +789,7 @@ async function save() {
     const promises = [];
 
     if(document.querySelectorAll(".uploaded_asset").length > window.HIGH_ASSET_COUNT) {
-        window.alert("This card set has a lot of assets (>20). Note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
+        CoreNote.alert("This card set has a lot of assets (>20). Note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
         window.alreadyHadSizeWarning = true;
     }
 
@@ -923,7 +923,7 @@ async function uploadSet() {
         }
 	} catch (err) {
 		console.error(err);
-		window.alert("Failed to load set. Please upload another.");
+		CoreNote.alert("Failed to load set. Please upload another.");
         cover.style.cssText = "opacity: 0; padding: 0px; max-height: 0vh;";
         endLoad();
         return;
@@ -1002,8 +1002,8 @@ function loadCategoriesToSettings() {
         const rename = document.createElement('a');
         rename.textContent = "Rename";
         rename.style.marginRight = "6px";
-        rename.onclick = () => {
-            const prompt = window.prompt("Rename");
+        rename.onclick = async () => {
+            const prompt = await CoreNote.prompt("Rename");
             if(!prompt) return;
             categories[index] = prompt;
             refreshCategories(index);

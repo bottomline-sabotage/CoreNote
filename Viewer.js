@@ -94,7 +94,7 @@ async function showCover() {
         }
 	} catch (err) {
 		console.error(err);
-		window.alert("Failed to load set. Please upload another.");
+		CoreNote.alert("Failed to load set. Please upload another.");
         cover.style.cssText = "opacity: 0; padding: 0px; max-height: 0vh;";
         return;
 	}
@@ -139,7 +139,7 @@ async function combineMore() {
             cardZip = await JSZip.loadAsync(file);
             set.json = JSON.parse(await cardZip.file("data.json").async("string"));	
             if(usedIds.includes(set.json.id)) {
-                window.alert("You already have this set uploaded");
+                CoreNote.alert("You already have this set uploaded");
                 continue;
             }
             // for(let i = 0; i < set.json.cards.length; i++) {
@@ -148,7 +148,7 @@ async function combineMore() {
             usedIds.push(set.json.id);
         } catch (err) {
             console.error(err);
-            window.alert("Failed to load set. Please upload another.");
+            CoreNote.alert("Failed to load set. Please upload another.");
             cover.style.cssText = "opacity: 0; padding: 0px; max-height: 0vh;";
             return;
         }
@@ -453,7 +453,7 @@ async function load() {
             }
 
             if(Object.entries(cardAssets).length > window.HIGH_ASSET_COUNT && !window.alreadyHadSizeWarning) {
-                window.alert("This card set has a lot of assets. Some devices might not keep up.");
+                CoreNote.alert("This card set has a lot of assets. Some devices might not keep up.");
                 window.alreadyHadSizeWarning = true;
             }
         }
@@ -743,7 +743,7 @@ function setCard(index) {
 }
 
 function showHelpPopup(text) {
-    window.alert(text);
+    CoreNote.alert(text);
 }
 
 function showCard() {
@@ -851,7 +851,7 @@ function showCard() {
     }
 	
 	// Wrong previously reminder
-	// window.alert(JSON.stringify(answerSorting_missedCards));
+	// CoreNote.alert(JSON.stringify(answerSorting_missedCards));
 	const wrongAnswerReminder = document.querySelector("#wrong_answer");
 	if(settings.answerSorting && answerSorting_missedCards.includes(currentCard.index)) {
 		wrongAnswerReminder.style.opacity = 1;
@@ -1085,14 +1085,14 @@ function explanation() {
     showHelpPopup(currentCard.explanation);
 }
 
-function comment() {
+async function comment() {
     // isCommenting = false;
 
     let comments = {};
     if(localStorage.getItem(`V_comments-${cardSet.json.id}`)) {
         comments = JSON.parse(localStorage.getItem(`V_comments-${cardSet.json.id}`));
     }
-    const commentingStr = window.prompt("Enter your comment (leave blank to remove any current comment)");
+    const commentingStr = await CoreNote.prompt("Enter your comment (leave blank to remove any current comment)");
 
 
     if(commentingStr.trim().length == "") {

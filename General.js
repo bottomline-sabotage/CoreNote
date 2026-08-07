@@ -270,3 +270,105 @@ function endLoad() {
         }, 500);
     });
 }
+
+class CoreNote {
+    static lock = false;
+    
+    
+    static prompt(text) {
+        // THIS SHOULDN'T HAPPEN, but just in case...
+        if(CoreNote.lock) {
+            console.error("Failed to acquire the alert/prompt lock");
+            return window.prompt(text);
+        }
+
+        CoreNote.lock = true;
+
+        return new Promise((resolve, reject) => {
+            try {
+                const overlay = document.createElement('div');
+                overlay.className = "alert_overlay";
+                overlay.style.opacity = 0;
+        
+                overlay.innerHTML = `
+                    <div class="alert_overlay">
+                        <div class="alert_box">
+                                <p>${text}</p>
+                                <textarea></textarea> <br>
+                                <button>OK</button>
+                        </div>
+                    </div>
+                
+                `;
+        
+                document.body.appendChild(overlay);
+                setTimeout(() => {
+                    overlay.style.opacity = 1;
+                }, 50);
+
+                overlay.querySelector('textarea').focus();
+        
+                overlay.querySelector('button').onclick = () => {
+                    overlay.style.opacity = 0;
+                    setTimeout(() => {
+                        overlay.remove();
+                    }, 1000);
+                    CoreNote.lock = false;
+
+                    resolve(overlay.querySelector('textarea').value);
+                    return;
+                }
+            } catch (err) {
+                reject(err);
+                console.error(err);
+                CoreNote.lock = false;
+            }
+        });
+
+    }
+
+    static alert(text) {
+        // THIS SHOULDN'T HAPPEN, but just in case...
+        if(CoreNote.lock) {
+            console.error("Failed to acquire the alert/prompt lock");
+            window.alert(text);
+            return;
+        }
+
+        CoreNote.lock = true;
+
+        try {
+            const overlay = document.createElement('div');
+            overlay.className = "alert_overlay";
+            overlay.style.opacity = 0;
+    
+            overlay.innerHTML = `
+                <div class="alert_overlay">
+                    <div class="alert_box">
+                            <p>${text}</p>
+                            <button>OK</button>
+                    </div>
+                </div>
+            
+            `;
+    
+            document.body.appendChild(overlay);
+            setTimeout(() => {
+                overlay.style.opacity = 1;
+            }, 50);
+    
+            overlay.querySelector('button').onclick = () => {
+                overlay.style.opacity = 0;
+                setTimeout(() => {
+                    overlay.remove();
+                }, 1000);
+                CoreNote.lock = false;
+            }
+        } catch (err) {
+            console.error(err);
+            CoreNote.lock = false;
+        }
+
+    }
+    
+}
