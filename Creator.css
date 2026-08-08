@@ -161,7 +161,10 @@ textarea::placeholder, .editable_div::placeholder {
     height: 0vh;
     transition: height 0.5s ease, opacity 2.0s ease;
     align-content: center;
+}
 
+#html_raw_edit > textarea {
+    min-height: 70%;
 }
 
 .editable_div > * {
