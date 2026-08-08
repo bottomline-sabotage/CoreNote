@@ -1573,7 +1573,7 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
 
         document.querySelector("#html_raw_edit_desc").innerHTML = "Math Editor, <a href=\"https://www.overleaf.com/learn/latex/Mathematical_expressions\">see this guide</a>";
 
-        holder.style.height = "70vh";
+        holder.style.height = "fit-content";
         inMathMode = true;
 
         mathEditFor.contentEditable = false;
@@ -1661,7 +1661,7 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
 
         document.querySelector("#html_raw_edit_desc").innerHTML = "HTML Editor";
 
-        holder.style.height = "70vh";
+        holder.style.height = "fit-content";
         htmlEditMode = true;
 
         htmlEditFor.contentEditable = false;
