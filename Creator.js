@@ -1613,7 +1613,7 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
     document.querySelector("#math_preview").innerHTML = "";
 
     function change () {
-        htmlEditFor.innerHTML = String(editor.value).replaceAll('\n', "<br>");
+        // htmlEditFor.innerHTML = String(editor.value).replaceAll('\n', "<br>");
 
         // try {
         //     renderMathInElement(htmlEditFor);
