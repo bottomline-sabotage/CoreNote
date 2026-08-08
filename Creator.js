@@ -1348,139 +1348,143 @@ document.querySelector("#underline_text").addEventListener("pointerdown", (e) =>
     inlineFormattingManager(el);
 });
 
-document.querySelector("#color_text").addEventListener("pointerdown", async (e) => {
-    e.preventDefault();
+// document.querySelector("#color_text").addEventListener("pointerdown", async (e) => {
+//     e.preventDefault();
 
-    const selection = window.getSelection();
-    const range = selection.getRangeAt(0);
+//     const selection = window.getSelection();
+//     const range = selection.getRangeAt(0);
 
-    document.querySelectorAll('.color_texter').forEach((el ) => {
-        el.remove();
-    })
+//     document.querySelectorAll('.color_texter').forEach((el ) => {
+//         el.remove();
+//     })
 
-    const color = document.createElement('input');
-    color.type = "color";
-    color.className = "color_texter";
-    color.style.position = "fixed";
-    color.style.left = "50%"; 
-    color.style.transform = "translate(-50%)"; 
-    color.style.top = "10px";
-    color.value = document.querySelector("#color_text").style.color;
+//     const color = document.createElement('input');
+//     color.type = "color";
+//     color.className = "color_texter";
+//     color.style.position = "fixed";
+//     color.style.left = "50%"; 
+//     color.style.transform = "translate(-50%)"; 
+//     color.style.top = "10px";
+//     color.value = document.querySelector("#color_text").style.color;
 
-    const cancel = () => {
-        color.remove();
-    };
+//     const cancel = () => {
+//         color.remove();
+//     };
 
-    color.onchange = () => {    
-        const wrap = document.createElement('span');
-        wrap.className = 'coloredtext';
-        wrap.style.setProperty('--coloredtext-color', color.value);
-        document.querySelector("#color_text").style.color = color.value;
+//     color.onchange = () => {    
+//         const wrap = document.createElement('span');
+//         wrap.className = 'coloredtext';
+//         wrap.style.setProperty('--coloredtext-color', color.value);
+//         document.querySelector("#color_text").style.color = color.value;
     
-        try {
-            range.surroundContents(wrap);
-        } catch (err) {
-            wrap.appendChild(range.extractContents());
-            range.insertNode(wrap);
-        };    
+//         try {
+//             range.surroundContents(wrap);
+//         } catch (err) {
+//             wrap.appendChild(range.extractContents());
+//             range.insertNode(wrap);
+//         };    
 
-        cancel();
-    }
+//         cancel();
+//     }
 
-    color.oncancel = cancel;  
-    color.onabort = cancel;
+//     color.oncancel = cancel;  
+//     color.onabort = cancel;
 
-    document.body.append(color);
+//     document.body.append(color);
 
-    color.focus();
-    color.showPicker(); 
-});
+//     color.focus();
+//     color.showPicker(); 
+// });
 
 document.querySelector("#highlight_text").addEventListener("pointerdown", async (e) => {
     e.preventDefault();
 
-    const sel = window.getSelection();
-    const editor = document.activeElement;
+    const el = document.createElement('span');
+    el.className = 'highlighter';
+    inlineFormattingManager(el);
 
-    const popup = createPopup(`
-        <h1>Highlight Style</h1>
-        <input id="highlight_pick_input" type="color" style="opacity: 0; height: 0vh; overflow: hidden; "><br>
-        <a id="highlight_pick">Pick a Color</a><br><br>
-        <a id="highlight_pick-none">None</a><br><br>
-        <a >Cancel</a>
-    `);
+    // const sel = window.getSelection();
+    // const editor = document.activeElement;
 
-    popup.style.opacity = 0;
-    document.body.append(popup);
-    setTimeout(() => {
-        popup.style.opacity = 1;
-    }, 50);
+    // const popup = createPopup(`
+    //     <h1>Highlight Style</h1>
+    //     <input id="highlight_pick_input" type="color" style="opacity: 0; height: 0vh; overflow: hidden; "><br>
+    //     <a id="highlight_pick">Pick a Color</a><br><br>
+    //     <a id="highlight_pick-none">None</a><br><br>
+    //     <a>Cancel</a>
+    // `);
+
+    // // popup.style.opacity = 0;
+    // // document.body.append(popup);
+    // // setTimeout(() => {
+    // //     popup.style.opacity = 1;
+    // // }, 50);
     
-    await sleep(500);
+    // // await sleep(500);
 
-    document.addEventListener('pointerdown', function fds (e) {
-        if(e.target.id == "color_text_input") {
-            return;
-        }
+    // // document.addEventListener('pointerdown', function fds (e) {
+    // //     if(e.target.id == "color_text_input") {
+    // //         return;
+    // //     }
 
-        if(e.target.id == "highlight_pick") {
-            const highlightInput = document.querySelector("#highlight_pick_input");
+    // //     if(e.target.id == "highlight_pick") {
+    // //         const highlightInput = document.querySelector("#highlight_pick_input");
 
-            highlightInput.addEventListener("change", function onChange() {
+    // //         highlightInput.addEventListener("change", function onChange() {
                 
-                const el = document.createElement("highlight");
-                el.className = "highlighter";
-                el.style.backgroundColor = `${highlightInput.value}`;
-                document.querySelector("#highlight_text").style.backgroundColor = el.style.color; // TODO: alpha
+    // //             const el = document.createElement("highlight");
+    // //             el.className = "highlighter";
+    // //             el.style.backgroundColor = `${highlightInput.value}`;
+    // //             document.querySelector("#highlight_text").style.backgroundColor = el.style.color; // TODO: alpha
 
-                inlineFormattingManager(el, sel, editor);
+    // //             inlineFormattingManager(el, sel, editor);
 
                 
-                document.removeEventListener('pointerdown', fds);
+    // //             document.removeEventListener('pointerdown', fds);
 
 
-                highlightInput.removeEventListener("change", onChange);
-                popup.style.opacity = 0;
-                setTimeout(() => {
-                    popup.remove();
-                }, 500);
-            });
+    // //             highlightInput.removeEventListener("change", onChange);
+    // //             popup.style.opacity = 0;
+    // //             setTimeout(() => {
+    // //                 popup.remove();
+    // //             }, 500);
+    // //         });
 
-            highlightInput.click();
-        } else if(e.target.id == "highlight_pick-none") {
-            const el = document.createElement("highlighter");
-            el.className = "highlighter";
-            el.style.backgroundColor = ``;
-            document.querySelector("#highlight_text").style.backgroundColor = "";
+    // //         highlightInput.click();
+    // //     } else if(e.target.id == "highlight_pick-none") {
+    // //         const el = document.createElement("highlighter");
+    // //         el.className = "highlighter";
+    // //         el.style.backgroundColor = ``;
+    // //         document.querySelector("#highlight_text").style.backgroundColor = "";
 
-            popup.style.opacity = 0;
-            setTimeout(() => {
-                popup.remove();
-            }, 500);
+    // //         popup.style.opacity = 0;
+    // //         setTimeout(() => {
+    // //             popup.remove();
+    // //         }, 500);
 
-            inlineFormattingManager(el, sel, editor);
-        } else {
-            popup.style.opacity = 0;
-            setTimeout(() => {
-                popup.remove();
-            }, 500);
+    // //         inlineFormattingManager(el, sel, editor);
+    // //     } else {
+    // //         popup.style.opacity = 0;
+    // //         setTimeout(() => {
+    // //             popup.remove();
+    // //         }, 500);
 
-            document.removeEventListener('pointerdown', fds);
-        }
-    });
+    // //         document.removeEventListener('pointerdown', fds);
+    // //     }
+    // });
 
-    // const colorInput = document.querySelector("#highlight_text_input");
+    //     // const colorInput = document.querySelector("#highlight_text_input");
 
-    // colorInput.addEventListener("change", function onChange() {
-    //     colorInput.removeEventListener("change", onChange);
+    //     // colorInput.addEventListener("change", function onChange() {
+    //     //     colorInput.removeEventListener("change", onChange);
 
-    //     const el = document.createElement("span");
-    //     el.className = "highlighter";
-    //     el.style.backgroundColor = `${colorInput.value}`;
-    //     inlineFormattingManager(el);
-    // }, { once: true });
+    //     //     const el = document.createElement("span");
+    //     //     el.className = "highlighter";
+    //     //     el.style.backgroundColor = `${colorInput.value}`;
+    //     //     inlineFormattingManager(el);
+    //     // }, { once: true });
 
-    // colorInput.click();
+    //     // colorInput.click();
 });
 
 // Math and HTML are different

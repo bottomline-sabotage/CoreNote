@@ -386,13 +386,15 @@ hr {
 
 .dropdown a:hover {background-color: #ddd;}
 
-.highlighter:not(:has(.highlighter)) {
+/* .highlighter:not(:has(.highlighter)) {
     padding: 5px;
     border-radius: 3px;
-}
-
-.highlighter:has(.highlighter) {
-    background: transparent !important;
+    } */
+    
+.highlighter /*:has(.highlighter)*/ {
+    padding: 5px;
+    border-radius: 3px;
+    background-color: rgba(251, 255, 0, 0.637);
 }
 
 /* .highlighter {
@@ -506,13 +508,13 @@ input:hover:not(:focus):not(:active) {
     border-color: gray;
 }
 
-.coloredtext {
+/* .coloredtext {
   color: inherit;
 }
 
 .coloredtext:is(.coloredtext .coloredtext) {
     color: var(--coloredtext-color);
-}
+} */
 
 div {
     color: inherit;
