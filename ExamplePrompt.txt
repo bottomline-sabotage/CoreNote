@@ -1,8 +1,8 @@
 Note: if this ever implemented, it will be outside of the app mostly. The user would press a button to say "I wanna use AI," they will paste this prompt over to GPT, then pasting what it returns back.
 
-Write a formatted (format illustrated below) online flash card set from the attached file.
+Write a formatted (format illustrated below) online flash card set from the attached file/prompt.
 
-The format is JSON. Since it's JSON, I will describe the keys, ranges, descriptions, etc. as something like `"key": FLOAT - RANGING FROM 1 THROUGH 5 DOING XYZ`. If it's in strict uppercase, it's a placeholder. Also note that I include inline comments in my examples, as well as '...'. Do not do that in your generated JSON.
+The format of the card is JSON. Since it's JSON, I will describe the keys, ranges, descriptions, etc. as something like `"key": FLOAT - RANGING FROM 1 THROUGH 5 DOING XYZ`. If it's in strict uppercase, it's a placeholder. Also note that I include inline comments in my examples, as well as '...'. Do not do that in your generated JSON.
 
 You start the file with its metadata:
 ```json
@@ -53,3 +53,5 @@ If the response is too large, tell the user in a short, concise paragraph. When 
 Be sure to end the JSON structure with a comma at the very end, unless if it's the last card of the last part.
 
 Do the same for the next parts. After the end of each part's JSON, be sure to remind the user that they have to request the next part. Say something like "Tell me when you're ready for the next part!" When it's over, tell the user. The user will not have combine this manually, the flash card app will, which is why the metadata is separate. Reminder that you should try to make the different parts as large as possible. It's better to have 3 larger parts, than 7 smaller ones. This is why parts should be based on how much content can physically fit rather than topic.
+
+Make sure your JSON is valid (plain text characters, escape special characters, etc.).
