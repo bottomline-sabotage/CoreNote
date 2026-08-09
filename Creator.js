@@ -405,7 +405,7 @@ function createCardDialogue() {
         if(document.querySelector(`#card-${index} .star_rating`)) {
             rating.textContent = `Change Rating (${document.querySelector(`#card-${index} .star_rating`).textContent})`;
         } else {
-            rating.textContent = "+ Rating";
+            rating.textContent = "Add Rating";
         }
         rating.onclick = async () => {
             const input = await CoreNote.prompt("Enter Star Difficulty Rating (0-5, zero being easy, 5 being HARD)");
@@ -717,7 +717,7 @@ function generateJson() {
         return undefined;
     }
 
-    // // Save the LaTeX other than the formatted math
+    // Save the LaTeX other than the formatted math
     // document.querySelectorAll(".inline_math_friend").forEach((el) => {
     //     const temp = el.innerHTML; // Move rendered to text
     //     el.innerHTML = el.title; // Move latex to innerHTML
@@ -745,15 +745,16 @@ function generateJson() {
 
         let randomEntries = [];
         if(isUsingRandom) {
-            randomEntries = Array.from(front.childNodes);
-            for(let i = randomEntries.length - 1; i >= 0; i--) {
-                if(!randomEntries[i].innerHTML || String(randomEntries[i].innerHTML).toLowerCase() == '<br>' ) {
-                    randomEntries.splice(i, 1);
-                    continue;
-                }
+            // randomEntries = Array.from(front.childNodes);
+            // for(let i = randomEntries.length - 1; i >= 0; i--) {
+            //     if(!randomEntries[i].innerHTML || String(randomEntries[i].innerHTML).toLowerCase() == '<br>' ) {
+            //         randomEntries.splice(i, 1);
+            //         continue;
+            //     }
 
-                randomEntries[i] = prettify(randomEntries[i].innerHTML);
-            }
+            //     randomEntries[i] = prettify(randomEntries[i].innerHTML);
+            // }
+            randomEntries = String(front.innerHTML).replaceAll('\n', '<br>').split("<br>");
         }
         
         data.cards.push(createCardObject(isUsingRandom, categoryIndex, explanation.value || "", hint.value || "", !isUsingRandom ? prettify(front.innerHTML) : randomEntries, prettify(back.innerHTML), ratingNumber));

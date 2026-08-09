@@ -510,3 +510,7 @@ input:hover:not(:focus):not(:active) {
 div {
     color: inherit;
 }
+
+#settings-auto_scroll-time {
+    max-width: 250px;
+}
