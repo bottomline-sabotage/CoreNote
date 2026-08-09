@@ -58,6 +58,20 @@
             border-radius: 5px;
         }
     </style>
+
+    <script>
+        const foo = () => {
+            if(localStorage.getItem("e-emergencyBackup")) {
+                document.querySelector("#emergency_backup_holder").style.display = "inline";
+            } else {
+                document.querySelector("#emergency_backup_holder").style.display = "none";
+            }
+        };
+
+
+        window.addEventListener('load', foo);
+        window.addEventListener('pageshow', foo);
+    </script>
 </head>
 <body>
     <div id="submit_phase" style="max-width: 800px; margin: auto auto;">       
@@ -76,7 +90,7 @@
 
         <div style="height: 3vh;"></div>
 
-        <div id="emergency_backup_holder" >
+        <div id="emergency_backup_holder" style="display: none;">
             <hr>
     
             <label>You've made a set previously but we don't know if you saved it. For the most part, everything (except for its assets, like images) should still be preserved. <b>Note:</b> by not selecting this, the backup will be. </label><br>
@@ -254,15 +268,6 @@
     <script src="Creator.js"> </script>
 
     <script>
-        document.addEventListener('pageshow', () => {
-            console.log("fds")
-            if(localStorage.getItem("e-emergencyBackup")) {
-                document.querySelector("#emergency_backup_holder").style.display = "inline";
-            } else {
-                document.querySelector("#emergency_backup_holder").style.display = "none";
-            }
-        });
-
         function start() {
             setTimeout(() => {
                 console.log("Cleared emergency backup");
