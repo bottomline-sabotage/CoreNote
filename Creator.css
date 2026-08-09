@@ -60,7 +60,8 @@ textarea:not(.alert_overlay textarea), .editable_div {
 }
 
 .cardDialogue {
-    margin: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
     background-color: rgb(150, 150, 150);
     border-radius: 5px;
     border-width: 4px;
@@ -68,9 +69,12 @@ textarea:not(.alert_overlay textarea), .editable_div {
     color: black;
     padding: 10px;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
-    
-
     transition: opacity 0.3s ease;
+
+    margin-left: auto;
+    overflow-x: auto;
+    min-width: 250px;
+    max-width: 900px;
 }
 
 .cardDialogue > * {
