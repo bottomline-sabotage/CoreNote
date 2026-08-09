@@ -45,7 +45,7 @@
         <h1>Import your Study Set</h1>
         <span class="note">CoreNote Set files use the file extension <i>.corenote</i>.<br><b>Please only use sets from trusted sources</b>.</span><br><br>
         <input type="file" accept=".corenote" id="file_input" style="display: none;"><br>
-        <button onclick="document.querySelector('#more_file_input').input = null; document.querySelector('#file_input').input = null; document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', function change () { showCover(); document.querySelector('#file_input').removeEventListener('change', change); })">Upload</button><br>
+        <button tabindex="1" onclick="document.querySelector('#more_file_input').input = null; document.querySelector('#file_input').input = null; document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', function change () { showCover(); document.querySelector('#file_input').removeEventListener('change', change); })">Upload</button><br>
         
         <div style="height: 1vh;"></div>
         
@@ -58,7 +58,7 @@
             <b>Unit Info</b>: <span id="cover-unit_info">~</span><br>
             <b>Author</b>: <span id="cover-author">~</span><br>
             <b>Generation Date</b>: <span id="cover-date">~</span><br><br>
-            <button onclick="submitStart()">Start</button><br>
+            <button onclick="submitStart()" tabindex="2">Start</button><br>
             <div>
                 <input type="file" accept=".corenote" id="more_file_input" multiple style="display: none;"><br>
                 <label class="note" style="pointer-events: all;">If you want to review multiple sets at once, you <a onclick="document.querySelector('#more_file_input').input = null; document.querySelector('#more_file_input').click(); document.querySelector('#more_file_input').addEventListener('change', function change() { combineMore(); document.querySelector('#more_file_input').removeEventListener('change', change); })"> can upload more here</a>.</label>
@@ -68,7 +68,7 @@
       
          <div style="height: 1vh;"></div>
       
-        <button onclick="window.location.href = 'index.html'">Exit</button><br><br>
+        <button onclick="window.location.href = 'index.html'" tabindex="3">Exit</button><br><br>
 
         <div style="display:none;background:#8B0000;border:4px solid #FFD700;border-radius:10px;padding:16px 24px;text-align:center;font-family:Arial,Helvetica,sans-serif;box-shadow:0 0 15px rgba(255,0,0,.6);max-width: 60vw;" id="set_error">
             <div style="font-size:42px;font-weight:900;color:#FFFF00;line-height:1;text-shadow:2px 2px #000;">

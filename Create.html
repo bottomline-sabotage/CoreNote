@@ -69,9 +69,9 @@
         <span class="note"><b>Note:</b> In order to save or distribute your set, you must save it first. Do this in the Settings tab.</span><br>
 
         <input type="file" accept=".corenote" id="file_input" style="display: none;"><br>
-        <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { uploadSet(); })">Upload</button>
-        <button onclick="start()">New</button><br><br>
-        <button onclick="window.location.href = 'index.html'">Exit</button>
+        <button onclick="document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', () => { uploadSet(); })" tabindex="1">Upload</button>
+        <button onclick="start()" tabindex="2">New</button><br><br>
+        <button onclick="window.location.href = 'index.html'" tabindex="3" >Exit</button>
         
 
         <div style="height: 3vh;"></div>
@@ -80,7 +80,7 @@
             <hr>
     
             <label>You've made a set previously but we don't know if you saved it. For the most part, everything (except for its assets, like images) should still be preserved. <b>Note:</b> by not selecting this, the backup will be. </label><br>
-            <button onclick="loadFromJson(JSON.parse(localStorage.getItem('e-emergencyBackup'))); start();">Use Emergency Backup</button>
+            <button onclick="loadFromJson(JSON.parse(localStorage.getItem('e-emergencyBackup'))); start();" tabindex="4">Use Emergency Backup</button>
         </div>
         
         <!-- <div class="gray_area" style="opacity: 0; padding: 0px; max-height: 0vh;" id="cover">
@@ -125,7 +125,7 @@
             
         </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between;margin-bottom: 0;"><h2 id="button_info">Info</h2><h2 id="button_cards">Cards</h2><h2 id="button_settings">Settings</h2></div>
+        <div style="display: flex; align-items: center; justify-content: space-between;margin-bottom: 0;"><h2 id="button_info" tabindex="1">Info</h2><h2 id="button_cards" tabindex="2">Cards</h2><h2 id="button_settings" tabindex="3">Settings</h2></div>
 
         <span class="note" id="please_just_click_something" style="display: none; opacity: 0; transition: all 1s ease; margin: 0; padding: 0;">To enter a window (Info, Cards, or Settings), select a tab at the top. If you're just starting, I'd recommend "Info." Whenever you want to save your set, do so in "Settings."<br></span>
 
