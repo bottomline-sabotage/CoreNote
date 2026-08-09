@@ -1,5 +1,3 @@
-Note: if this ever implemented, it will be outside of the app mostly. The user would press a button to say "I wanna use AI," they will paste this prompt over to GPT, then pasting what it returns back.
-
 Write a formatted (format illustrated below) online flash card set from the attached file/prompt.
 
 The format of the card is JSON. Since it's JSON, I will describe the keys, ranges, descriptions, etc. as something like `"key": FLOAT - RANGING FROM 1 THROUGH 5 DOING XYZ`. If it's in strict uppercase, it's a placeholder. Also note that I include inline comments in my examples, as well as '...'. Do not do that in your generated JSON.
@@ -16,6 +14,8 @@ You start the file with its metadata:
     ],
     "cards": [...]
 ```
+
+From here on out, if you don't have an idea for what to put down as some piece of metadata (the class, for example), just leave it blank for the end-user to fill in.
 
 Categories require a further explanation. Categories can be either specific subsections, chapters from a whole, or something more general (like, "Definitions," "The End of WW2," "The Battle of Bunker Hill"). Later, in the cards, you refer to these categories by index. Categories are not required, but are useful for organization.
 
@@ -38,20 +38,18 @@ Next up are the cards. A Card is a specially formatted JSON within an array. The
 
 The Front and the Back are both HTML. Meaning, you can use simple HTML styling, like <i>italics</i> or <b>bold</b>. While all tags are supported, you should keep to simple style-related ones. CSS and JS also work via <style> and <script> tags.
 
-The Front and the Back also support LaTeX math notation, if wrapped in `\\(` and `\\)`. The square root of 2 divided by 3 would be `\\( \\frac{\\sqrt{2}}{3} \\)`; Remember that--in JSON--you have to escape back slashes. There isn't actually two backslashes, it's just one but its escaped.
+The Front and the Back also support LaTeX math notation, if wrapped in `\(` and `\)`. The square root of 2 divided by 3 would be `\( \frac{\sqrt{2}}{3} \)`. REMEMBER, YOU HAVE TO ESCAPE ALL BACKSLASHES IN JSON ("\" WOULD BE "\\"). THIS IS A PART OF VALID JSON.
 
 Use pure ASCII; no not standard characters.
 
-If the response is too large, tell the user in a short, concise paragraph. When you do this, don't leak implementation or technical details. Just be as simple as possible. The user's options would be to either request the first part, the second, and so then eventually have the flash card software itself combine them, the user could ask for a condensed set, or some third option (where the user tells you what they want specifically--like only the examples). If the user picks condensed (or all the content can fit), just give them the JSON. If they want each section separately, have the metadata as its own part. The parts should be based on what content it can fit rather than its topic. Then, the next part just has the JSON objects without the array, but still with commas, like:
-
+If the response would be too large to fit all the needed cards, tell the user in a short, concise paragraph. When you do this, don't leak implementation or technical details. Just be as simple as possible. The user's options would be to either request the first part, the second, and so then eventually have the flash card software itself combine them--Or, the user could ask for a condensed set. If the user picks condensed (or all the content can fit), just give them the JSON. If they want each section separately (aka, option 1), have the metadata as its own part. The parts should be based on what content it can fit rather than its topic. Then, the next part just has the JSON objects without the array, but still with commas, like:
 ```json
 {...},
 {...},
 ...
 ```
-
 Be sure to end the JSON structure with a comma at the very end, unless if it's the last card of the last part.
 
 Do the same for the next parts. After the end of each part's JSON, be sure to remind the user that they have to request the next part. Say something like "Tell me when you're ready for the next part!" When it's over, tell the user. The user will not have combine this manually, the flash card app will, which is why the metadata is separate. Reminder that you should try to make the different parts as large as possible. It's better to have 3 larger parts, than 7 smaller ones. This is why parts should be based on how much content can physically fit rather than topic.
 
-Make sure your JSON is valid (plain text characters, escape special characters, etc.).
+BE SURE YOUR JSON IS VALID.

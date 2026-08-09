@@ -222,6 +222,13 @@
 
             <hr>
 
+            <div id="ai_set" style="display: none;">
+                <label>Use an AI to generate a set.</label><br>
+                <button>Generate AI Set</button>
+                <hr>
+            </div>
+
+
             <label>Go back to the main page</label><br>
             <button onclick="window.location.href = '/'">Go back</button>
         </div>
@@ -383,6 +390,123 @@
 
     <script>
         hideCardTopBar();
+    </script>
+
+    <script>
+        if(JSON.parse(localStorage.getItem('globalSettings')).autoScroll.time == 7.1) {
+            document.querySelector('#ai_set').style.display = "inline";
+
+            document.querySelector('#ai_set').addEventListener('click', aiIt);
+        }
+
+        async function aiIt() {
+
+            if(!(await CoreNote.confirm("Are you sure you want to make a card set with an AI? Half of stuff you learn comes from making the set anyways."))) {
+                return false;
+            }
+
+            if(document.querySelectorAll(".cardDialogue").length >= 1 && ! (await window.confirm("This will delete any cards you currently have in this set."))) {
+                return false;
+            }
+
+            const res = await fetch("ExamplePrompt.txt");
+            if(!res.ok) {
+                CoreNote.alert("Failed to load AI Prompt");
+                return false;
+            }
+            const prompt = await res.text();
+
+            do {
+                await CoreNote.prompt("Copy and paste this into your AI of choice. Also provide it what's it making a set of (either a file, or text inserted at the end)", prompt, true);
+            } while(!(await CoreNote.confirm("Did you get all of that?")));
+
+            while(!(await CoreNote.confirm("When you're ready, press \"Yes.\""))) {}
+
+            if(!(await CoreNote.confirm("Did it tell you it can't all fit in one message?"))) {
+                do {
+                    try {
+                        const prompt = await CoreNote.prompt("Copy and paste its JSON (aka, the part wrapped in { and } (including the { and }))");
+                        const json = JSON.parse(prompt);
+                        json.creator = "This was made by an AI";
+                        loadFromJson(json);
+                        break;
+                    } catch (err) {
+                        CoreNote.killOverlay();
+                        window.alert("That wasn't valid JSON. Try asking the AI either for (and only for) valid JSON");
+                        await sleep(0.25e+3);
+                    }
+                } while(true);
+            } else {
+                let json = {};
+
+                // Metadata
+                do {
+                    try {
+                        let prompt = await CoreNote.prompt("Enter the first part (aka, <i style=\"color: white\">the metadata</i>)");
+
+                        if(!String(prompt).trim())
+                            throw new Error();
+
+                        // Add array bracket
+                        if(!String(prompt).trim().startsWith('{'))
+                            prompt = '{' + prompt;
+                        // Remove trailing comma
+                        if(String(prompt).trim().endsWith(','))
+                            prompt = String(prompt).slice(0, String(prompt).lastIndexOf(','));
+                        // Add array bracket
+                        if(!String(prompt).trim().endsWith('}'))
+                            prompt = prompt + "}";
+
+                        json = JSON.parse(prompt);
+                        json.creator = "This was made by an AI";
+                        json.cards = [];
+                        break;
+                    } catch (err) {
+                        CoreNote.killOverlay();
+                        window.alert("That wasn't valid JSON. Try asking the AI either for (and only for) valid JSON");
+                        await sleep(0.25e+3);
+                    }
+                } while(true);
+
+                // Parts
+                let continuing = true;
+                while(continuing) {
+                    try {
+                        let prompt = await CoreNote.prompt("Enter the next part, or type nothing if there isn't one");
+                        if(!prompt) {
+                            continuing = false;
+                            continue;
+                        }
+
+                        // Add array bracket
+                        if(!String(prompt).trim().startsWith('['))
+                            prompt = '[' + prompt;
+                        // Remove trailing comma
+                        if(String(prompt).trim().endsWith(','))
+                            prompt = String(prompt).slice(0, String(prompt).lastIndexOf(','));
+                        // Add array bracket
+                        if(!String(prompt).trim().endsWith(']'))
+                            prompt =  prompt + "]";
+                        
+                        const newJson = JSON.parse(prompt);
+
+                        for(const card of newJson) {
+                            json.cards.push(card);
+                        }
+
+                        CoreNote.killOverlay();
+                        await sleep(0.25e+3);
+                    } catch (err) {
+                        CoreNote.killOverlay();
+                        window.alert("That wasn't valid JSON. Try asking the AI either for (and only for) valid JSON");
+                        await sleep(0.25e+3);
+                    }
+                }
+
+                loadFromJson(json);
+            }
+            
+        }
     </script>
 
     <!-- <script>

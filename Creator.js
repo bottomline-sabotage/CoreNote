@@ -803,13 +803,21 @@ async function save() {
 
         // I Love then chains!
         promises.push(
-            fetch(url)
-                .then(res => res.blob())
-                .then(blob => {
-                    assetsFolder.file(fileName, blob);
-                    el.src = oldSrc;
-                    el.href = oldHref;
-                })
+        fetch(url)
+            .then(res => {
+                if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+                return res.blob();
+            })
+            .then(blob => {
+                assetsFolder.file(fileName, blob);
+            })
+            .catch(err => {
+                console.error(`Skipping broken asset (${fileName}):`, err);
+            })
+            .finally(() => {
+                el.src = oldSrc;
+                el.href = oldHref;
+            })
         );
     });
 

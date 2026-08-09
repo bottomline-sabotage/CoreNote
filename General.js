@@ -275,12 +275,12 @@ class CoreNote {
     static lock = false;
     
     
-    static prompt(text) {
+    static prompt(text, def = "") {
         // THIS SHOULDN'T HAPPEN, but just in case...
         if(CoreNote.lock) {
             console.error("Failed to acquire the alert/prompt/confirm lock");
             new Promise((resolve) => {
-                resolve(window.prompt(text))
+                resolve(window.prompt(text, def))
             });
         }
 
@@ -314,6 +314,7 @@ class CoreNote {
 
                 // document.querySelector(".alert_overlay").querySelector('textarea')
 
+                overlay.querySelector('textarea').value = def;
                 overlay.querySelector('textarea').scroll();
                 setTimeout(() => {
                     overlay.querySelector('textarea').focus();
@@ -412,8 +413,8 @@ class CoreNote {
                     <div class="alert_overlay">
                         <div class="alert_box">
                                 <p>${text}</p>
-                                <button class="yes">Yes</button>
                                 <button class="no">No</button>
+                                <button class="yes">Yes</button>
                         </div>
                     </div>
                 
@@ -446,12 +447,12 @@ class CoreNote {
     }
     
     static killOverlay() {
+        CoreNote.lock = false;
         document.querySelectorAll('.alert_overlay').forEach((overlay) => {
             overlay.style.opacity = 0;
             setTimeout(() => {
                 overlay.remove();
             }, 1000);
         });
-        CoreNote.lock = false;
     }
 }
