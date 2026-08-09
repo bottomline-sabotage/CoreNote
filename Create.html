@@ -425,7 +425,11 @@
             if(!(await CoreNote.confirm("Did it tell you it can't all fit in one message?"))) {
                 do {
                     try {
-                        const prompt = await CoreNote.prompt("Copy and paste its JSON (aka, the part wrapped in { and } (including the { and }))");
+                        const prompt = await CoreNote.prompt("Copy and paste its JSON (aka, the part wrapped in { and } (including the { and })). Type nothing to leave.");
+                        
+                        if(!String(prompt).trim())
+                            return false;
+                        
                         const json = JSON.parse(prompt);
                         json.creator = "This was made by an AI";
                         loadFromJson(json);
