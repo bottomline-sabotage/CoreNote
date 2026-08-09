@@ -1,16 +1,14 @@
 function showCardTopBar() {
-    const separator = document.querySelector("#card_bar_separator");
     const topBar = document.querySelector("#card_topbar");
 
-    separator.style.height = "10.5vh";
     topBar.style.height = "10vh";
 }
 
 function hideCardTopBar() {
-    const separator = document.querySelector("#card_bar_separator");
+    // const separator = document.querySelector("#card_bar_separator");
     const topBar = document.querySelector("#card_topbar");
 
-    separator.style.height = "0vh";
+    // separator.style.height = "0vh";
     topBar.style.height = "0vh";
 }
 
@@ -1493,6 +1491,17 @@ let inMathMode = false;
 let mathEditFor = null;
 let htmlEditMode = false;
 let htmlEditFor = null;
+
+function changeMath() {
+    const editor = document.querySelector("#html_raw_editor");
+    const mathPreview = document.querySelector("#math_preview");
+    mathPreview.innerHTML = `\\( ${editor.value} \\)`;
+
+    try {
+        renderMathInElement(mathPreview);
+    } catch (err) { }
+}
+
 document.querySelector("#math_notater_button").addEventListener("pointerdown", (e) => {
     if(htmlEditMode) 
         return;
@@ -1511,7 +1520,6 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
         return;
 
     const holder = document.querySelector("#html_raw_edit");
-
     const editor = document.querySelector("#html_raw_editor");
 
     document.querySelector("#html_raw_edit_math").style.display = "inline";
@@ -1519,25 +1527,17 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
     const mathPreview = document.querySelector("#math_preview");
     mathPreview.innerHTML = "";
 
-    function change () {
-        mathPreview.innerHTML = `\\( ${editor.value} \\)`;
-
-        try {
-            console.log(renderMathInElement(mathPreview));
-        } catch (err) { }
-    }
-
-    editor.addEventListener('input', change);
-
     function disabler() {
+        document.querySelector("#card_bar_separator").style.height = "0vh";
+
         inMathMode = false;
         holder.style.height = "0vh";
 
         mathEditFor.contentEditable = "plaintext-only";
         mathEditFor.style.opacity = 1;
 
-        change();
-        editor.removeEventListener('keyup', change);
+        editor.removeEventListener('keyup', changeMath);
+        changeMath();
         
         mathEditFor.focus();
 
@@ -1545,7 +1545,7 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
     }
 
     document.querySelector('#math_add').onclick = () => {
-        insertHtmlAtRange(savedRange, `<span class="inline_math_friend">\\(${editor.value}\\)</\( ${editor.value} \\)span>`);
+        insertHtmlAtRange(savedRange, `<div>&nbsp;</div><span class="inline_math_friend">\\(${editor.value}\\)</\( ${editor.value} \\)span><div>&nbsp;</div>`);
         disabler();
 
         if(!localStorage.getItem('c-mathLatexWarning')) {
@@ -1561,6 +1561,11 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
 
     // Enable
     else {
+        editor.removeEventListener('keyup', changeMath);
+        editor.addEventListener('keyup', changeMath);
+
+        document.querySelector("#card_bar_separator").style.height = "10.5vh";
+
         mathEditFor = document.activeElement;
         if(!mathEditFor.classList.contains('editable_div')) {
             mathEditFor = null;
@@ -1581,6 +1586,10 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
     }
 });
 
+function changeHtml() {
+    const editor = document.querySelector("#html_raw_editor");
+    htmlEditFor.innerHTML = String(editor.value);
+}
 
 document.querySelector("#html_edit").addEventListener("pointerdown", function doer (e) {
     if(inMathMode) 
@@ -1612,19 +1621,13 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
 
     document.querySelector("#math_preview").innerHTML = "";
 
-    function change () {
-        // htmlEditFor.innerHTML = String(editor.value).replaceAll('\n', "<br>");
-
-        // try {
-        //     renderMathInElement(htmlEditFor);
-        // } catch (err) { }
-    }
-
-    editor.addEventListener('keyup', change);
+    
 
     function disabler() {
         if(document.activeElement.id == "click_me_html_please")
             return;
+
+        document.querySelector("#card_bar_separator").style.height = "0vh";
 
         htmlEditMode = false;
         holder.style.height = "0vh";
@@ -1632,8 +1635,8 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
         htmlEditFor.contentEditable = "plaintext-only";
         htmlEditFor.style.opacity = 1;
 
-        change();
-        editor.removeEventListener('keyup', change);
+        editor.removeEventListener('keyup', changeHtml);
+        changeHtml();
         
         htmlEditFor.focus();
 
@@ -1650,6 +1653,11 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
 
     // Enable
     else {
+        editor.removeEventListener('keyup', changeHtml);
+        editor.addEventListener('keyup', changeHtml);
+
+        document.querySelector("#card_bar_separator").style.height = "10.5vh";
+
         htmlEditFor = document.activeElement;
         if(!htmlEditFor.classList.contains('editable_div')) {
             htmlEditFor = null;
@@ -1738,13 +1746,21 @@ if(!document.activeElement.className.endsWith("editable_div"))
     e.preventDefault();
 });
 
-document.addEventListener('focusin', (e) => {
-    // console.log(e.target)
-    // if(e.target.contentEditable) {
-    //     showCardTopBar();
-    // } else {
-    //     hideCardTopBar();
-    // }
+document.body.addEventListener('focusin', (e) => {
+    if(e.target) {
+        showCardTopBar();
+    } else {
+        if(document.querySelector("#card_bar_separator").style.height == "10.5vh")
+            return;
+        // e.preventDefault();
+        hideCardTopBar();
+    }
+});
+document.body.addEventListener('focusout', (e) => {
+    if(document.querySelector("#card_bar_separator").style.height == "10.5vh")
+        return;
+    // e.preventDefault();
+    hideCardTopBar();
 });
 
 const vv = window.visualViewport;
@@ -1813,8 +1829,9 @@ function inlineMathHover(el, wasClick, remove = false, time = 10e+3, force = fal
 
     function render() {
         mathArea.innerHTML = "";
-        mathArea.textContent = (String(el.textContent).split('\\)')[0].replaceAll('\\(', '') + "\\)");
-        mathArea.textContent = "\\(" + mathArea.textContent;
+        // mathArea.textContent = (String(el.textContent).split('\\)')[0].replaceAll('\\(', '') + "\\)");
+        // mathArea.textContent = "\\(" + mathArea.textContent;
+        mathArea.textContent = String(el.textContent);
         renderMathInElement(mathArea);
         
         const rect = el.getBoundingClientRect();

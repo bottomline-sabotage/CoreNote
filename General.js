@@ -312,6 +312,7 @@ class CoreNote {
                     overlay.style.opacity = 1;
                 }, 50);
 
+                // document.querySelector(".alert_overlay").querySelector('textarea')
 
                 overlay.querySelector('textarea').scroll();
                 setTimeout(() => {
