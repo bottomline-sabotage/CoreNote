@@ -773,7 +773,7 @@ async function save() {
     callLoad();
 
     if(document.querySelectorAll(".cardDialogue").length < 1) {
-        CoreNote.alert("You have no cards to save.");
+        CoreNote.alert("You have no cards to save.<br>To make a card, go the Cards tab, then press the \"+ Card\" button on the bottom-right (you may have to zoom out or scroll to find it).");
         endLoad();
         return;
     }
@@ -1755,7 +1755,7 @@ if(!document.activeElement.className.endsWith("editable_div"))
 });
 
 document.body.addEventListener('focusin', (e) => {
-    if(e.target) {
+    if(e.target.classList.contains("editable_div")) {
         showCardTopBar();
     } else {
         if(document.querySelector("#card_bar_separator").style.height == "10.5vh")

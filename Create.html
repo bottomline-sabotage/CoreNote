@@ -158,6 +158,7 @@
         </div>
 
         <div id="card_topbar">
+            <a id="hide" title="Bold"><b>^</b></a>
             <a id="bolden_text" title="Bold"><b>B</b></a>
             <a id="italic_text" title="Italics"><i>i</i></a>
             <a id="underline_text" title="Underline"><u>U</u></a>
@@ -200,7 +201,7 @@
             <div id="cards_spot">
                 
             </div>
-            <div style="position: fixed; right: 5px; bottom: 5px;">
+            <div>
                 <button id="create_card_link" onclick="createCardDialogue()">+ card</button>
             </div>
             
@@ -275,12 +276,12 @@
     </script>
 
     <script>
-        // window.addEventListener('beforeunload', (event) => {
-        //     // if(localStorage.getItem("e-emergencyBackup")) {
-        //         event.preventDefault();  
-        //         event.returnValue = ''; 
-        //     // }
-        // });
+        window.addEventListener('beforeunload', (event) => {
+            // if(localStorage.getItem("e-emergencyBackup")) {
+                event.preventDefault();  
+                event.returnValue = ''; 
+            // }
+        });
     </script>
     
     <!-- <script>

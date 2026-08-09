@@ -230,3 +230,10 @@ textarea::placeholder, .editable_div::placeholder {
 .math_area span {
     color: rgba(255, 255, 255, 0.706);
 }
+
+#create_card_link {
+    position: fixed;
+    right: 1rem;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 1000;
+}
