@@ -22,7 +22,7 @@ body {
 
 
 :root {
-    --card_view_width: 72.5vw;
+    --card_view_width: 88.5vw;
 }
 
 #top_bar {
@@ -112,6 +112,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin: auto;
+    margin-top: 10px;
 }
 
 /*#help, #explanation {
@@ -132,20 +133,42 @@ body {
     left: 5px;
 }*/
 
+#bottom_navigator {
+    margin-top: 10px;
+    max-width: var(--card_view_width);
+    overflow: auto;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 #left_card_centered {
     margin: 0 auto;
     width: var(--card_view_width);
     text-align: left;
 }
 
-#flip_button {
+#flip_button, #wrong_button, #previous_button, #next_button, #right_button {
     font-size: 1.5vh;
-    width: var(--card_view_width);
+    width: 14.3vw;
     height: 3vh;
-    background-image: linear-gradient(0.25turn, #AF1290, #eb0bbe);
-    color: white;
+    color: black;
     border-width: 2px;
     transition: all 0.3s ease;
+}
+
+#flip_button:hover {
+    transform: none;
+}
+
+#flip_button:active {
+    transform: scale(0.91);
+}
+
+#flip_button {
+    color: white;
+    background-image: linear-gradient(0.25turn, #AF1290, #eb0bbe);
+    width: 47vw;
 }
 
 #flip_button:hover {
@@ -166,9 +189,6 @@ body {
     overflow: scroll;
 }
 
-#wrong_button:hover, #previous_button:hover, #next_button:hover, #right_button:hover {
-	transform: none;
-}
 
 #wrong_answer {
 	opacity: 0;
@@ -257,12 +277,6 @@ code {
     border: 2px solid #555;
     /* transition: all 0.3s ease; */
     background-color: rgba(58, 58, 58, 0.211);
-}
-
-#wrong_button, #previous_button, #next_button, #right_button {
-    font-size: 3.5vh;
-    padding: 0;
-    margin: 0;
 }
 
 #inline_card_stuff button {

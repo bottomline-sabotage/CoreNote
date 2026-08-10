@@ -121,8 +121,7 @@
         </div> -->
         
 		<div id="this_scary">
-			<button id="wrong_button" onclick="markWrong(); next();">❌</button>
-            <button id="previous_button" onclick="previous()">⬅️</button>
+			
             
 			
 			<div id="card_view">
@@ -138,12 +137,16 @@
 		            <input id="comment_input" style="position: fixed; right:500vw"></input> <!--TODO: see if this is used by JS still; it probably isn't-->
 				</div>
 	        </div>	
-			
-			<button id="next_button" onclick="next()">➡️</button>
-			<button id="right_button" onclick="markRight(); next();">✅</button>
+		
 		</div>
-        
-        <button id="flip_button" onclick="flip()">Flip</button>
+        <div id="bottom_navigator"> 
+
+            <button id="wrong_button" onclick="markWrong(); next();">X</button>
+            <button id="previous_button" onclick="previous()">&larr;</button>
+            <button id="flip_button" onclick="flip()">Flip</button>
+            <button id="next_button" onclick="next()">&rarr;</button>
+            <button id="right_button" onclick="markRight(); next();">✓</button>
+        </div>
         <div class="under_the_card">
             <span id="category_button" style="transition: opacity 1s ease;"><b>Category</b>: <span id="card_category" style="text-decoration: underline;">Unknown</span></span><br>
             <span id="the_stars_of_northern_travel" style="transition: opacity 1s ease;"><b>&nbsp;&nbsp;Difficulty</b>:<span id="card_difficulty"></span></span>

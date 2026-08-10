@@ -1509,3 +1509,19 @@ window.addEventListener('keydown', (e) => {
         }
     }
 });
+
+let lastClickStamp = null;
+
+document.addEventListener('mousedown', (e) => {
+    lastClickStamp = Date.now() / 1000;
+});
+
+document.addEventListener('mouseup', (e) => {
+    if((Date.now() / 1000) - lastClickStamp >= 0.5)
+        return;
+    if(!e.target.classList.contains('selectable')) {
+        return;
+    }  
+
+    flip();
+});
