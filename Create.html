@@ -286,12 +286,12 @@
     </script>
 
     <script>
-        // window.addEventListener('beforeunload', (event) => {
-        //     // if(localStorage.getItem("e-emergencyBackup")) {
-        //         event.preventDefault();  
-        //         event.returnValue = ''; 
-        //     // }
-        // });
+        window.addEventListener('beforeunload', (event) => {
+            // if(localStorage.getItem("e-emergencyBackup")) {
+                event.preventDefault();  
+                event.returnValue = ''; 
+            // }
+        });
     </script>
     
     <!-- <script>

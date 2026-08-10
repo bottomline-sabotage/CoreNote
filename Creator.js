@@ -1554,7 +1554,11 @@ document.querySelector("#math_notater_button").addEventListener("pointerdown", (
     }
 
     document.querySelector('#math_add').onclick = () => {
-        insertHtmlAtRange(savedRange, `<div>&nbsp;</div><span class="inline_math_friend">\\(${editor.value}\\)</\( ${editor.value} \\)span><div>&nbsp;</div>`);
+        insertHtmlAtRange(savedRange, `
+            <span>&nbsp;&nbsp;</span>
+            <span class="inline_math_friend">\\(${editor.value}\\)</span>
+            <span>&nbsp;&nbsp;</span>
+        `);
         disabler();
 
         if(!localStorage.getItem('c-mathLatexWarning')) {
