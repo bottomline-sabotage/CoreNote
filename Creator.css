@@ -59,22 +59,42 @@ textarea:not(.alert_overlay textarea), .editable_div {
     overflow: scroll;
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+#window_cards {
+    width: 100vw;
+    margin: 0;
+    padding: 0;
+    margin-right: 5px;
+}
+
+#cards_spot {
+    width: 100%;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 15px;
+    padding-right: 15px;
+    box-sizing: border-box;
+}
+
 .cardDialogue {
     margin-top: 15px;
     margin-bottom: 15px;
+    width: 100%; 
     background-color: rgb(150, 150, 150);
     border-radius: 5px;
-    border-width: 4px;
-    border-color: black;
     color: black;
     padding: 10px;
     box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
     transition: opacity 0.3s ease;
-
-    margin-left: auto;
+    box-sizing: border-box;
     overflow-x: auto;
-    min-width: 250px;
-    max-width: 900px;
 }
 
 .cardDialogue > * {
@@ -114,7 +134,7 @@ textarea::placeholder, .editable_div::placeholder {
 #card_topbar {
     position: fixed;
     max-height: 8vh;
-    width: 100vw;
+    width: 100vw !important;
     background-color: rgba(0, 0, 0, 0.888);
     top: 0px;
     left: 0px;
@@ -240,4 +260,20 @@ textarea::placeholder, .editable_div::placeholder {
     right: 1rem;
     bottom: max(1rem, env(safe-area-inset-bottom));
     z-index: 1000;
+}
+
+#top_bar_for_tabs {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    overflow-x: scroll;
+    scrollbar-width: auto;
+    
+}
+
+#top_bar_for_tabs span {
+    font-size: 2.9vh;
+    font-weight: bold;
 }

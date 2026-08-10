@@ -74,7 +74,7 @@
     </script>
 </head>
 <body>
-    <div id="submit_phase" style="max-width: 800px; margin: auto auto;">       
+    <div id="submit_phase" style="max-width: 300px; margin: auto auto;">       
         <h1>Upload or Create New?</h1>
         <span class="note">Either upload a pre-existing set to continue working on it or start work on a brand new one.</span><br>
         
@@ -139,7 +139,7 @@
             
         </div>
 
-        <div style="display: flex; align-items: center; justify-content: space-between;margin-bottom: 0;"><h2 id="button_info" tabindex="1">Info</h2><h2 id="button_cards" tabindex="2">Cards</h2><h2 id="button_settings" tabindex="3">Settings</h2></div>
+        <div id="top_bar_for_tabs"><span id="button_info" tabindex="1">Info</span><span id="button_cards" tabindex="2">Cards</span><span id="button_settings" tabindex="3">Settings</span></div>
 
         <span class="note" id="please_just_click_something" style="display: none; opacity: 0; transition: all 1s ease; margin: 0; padding: 0;">To enter a window (Info, Cards, or Settings), select a tab at the top. If you're just starting, I'd recommend "Info." Whenever you want to save your set, do so in "Settings."<br></span>
 
@@ -209,7 +209,7 @@
          
         </div>
 
-        <div id="window_cards" style="max-width: 900px;">
+        <div id="window_cards">
             <!-- <button id="create_card_link_first" onclick="createCardDialogue()">+ card</button> -->
 
             
@@ -286,12 +286,12 @@
     </script>
 
     <script>
-        window.addEventListener('beforeunload', (event) => {
-            // if(localStorage.getItem("e-emergencyBackup")) {
-                event.preventDefault();  
-                event.returnValue = ''; 
-            // }
-        });
+        // window.addEventListener('beforeunload', (event) => {
+        //     // if(localStorage.getItem("e-emergencyBackup")) {
+        //         event.preventDefault();  
+        //         event.returnValue = ''; 
+        //     // }
+        // });
     </script>
     
     <!-- <script>

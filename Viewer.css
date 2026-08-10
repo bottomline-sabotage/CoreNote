@@ -70,6 +70,7 @@ body {
     border-style: solid;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 2px 6px rgba(0, 0, 0, 0.18);
     overflow: scroll;
+    min-width: 100px;
 }
 
 #progress_bar_container {
@@ -158,15 +159,15 @@ body {
 
 #this_scary {
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-evenly;
 	align-items: center;
 	margin: auto;
-    position: relative;
+    /* position: relative; */
     overflow: scroll;
 }
 
 #wrong_button:hover, #previous_button:hover, #next_button:hover, #right_button:hover {
-	font-size: 1.5rem; /*Remove default hover font change as it messes with spacing*/ 
+	transform: none;
 }
 
 #wrong_answer {
@@ -256,4 +257,16 @@ code {
     border: 2px solid #555;
     /* transition: all 0.3s ease; */
     background-color: rgba(58, 58, 58, 0.211);
+}
+
+#wrong_button, #previous_button, #next_button, #right_button {
+    font-size: 3.5vh;
+    padding: 0;
+    margin: 0;
+}
+
+#inline_card_stuff button {
+    font-size: 2vh;
+    padding: 0;
+    margin: 5px;
 }
