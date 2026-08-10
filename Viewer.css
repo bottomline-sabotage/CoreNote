@@ -238,14 +238,22 @@ code {
 #inline_card_stuff {
     position: sticky; 
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: center;
-    margin: auto;
-    width: 100%;
+    /* margin: auto; */
+    /* width: 100%; */
     bottom: 0.5vh;
     transform: translateY(-0%);
-    margin-bottom: 0.8vh;
-    margin-left: 5px;
+    /* margin-bottom: 0.8vh; */
+    /* margin-left: 5px;
+    margin-right: 55px; */
+
+    margin: 10px;
+}
+
+#inline_card_stuff button {
+    font-size: 2vh;
+    padding: 0;
 }
 
 #raw_html {
@@ -282,8 +290,3 @@ code {
     background-color: rgba(58, 58, 58, 0.211);
 }
 
-#inline_card_stuff button {
-    font-size: 2vh;
-    padding: 0;
-    margin: 5px;
-}
