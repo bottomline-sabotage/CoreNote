@@ -1525,3 +1525,45 @@ document.addEventListener('mouseup', (e) => {
 
     flip();
 });
+
+// Mobile swipe
+let lastSwipeStamp = null;
+let lastX = null;
+
+document.querySelector("#card_view").addEventListener('touchstart', (e) => {
+    lastSwipeStamp = Date.now() / 1000;
+    // console.log(e);
+    lastX = e.pageX;
+});
+
+document.querySelector("#card_view").addEventListener('touchend', (e) => {
+    const dt = (Date.now() / 1000) - lastSwipeStamp; // sidenote: delta is [insett bad word here] awesome. convince me otherwise
+    const dx = e.pageX - lastX;
+
+    console.log(`dt: ${dt}, dx: ${dx}`)
+    
+    if(dt > 0.5)
+        return;
+    if(Math.abs(dx) < 40 || Math.abs(dx) > 400)
+        return;
+    
+    
+        
+    // go back
+    if(dx < 0)
+        if(settings.answerSorting) {
+            markWrong();
+            next();
+            addVignetteById("hit");
+        } else 
+            previous();
+    // go next
+    else
+        if(settings.answerSorting) {
+            markRight();
+            next();
+            addVignetteById("success");
+        } else 
+            next();
+});
+
