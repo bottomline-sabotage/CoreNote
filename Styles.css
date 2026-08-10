@@ -82,6 +82,7 @@ body {
     position: absolute;
     opacity: 0;
     cursor: pointer;
+    width: 0;
 }
 
 .checkmark {

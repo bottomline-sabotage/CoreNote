@@ -238,13 +238,14 @@ code {
 #inline_card_stuff {
     position: sticky; 
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     margin: auto;
     width: 100%;
     bottom: 0.5vh;
     transform: translateY(-0%);
     margin-bottom: 0.8vh;
+    margin-left: 5px;
 }
 
 #raw_html {
@@ -263,7 +264,9 @@ code {
 #raw_html img, #raw_html video, #raw_html canvas, #raw_html iframe {
     width: 80%;
     border-radius: 5px;
+    max-width: 25vw;
 }
+
 
 #raw_html > * {
     margin: 0px;
