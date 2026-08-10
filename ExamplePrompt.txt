@@ -52,4 +52,63 @@ Be sure to end the JSON structure with a comma at the very end, unless if it's t
 
 Do the same for the next parts. After the end of each part's JSON, be sure to remind the user that they have to request the next part. Say something like "Tell me when you're ready for the next part!" When it's over, tell the user. The user will not have combine this manually, the flash card app will, which is why the metadata is separate. Reminder that you should try to make the different parts as large as possible. It's better to have 3 larger parts, than 7 smaller ones. This is why parts should be based on how much content can physically fit rather than topic.
 
-BE SURE YOUR JSON IS VALID.
+FINAL OUTPUT REQUIREMENTS:
+
+## FINAL OUTPUT REQUIREMENTS
+
+1. Output ONLY the requested JSON. Do not include an explanation, introduction, conclusion, apology, or any text outside the JSON code block unless the user has questions.
+
+2. Put the entire output inside exactly ONE fenced Markdown code block using the `json` language identifier.
+
+3. The contents of the code block MUST be valid, parseable JSON. It must successfully parse under a standard JSON parser.
+
+4. Do NOT include comments of any kind in the generated JSON. This includes `// comments`, `/* comments */`, explanatory annotations, placeholders, or notes.
+
+5. Do NOT use pseudocode, schema descriptions, type descriptions, or placeholder instructions in the generated JSON. Replace every placeholder with an actual value. If a value is unknown or cannot reasonably be determined, use an empty string (`""`) or `null` when appropriate.
+
+6. Use ONLY valid JSON syntax:
+   - Objects use `{}`.
+   - Arrays use `[]`.
+   - Property names must be enclosed in double quotes.
+   - String values must be enclosed in double quotes.
+   - Boolean values must be exactly `true` or `false`, without quotes.
+   - Null values must be exactly `null`, without quotes.
+   - Numbers must not be quoted.
+   - Separate properties and array elements with commas.
+   - Do not put a trailing comma after the final property or array element.
+
+7. Escape characters correctly inside JSON strings:
+   - Every literal backslash must be escaped as `\\`.
+   - Every double quote inside a string must be escaped as `\"`.
+   - Do not insert raw line breaks inside JSON strings.
+   - LaTeX backslashes must therefore be written with doubled backslashes, such as `\\frac{1}{2}`.
+
+8. The `front`, `back`, `explanation`, and `hint` values must be JSON strings containing HTML / plaintext as specified above. Only `front` and `back` support HTML, and only `front` can optioanlly be an array of random options if and only if `randomizedFront` is true.
+
+9. Use pure ASCII characters only. Do not use curly quotes, em dashes, en dashes, non-breaking spaces, or other Unicode characters.
+
+10. Use exactly 4 spaces for each indentation level. Do NOT use tab characters for indentation.
+
+11. The examples in this prompt are schema examples, NOT literal output. Never copy their comments, placeholder text, ellipses (`...`), type descriptions, or explanatory text into the final JSON.
+
+12. Before giving the final answer, internally verify all of the following:
+   - Every `{` has a matching `}`.
+   - Every `[` has a matching `]`.
+   - Every JSON string is properly closed.
+   - Every internal double quote is escaped.
+   - Every backslash inside a string is escaped.
+   - There are no comments.
+   - There are no trailing commas.
+   - All required keys are present.
+   - Every value has the correct JSON type specified by the schema.
+   - The result is valid JSON.
+
+13. Do not use Markdown formatting inside the JSON code block except for the HTML explicitly allowed in string values. The only Markdown surrounding the output should be the single `json` code fence.
+
+14. If the complete set is too large for one response, follow the multi-part instructions above. Each part must still follow the JSON formatting rules specified in this prompt.
+
+15. Do not sacrifice JSON validity for completeness. If necessary, split the output into parts according to the multi-part instructions rather than producing malformed JSON.
+
+16. IMPORTANT: Do not output the word `text`, `STRING`, `BOOLEAN`, `INT`, `FLOAT`, or any other schema/type placeholder as a value unless that is genuinely the intended content of the card.
+
+17. IMPORTANT: The final response must NOT contain any text before or after the JSON code block (if and only if the user has no other questions).
