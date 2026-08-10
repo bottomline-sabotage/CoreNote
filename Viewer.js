@@ -1529,22 +1529,25 @@ document.addEventListener('mouseup', (e) => {
 // Mobile swipe
 let lastSwipeStamp = null;
 let lastX = null;
+let lastY = null;
 
 document.querySelector("#card_view").addEventListener('touchstart', (e) => {
     lastSwipeStamp = Date.now() / 1000;
     // console.log(e);
     lastX = e.pageX;
+    lastY = e.pageY;
 });
 
 document.querySelector("#card_view").addEventListener('touchend', (e) => {
     const dt = (Date.now() / 1000) - lastSwipeStamp; // sidenote: delta is [insett bad word here] awesome. convince me otherwise
     const dx = e.pageX - lastX;
-
-    console.log(`dt: ${dt}, dx: ${dx}`)
+    const dy = e.pageY - lastY;
     
     if(dt > 0.5)
         return;
     if(Math.abs(dx) < 40 || Math.abs(dx) > 400)
+        return;
+    if(Math.abs(dy) > 40)
         return;
     
     if(dx > 0)
