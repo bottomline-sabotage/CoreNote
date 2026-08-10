@@ -654,6 +654,12 @@ function createCardDialogue() {
 
     document.querySelector("#info-number_of_cards").textContent = document.querySelectorAll(".cardDialogue").length;
 
+    if(document.querySelectorAll(".cardDialogue").length >= 3) {
+        document.querySelector("#back_top").style.opacity = 0.65;
+    } else {
+        document.querySelector("#back_top").style.opacity = 0;
+    }
+
     return card;
 }
 
