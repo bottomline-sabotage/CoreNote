@@ -325,8 +325,8 @@ table {
 }
 
 thead {
-    /* background-color: rgba(102, 153, 255, 0.1); */
-    background-image: linear-gradient(to right, rgba(102, 153, 255, 0.1), rgba(33, 107, 255, 0.1));
+    background-color: rgb(3, 83, 22);
+    /* background-image: linear-gradient(to right, rgba(102, 153, 255, 0.1), rgba(33, 107, 255, 0.1)); */
 }
 
 thead th {
@@ -334,7 +334,7 @@ thead th {
     text-align: center;
     font-weight: 600;
     font-size: 1rem;
-    color: rgb(0, 60, 181);
+    color: rgba(255, 255, 255, 0.887);
 }
 
 tbody td {

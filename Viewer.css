@@ -167,12 +167,12 @@ body {
 
 #flip_button {
     color: white;
-    background-image: linear-gradient(0.25turn, #AF1290, #eb0bbe);
+    background-image: linear-gradient(0.25turn, #085317, #097614);
     width: 47vw;
 }
 
 #flip_button:hover {
-    background-image: linear-gradient(0.25turn, #8e1075, #cd0ba6);
+    background-image: linear-gradient(0.25turn, #084e0c, #066d0f);
 }
 
 #wrong_count, #right_count {
