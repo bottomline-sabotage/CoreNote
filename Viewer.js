@@ -1398,11 +1398,11 @@ function unsegmify() {
     setCard(0);
 }
 
-function print() {
+/* Fun fact: JS sucks. This used to be called `print()` but apparently that overrides `window.print()`. That is a real JS moment. */
+function printStuff() {
     const div = document.createElement("div");
     div.innerHTML = `
         <h1>${cardSet.json.title}</h1>
-        <span class="note">In order to print this, use your browser's built-in print button/hotkey.</span>
         <hr>
         <div style="display: flex; align-items: center; justify-content: space-between;"><b>Front</b><b>Back</b></div>
         <hr>
@@ -1441,8 +1441,16 @@ function print() {
         pastSubmit.style.display = "inline";
         document.querySelector("#progress_bar_container").style.display = "inline";
         back.remove();
-    }
-    document.body.prepend(back);
+    };
+    
+    const print = document.createElement('button');
+    print.textContent = "Print";
+    print.className = "no-print";
+    print.onclick = () => {
+        window.print();
+    };
+    
+    document.body.prepend(back, print);
 
     // Asset Rendering
     console.log(cardAssets);
@@ -1463,6 +1471,11 @@ function print() {
         renderMathInElement(div);
     else 
         console.error("Failed to render math (renderMathInElement doesn't exist");
+
+    setTimeout(() => {
+        window.scroll({top: 0});
+        window.print();
+    }, 500);
 }
 
 
