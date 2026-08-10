@@ -23,6 +23,19 @@
     src: url('Assets/Fonts/hapna.ttf') format('truetype');
 }
 
+@font-face {
+    font-family: webdings;
+    src: url('Assets/Fonts/Webdings.ttf') format('truetype');
+}
+@font-face {
+    font-family: wingdings2;
+    src: url('Assets/Fonts/wingdings 2.ttf') format('truetype');
+}
+@font-face {
+    font-family: wingdings3;
+    src: url('Assets/Fonts/wingdings 3.ttf') format('truetype');
+}
+
 * {
     color: rgb(9, 9, 9);
     font-family: "Calibri", Arial, Helvetica, sans-serif;
