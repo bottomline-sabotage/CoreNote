@@ -94,7 +94,7 @@ body {
 #current_card_stuff, #current_card_stuff > * {
     font-family: norwester, Arial, Helvetica, sans-serif;
     font-weight: 100;
-    font-size: 2.7rem;
+    font-size: 2.3rem;
 }
 
 #div_for_segment_stuff {
@@ -134,7 +134,7 @@ body {
 }*/
 
 #bottom_navigator {
-    margin-top: 10px;
+    margin-top: 5px;
     max-width: var(--card_view_width);
     overflow: auto;
     align-items: center;
@@ -151,7 +151,7 @@ body {
 #flip_button, #wrong_button, #previous_button, #next_button, #right_button {
     font-size: 1.5vh;
     width: 14.3vw;
-    height: 3vh;
+    height: 5vh;
     color: black;
     border-width: 2px;
     transition: all 0.3s ease;
