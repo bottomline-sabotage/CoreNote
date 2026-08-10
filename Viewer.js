@@ -1547,17 +1547,13 @@ document.querySelector("#card_view").addEventListener('touchend', (e) => {
     if(Math.abs(dx) < 40 || Math.abs(dx) > 400)
         return;
     
-    
-        
-    // go back
-    if(dx < 0)
+    if(dx > 0)
         if(settings.answerSorting) {
             markWrong();
             next();
             addVignetteById("hit");
         } else 
             previous();
-    // go next
     else
         if(settings.answerSorting) {
             markRight();
