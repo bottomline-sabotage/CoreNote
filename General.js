@@ -140,7 +140,7 @@ function resetToDefault() {
 
         // speedrunStudy: false,
 
-        answerSorting: true,
+        answerSorting: false,
         shuffledCards: true,
         segmentedStudying: {
             enabled: false,
