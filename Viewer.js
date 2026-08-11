@@ -1661,24 +1661,32 @@ async function hijack() {
             console.log("Switching to beat " + text.replaceAll('\\beat_', ''))
             switch(text.replaceAll('\\beat_', '')) {
             case "no":
-                beat1.pause();
-                beat2.pause();
-                beat3.pause();
+                try {
+                    beat1.pause();
+                    beat2.pause();
+                    beat3.pause();
+                } catch(err) {}
                 break;
             case "1":
-                beat1.play();
-                beat2.pause();
-                beat3.pause();
+                try {
+                    beat1.play();
+                    beat2.pause();
+                    beat3.pause();
+                } catch(err) {}
                 break;
             case "2":
-                beat1.play();
-                beat2.play();
-                beat3.pause();
+                try {
+                    beat1.play();
+                    beat2.play();
+                    beat3.pause();
+                } catch(err) {}
                 break;
             case "3":
-                beat1.play();
-                beat2.play();
-                beat3.play();
+                try {
+                    beat1.play();
+                    beat2.play();
+                    beat3.play();
+                } catch(err) {}
                 break;
             }
         } else if(text.startsWith('\\')) {
