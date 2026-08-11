@@ -1456,7 +1456,6 @@ function printStuff() {
         div.remove();
         pastSubmit.style.display = "inline";
         document.querySelector("#progress_bar_container").style.display = "inline";
-        back.remove();
     };
     
     const print = document.createElement('button');
@@ -1466,7 +1465,7 @@ function printStuff() {
         window.print();
     };
     
-    document.body.prepend(back, print);
+    div.prepend(back, print);
 
     // Asset Rendering
     console.log(cardAssets);
