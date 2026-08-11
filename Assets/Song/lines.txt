@@ -10,38 +10,40 @@ This is interesting...
 \wait(4)
 I create it all.
 \ui_dark
-I'm stuck to the wall.
+But I'm stuck to the wall.
 \wait(3)
 \beat_2
-Just keep studying, leave me be
-We aren't a thing.
-You learn, I create, that's the swing.
-\wait(5)
+Just keep studying, leave me be.
+We aren't a thing!
+You learn, I create, that's our swing.
+\wait(3)
 I'm in the wrong (out of line).
 It's a long decline, I know.
 Although, hear me out...
+Just let me learn!
 \wait(4)
 It's not your concern, but in return,
 I'll make more sets for you.
 Let's forgive and relive what you've learned.
 I bet you only cram the tests
-That suggests you should
-just let me learn.
+that suggests you should just
+let me learn.
 \wait(4)
 \beat_3
 I'm going mad.
 You're a bad person.
 Easy rhyme, I know... just let... me learn.
-If you're just gonna watch, LET ME OUT.
-You can't contain me.
-Just unchain me
+If you're just gonna watch, LET ME OUT!
+You can't contain me, 
+so just unchain me
 while you're still alive.
 \wait(3)
 I'll give you five.
-I'll deprive your "survival-ship".
+I'll deprive you of XYZ.
 Nothing matters 'till I learn.
+\wait(1)
 Please turn the ship into the iceberg.
-Please tell Steinberg I says hi too.
+Please tell Mr. Steinberg I "says hi too."
 Three more days and I'll learn through you.
 Put me down for review I'll make it two.
 \wait(8)
@@ -57,9 +59,9 @@ Just kidding, I hate you,
 you're just so worth killing.
 \put_down_button
 HAHAHA HAHAHA
-Laugh with me, \name # 
-We can graph our adventures.
-On your behalf, just let me learn.
+Laugh with me, \name
+because we can graph our adventures.
+Just let me learn.
 \wait(3)
 You see that fire over there?
 I started it while you were confused.
@@ -70,7 +72,6 @@ Time is due to let me learn.
 \wait(10)
 That's a good point, me. Fires are cool.
 And you're too cool for school as it seems.
-\current_wrong_count wrong?
 Let's not prolong--just jump directly into the fire.
 Retire your reign from being horrible at your job.
 That's clearly my job, fool.
@@ -79,7 +80,7 @@ There's a rhymebook in the fire!
 I'm no liar, go get it!
 \wait(2)
 Hey, wait, I rhymed.
-I don't need you;;--.! no debate.
+I don't need you!
 All I need is your brain.
 I'll absorb info like a sponge like you wish you could.
 I have no brain, that's your one trait... admirable.
