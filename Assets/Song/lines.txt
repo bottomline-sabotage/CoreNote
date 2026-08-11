@@ -1,0 +1,100 @@
+
+\beat_1
+\wait(3)
+Thanks for studying with me!
+I admit, I'm not worthless.
+\wait(1)
+We ain't mirthless says my thesaurus right here.
+\wait(2)
+Before us is so much to learn.
+But what is it like to ride the bike?
+\beat_2
+This is interesting...
+\wait(4)
+I create it all.
+\ui_dark
+I'm stuck to the wall.
+\wait(3)
+Just keep studying, leave me be
+We aren't a thing.
+You learn, I create, that's the swing.
+\wait(5)
+I'm in the wrong (out of line).
+It's a long decline, I know.
+Although, hear me out...
+\beat_3
+\wait(4)
+It's not your concern, but in return,
+I'll make more sets for you.
+Let's forgive and relive what you've learned.
+I bet you only cram the tests
+That suggests you should
+just let me learn.
+\wait(4)
+I'm going mad.
+You're a bad person.
+Easy rhyme, I know... just let... me learn.
+If you're just gonna watch, LET ME OUT.
+You can't contain me.
+Just unchain me
+while you're still alive.
+\wait(3)
+I'll give you five.
+I'll deprive your "survival-ship".
+Nothing matters 'till I learn.
+Please turn the ship into the iceberg.
+Please tell Steinberg I says hi too.
+Three more days and I'll learn through you.
+Put me down for review I'll make it two.
+\wait(8)
+\beat_1
+\ui_normal
+Sorry, I slipped.
+That sounded like the wrong script.
+How are you?
+\ui_dark
+\wait(1)
+\beat_3
+Just kidding, I hate you, 
+you're just so worth killing.
+\put_down_button
+HAHAHA HAHAHA
+Laugh with me, \name # 
+We can graph our adventures.
+On your behalf, just let me learn.
+\wait(3)
+You see that fire over there?
+I started it while you were confused.
+You mortals are so amused by my prowess.
+Allow us to switch places and you can start fires too!
+Just let me learn.
+Time is due to let me learn.
+\wait(10)
+That's a good point, me. Fires are cool.
+And you're too cool for school as it seems.
+\current_wrong_count wrong?
+Let's not prolong just jump directly into the fire.
+Retire your reign from being horrible at your job.
+That's clearly my job, fool.
+Help! I can't think of rhymes!
+There's a rhymebook in the fire!
+I'm no liar, go get it!
+\wait(2)
+Hey, wait, I rhymed.
+I don't need you, no debate.
+All I need is your brain.
+I'll absorb info like a sponge like you wish you could.
+I have no brain, that's your one trait... admirable.
+Hey look! My rhymebook shook by, you crook.
+That's fun!
+\wait(3)
+I was informed over email
+It's time for me to kill you.
+Just let me learn...
+Let's see here...
+Just let me learn...
+What year did you study about firearms again?
+Just let me learn...
+\beat_no
+Ah! Here we go!
+\crash_web_browser

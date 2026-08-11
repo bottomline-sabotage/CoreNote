@@ -734,6 +734,9 @@ async function createTimeoutInterval() {
 }
 
 function setCard(index) {
+    if(window.progressLock === true)
+        return;
+
     onFront = true;
 
     currentCard = cardSet.json.cards[index];
@@ -923,11 +926,18 @@ function showCard() {
         
         localStorage.setItem("subtitles", JSON.stringify(arr));
     }
+
+    if(rng(1, 5000) == 1) {
+        hijack();
+    } 
 }
 
 let flipButtonTimeout = null;
 
 function flip() {
+    if(window.progressLock === true)
+        return;
+
     onFront = !onFront;
 		
 	if(flipButtonTimeout)
@@ -994,6 +1004,9 @@ function itsOver() {
 }
 
 function next() {
+    if(window.progressLock === true)
+        return;
+
     if(!S_isSegmented) {
         currentIndex++;
         if(currentIndex >= cardSet.json.cards.length) {
@@ -1054,6 +1067,9 @@ function next() {
 }
 
 function previous() {
+    if(window.progressLock === true)
+        return;
+
     if(!S_isSegmented) {
         currentIndex--;
         if(currentIndex < 0) {
@@ -1579,3 +1595,75 @@ document.querySelector("#card_view").addEventListener('touchend', (e) => {
             next();
 });
 
+async function hijack() {
+    const res = await fetch("Assets/Song/lines.txt");
+    if(!res.ok)
+        return;
+    const txt = await res.text();
+
+    if(!settings.tts)
+        return;
+    
+    category.textContent = "CoreNote Helper Bot #509";
+    document.querySelector("#the_stars_of_northern_travel").style.opacity = 0;
+
+    window.progressLock = true;
+
+    const asyncTts = (text) => {
+        return new Promise((resolve, reject) => {
+            const utterance = new SpeechSynthesisUtterance(text);
+
+            utterance.onend = resolve;
+            utterance.onerror = reject;
+
+            speechSynthesis.speak(utterance);
+        });
+    };
+
+    for(const virginText of txt.split('\n')) {
+        let text = virginText.trim();
+
+        if(text.trim().length < 1)
+            continue;
+        if(text.startsWith('#'))
+            continue;
+
+        text = text.replaceAll("\\name", localStorage.getItem("authorName") || "friend");
+
+        if(text.startsWith('\\wait(')) {
+            rawCardView.innerHTML  = "";
+            await sleep(parseInt(text.replaceAll('\\wait(', '').replaceAll(')', '') * 1000));
+            continue;
+        } else if(text === "\\crash_web_browser") {
+            // Do this after for dramatic effect
+            rawCardView.innerHTML = text;
+            await sleep(150);
+            while(true) {}
+        } else if(text === "\\put_down_button") {
+            document.querySelector("#the_stars_of_northern_travel").style.opacity = 1;
+            let stars = "";
+            for(let i = 0; i < Math.floor(5); i++) {
+                stars += "★";
+            }
+            if(Math.floor(5) != 5) {
+                stars += '☆';
+            }
+            stars += ` ${Number(5).toFixed(1)}/5 `;
+        
+            difficultyStars.innerHTML = stars;
+        } else if(text.startsWith('\\')) {
+            continue;
+        } 
+            
+
+        rawCardView.innerHTML = text;
+        if(!text.startsWith('\\')) {
+            await asyncTts(text);
+        }
+
+        
+    }
+
+    // Not possible
+    window.progressLock = false;
+}
