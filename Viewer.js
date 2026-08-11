@@ -1620,6 +1620,13 @@ async function hijack() {
         });
     };
 
+    const beat1 = new Audio("Assets/Song/BEAT_1.mp3");
+    beat1.loop = true;
+    const beat2 = new Audio("Assets/Song/BEAT_2.mp3");
+    beat2.loop = true;
+    const beat3 = new Audio("Assets/Song/BEAT_3.mp3");
+    beat3.loop = true;
+
     for(const virginText of txt.split('\n')) {
         let text = virginText.trim();
 
@@ -1651,6 +1658,30 @@ async function hijack() {
             stars += ` ${Number(5).toFixed(1)}/5 `;
         
             difficultyStars.innerHTML = stars;
+        } else if(text.startsWith("\\beat_")) {
+            console.log("Switching to beat " + text.replaceAll('\\beat_', ''))
+            switch(text.replaceAll('\\beat_', '')) {
+            case "no":
+                beat1.pause();
+                beat2.pause();
+                beat3.pause();
+                break;
+            case "1":
+                beat1.play();
+                beat2.pause();
+                beat3.pause();
+                break;
+            case "2":
+                beat1.play();
+                beat2.play();
+                beat3.pause();
+                break;
+            case "3":
+                beat1.play();
+                beat2.play();
+                beat3.play();
+                break;
+            }
         } else if(text.startsWith('\\')) {
             continue;
         } 
