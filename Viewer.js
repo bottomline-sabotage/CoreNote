@@ -1594,6 +1594,17 @@ document.querySelector("#card_view").addEventListener('touchend', (e) => {
             next();
 });
 
+document.body.addEventListener('click', (e) => {
+    const el = e.target;
+    if(el.className == "uploaded_asset" && String(el.tagName).toLowerCase() == "img") {
+        CoreNote.alert(`
+            <div style="overflow: scroll">
+                <img src="${el.src}" style="max-height: 30vh"></img>
+            </div>
+        `);
+    }
+});
+
 async function hijack() {
     const res = await fetch("Assets/Song/lines.txt");
     if(!res.ok)
