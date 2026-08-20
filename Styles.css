@@ -36,6 +36,11 @@
     src: url('Assets/Fonts/wingdings 3.ttf') format('truetype');
 }
 
+@font-face {
+    font-family: opendyslexic;
+    src: url('Assets/Fonts/OpenDyslexic-Regular.otf') format('opentype');
+}
+
 * {
     color: rgb(9, 9, 9);
     font-family: "Calibri", Arial, Helvetica, sans-serif;

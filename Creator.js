@@ -660,6 +660,11 @@ function createCardDialogue() {
         document.querySelector("#back_top").style.opacity = 0;
     }
 
+    if(localStorage.getItem("dyslexic"))
+        card.querySelectorAll("*").forEach((el) => {
+            el.style.fontFamily = "opendyslexic";
+        });
+
     return card;
 }
 
@@ -779,77 +784,83 @@ function generateJson() {
 async function save() {
     callLoad();
 
-    if(document.querySelectorAll(".cardDialogue").length < 1) {
-        CoreNote.alert("You have no cards to save.<br>To make a card, go the Cards tab, then press the \"+ Card\" button on the bottom-right (you may have to zoom out or scroll to find it).");
+    try {
+        if(document.querySelectorAll(".cardDialogue").length < 1) {
+            CoreNote.alert("You have no cards to save.<br>To make a card, go the Cards tab, then press the \"+ Card\" button on the bottom-right (you may have to zoom out or scroll to find it).");
+            endLoad();
+            return;
+        }
+
+        const data = generateJson();
+
+        const zip = new JSZip();
+        zip.file("data.json", JSON.stringify(data));
+
+        const assetsFolder = zip.folder("Assets");
+        const promises = [];
+
+        if(document.querySelectorAll(".uploaded_asset").length > window.HIGH_ASSET_COUNT) {
+            CoreNote.alert("This card set has a lot of assets (>20). Note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
+            window.alreadyHadSizeWarning = true;
+        }
+
+        document.querySelectorAll(".uploaded_asset").forEach((el) => {
+            const url = el.src || el.href; // Object URL (blob:)
+            const fileName = String(el.id).split("Assets-_-")[1];
+            
+            const oldSrc = el.src;
+            const oldHref = el.href;
+
+            el.src = null;
+            el.href = null;
+
+            // I Love then chains!
+            promises.push(
+            fetch(url)
+                .then(res => {
+                    if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+                    return res.blob();
+                })
+                .then(blob => {
+                    assetsFolder.file(fileName, blob);
+                })
+                .catch(err => {
+                    console.error(`Skipping broken asset (${fileName}):`, err);
+                })
+                .finally(() => {
+                    el.src = oldSrc;
+                    el.href = oldHref;
+                })
+            );
+        });
+
+        await Promise.all(promises);
+
+
+        // Generate and download the file
+        const blob = await zip.generateAsync({ type: "blob", mimeType: "application/octet-stream" })
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${data.title || "set"}.corenote`;
+        a.click();
+
+        URL.revokeObjectURL(url);
+
+        console.log(data);
+
+        setTimeout(() => {
+            console.log("Cleared emergency backup");
+            localStorage.removeItem("e-emergencyBackup");
+        }, 40e+3);
+
+    } catch (err) {
+        console.error(err);
+    } finally {
         endLoad();
-        return;
     }
 
-    const data = generateJson();
-
-    const zip = new JSZip();
-    zip.file("data.json", JSON.stringify(data));
-
-    const assetsFolder = zip.folder("Assets");
-    const promises = [];
-
-    if(document.querySelectorAll(".uploaded_asset").length > window.HIGH_ASSET_COUNT) {
-        CoreNote.alert("This card set has a lot of assets (>20). Note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
-        window.alreadyHadSizeWarning = true;
-    }
-
-    document.querySelectorAll(".uploaded_asset").forEach((el) => {
-        const url = el.src || el.href; // Object URL (blob:)
-        const fileName = String(el.id).split("Assets-_-")[1];
-        
-        const oldSrc = el.src;
-        const oldHref = el.href;
-
-        el.src = null;
-        el.href = null;
-
-        // I Love then chains!
-        promises.push(
-        fetch(url)
-            .then(res => {
-                if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
-                return res.blob();
-            })
-            .then(blob => {
-                assetsFolder.file(fileName, blob);
-            })
-            .catch(err => {
-                console.error(`Skipping broken asset (${fileName}):`, err);
-            })
-            .finally(() => {
-                el.src = oldSrc;
-                el.href = oldHref;
-            })
-        );
-    });
-
-    await Promise.all(promises);
-
-
-    // Generate and download the file
-    const blob = await zip.generateAsync({ type: "blob", mimeType: "application/octet-stream" })
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${data.title || "set"}.corenote`;
-    a.click();
-
-    URL.revokeObjectURL(url);
-
-    console.log(data);
-
-    setTimeout(() => {
-        console.log("Cleared emergency backup");
-        localStorage.removeItem("e-emergencyBackup");
-    }, 40e+3);
-
-    endLoad();
 }
 
 function loadFromJson(data) {

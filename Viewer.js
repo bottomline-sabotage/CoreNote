@@ -844,7 +844,7 @@ function showCard() {
             commentWindow.style.display = "none";
         }
     }
-    
+
     // Set innerHTML
     rawCardView.innerHTML = innerHTML;
     // rawCardView.scrollTop = 0;
@@ -853,6 +853,11 @@ function showCard() {
     document.querySelectorAll("*").forEach((el) => { // HACKS!
         el.scroll({top: 0, behavior: "smooth"})
     });
+
+    if(localStorage.getItem('dyslexic'))
+        rawCardView.querySelectorAll('*').forEach((el) => {
+            el.style.fontFamily = "opendyslexic";
+        });
 
     // Asset rendering
 
@@ -1491,6 +1496,11 @@ function printStuff() {
         window.scroll({top: 0});
         window.print();
     }, 500);
+
+    if(localStorage.getItem('dyslexic'))
+        div.querySelectorAll('*').forEach((el) => {
+            el.style.fontFamily = "opendyslexic";
+        });
 }
 
 

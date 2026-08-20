@@ -121,7 +121,8 @@
 
         <h1>Settings</h1>
         <button onclick="resetToDefault(); loadSettings();" tabindex="3">Reset To Default</button><br><br>
-        <label class="checkbox-container" title="Doesn't load assets for all sets (if a set constantly crashes, this can help)"> Disable Set Assets <input tabindex="4" type="checkbox" id="settings-disable_assets"/> <span class="checkmark"></span> </label> 
+        <label class="checkbox-container" title="Doesn't load assets for all sets (if a set constantly crashes, this can help)"> Disable Set Assets <input tabindex="4" type="checkbox" id="settings-disable_assets"/> <span class="checkmark"></span> </label> <br>
+        <label class="checkbox-container" title="Uses the OpenDyslexic font" style="font-family: opendyslexic;" id="settings-dyslexic-contain"> OpenDyslexic Font <input tabindex="4" type="checkbox" id="settings-dyslexic" onclick="if(localStorage.getItem('dyslexic')) {  removeDyslexic(); } else {makeDyslexic();}"/> <span class="checkmark"></span> </label> 
         
         <div style="display: none; opacity: 0;">
             <br>

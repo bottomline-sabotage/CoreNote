@@ -32,7 +32,6 @@ function epochToDate(epoch) {
     return `${month}/${day}/${year}`;
 }
 
-
 function sendNotification(message, timeMs) {
     const noScreenEffects = localStorage.getItem("removeScreenEffects") == "true";
 
@@ -127,6 +126,8 @@ function shuffleArray(array) {
 }
 
 function resetToDefault() {
+    removeDyslexic() 
+
     const setup = {
         disableSetAssets: false,
         motionControls: true,
@@ -269,6 +270,36 @@ function endLoad() {
             el.remove();
         }, 500);
     });
+}
+
+
+function makeDyslexic() {
+    localStorage.setItem('dyslexic', true);
+
+    document.querySelectorAll('*').forEach((el) => {
+        el.style.fontFamily = "opendyslexic";
+    });
+}
+
+function removeDyslexic() {
+    localStorage.removeItem('dyslexic');
+
+    document.querySelectorAll('*').forEach((el) => {
+
+        if(el.id == "settings-dyslexic-contain")
+            return;
+
+        if(el.tagName.toLowerCase() != 'button') {
+            el.style.fontFamily = `"Calibri", Arial, Helvetica, sans-serif`;
+        } else 
+            el.style.fontFamily = `norwester, "Calibri", Arial, Helvetica, sans-serif`;
+    });
+}
+
+if(localStorage.getItem('dyslexic')) { 
+    makeDyslexic();
+    if(document.querySelector("#settings-dyslexic"))
+        document.querySelector("#settings-dyslexic").checked = true;
 }
 
 class CoreNote {
@@ -455,4 +486,4 @@ class CoreNote {
             }, 1000);
         });
     }
-}
+}   
