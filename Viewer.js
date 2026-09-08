@@ -1616,6 +1616,8 @@ document.body.addEventListener('click', (e) => {
 });
 
 async function hijack() {
+    return;
+    
     const res = await fetch("Assets/Song/lines.txt");
     if(!res.ok)
         return;
