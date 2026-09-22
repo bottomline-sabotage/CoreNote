@@ -1501,6 +1501,12 @@ function printStuff() {
         div.querySelectorAll('*').forEach((el) => {
             el.style.fontFamily = "opendyslexic";
         });
+
+    const watermark = document.createElement('img');
+    watermark.src = "/Assets/Logo.png";
+    watermark.className = "printed_watermark";
+
+        div.prepend(watermark, document.createElement('br'));
 }
 
 
