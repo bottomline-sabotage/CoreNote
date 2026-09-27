@@ -781,7 +781,8 @@ function generateJson() {
     return data;
 }
 
-async function save() {
+async function save(justGenerate = false) {
+    window.lastGeneratedUrl = null;
     callLoad();
 
     try {
@@ -844,7 +845,12 @@ async function save() {
         const a = document.createElement("a");
         a.href = url;
         a.download = `${data.title || "set"}.corenote`;
-        a.click();
+        if(!justGenerate)
+            a.click();
+        else {
+            window.lastGeneratedUrl = url;
+            return;
+        }
 
         URL.revokeObjectURL(url);
 
@@ -860,6 +866,44 @@ async function save() {
     } finally {
         endLoad();
     }
+
+}
+
+async function shareFile() {
+    await save(true);
+    if(!window.lastGeneratedUrl) return;
+
+    const title = document.querySelector("#info-title").value;
+    await saveAndShare(window.lastGeneratedUrl, 
+        `I made a CoreNote set about "${title}!" To use it, go to https://corenote.tylerkoberna.com/Viewer.html, then Upload the file I've attached!`
+    );
+    URL.revokeObjectURL(window.lastGeneratedUrl);
+    window.lastGeneratedUrl = null;
+}
+
+async function saveAndShare(url, message) {
+    try {
+        // Download the file from the URL.
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch the darn file");
+
+        const blob = await response.blob();
+        const filename = "CoreNote Set.corenote";
+        const file = new File([blob], filename, {
+            type: "application/octet-stream"
+        });
+
+        if(navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({text: message, files: [file] });
+        } else {
+            CoreNote.alert("Your Web Browser is terrible and doesn't support this. Just download the file, then text it to them.");
+        }
+    } catch(err) {
+        if(err.name !== "AbortError") {
+            console.error("Share failed:", err);
+        }
+    }
+
 
 }
 
