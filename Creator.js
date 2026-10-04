@@ -253,7 +253,7 @@ function createCardDialogue() {
             const file = renameFile(theFile, `${crypto.randomUUID()}`);
 
             if(file.size > 5e+6)
-                CoreNote.alert("This file is really large (>5MB). While we will let you use it, just note that some devices (particularly, smartphones, may be unable to use your set without disabling assets.");
+                CoreNote.alert("This file is really large (>5MB). While we will let you use it, just note that some devices (particularly, smartphones, may be unable to use your set without disabling assets).");
 
             let el;
 
