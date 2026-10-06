@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreNote LIVE</title>
+    <link rel="stylesheet" href="Styles.css">
+    <style>
+        body {
+            overflow-x: hidden;
+        }
+
+        #logo {
+            width: 70vw; height: auto;
+            max-width: 600px;
+        }
+
+        .floating_window {
+            width: 40vw;
+            padding: 25px;
+            margin: auto;
+            /* transform: translate(50%); */
+            justify-content: center;
+            text-align: center;
+        }
+
+        #screen_size {
+            height: 80vh;
+            width: 100vw;
+        }
+
+        #info_thing {
+            margin: auto;
+            max-width: 80vw;
+        }
+
+        #settings-auto_scroll-time-label {
+            transition: all 0.5s ease;
+        }
+
+
+    </style>
+    
+    <link rel="icon" type="image/png" href="/Assets/favicon.png">
+</head>
+<body>
+
+    <div style="display:inline-block;background:#8B0000;border:4px solid #FFD700;border-radius:10px;padding:16px 24px;text-align:center;font-family:Arial,Helvetica,sans-serif;box-shadow:0 0 15px rgba(255,0,0,.6);max-width: 60vw;">
+        <div style="font-size:42px;font-weight:900;color:#FFFF00;line-height:1;text-shadow:2px 2px #000;">
+            ⚠ WARNING ⚠
+        </div>
+        <div style="margin-top:8px;font-size:18px;font-weight:bold;color:#FFFFFF;">
+            Not only is this not complete in any state, it also might never exist, period. This is purely for experimental uses, 'mm-kay?
+        </div>
+    </div><br><br>
+
+
+    <button>Go back!</button>
+    
+    <hr>
+
+    <img id="logo" placeholder="CoreNote Logo" src="Assets/Logo.png"><br>
+    
+    <div class="floating_window">
+        <h1>Download Host Server</h1>
+        <a style="display: none;" id="easy_way" href="/Live/Downloads/Installer.exe" download></a>
+        <button onclick="document.querySelector('#easy_way').click()">The easy way <i>(Windows app)</i></button><br><br>
+        <a style="display: none;" id="oh_god" href="/Live/Downloads/Server.zip" download></a>
+        <button onclick="document.querySelector('#oh_god').click()">The "please don't make me do this" way <i>(code 🧑‍💻)</i></button>
+
+        <br><br><hr>
+
+        <a style="display: none;" id="extension_download" href="/Live/Downloads/Extension.zip" download></a>
+        <h1>Download Chrome Extension</h1>
+        <button onclick="document.querySelector('#extension_download').click()">HERE!</button><br>
+ 
+    </div>
+
+
+    <span style="z-index: 1; font-size: 3rem; position: fixed; bottom: 2vh; transform: translate(-50%); opacity: 1; transition: 0.5s opacity ease;" id="scroll_arrow">↓</span>
+    <div id="screen_size"></div>
+    <div id="info_thing">
+        
+        <hr>
+        <!-- <button onclick="window.location.href = 'Guide.pdf'">Instruction Guide</button> -->
+        
+        <h1 id="description_title">But... what is CoreNote <img class="live_text" src="Assets/Live Logo.png" alt="Live"> ?</h1>
+        <div style="height: 10h;" id="description_spacer">
+        <p>
+           CoreNote <img class="live_text_small" src="Assets/Live Logo.png" alt="Live"> is an extension to good-old <a href="/">CoreNote</a>, allowing for "fun" educational experiences! Unlike our competitors, it's completely anonymous (at least, to me) and is 100% free (assuming pain and suffering is free of charge, just like the sarcasm). 
+        
+
+        </p>
+        <h1>No Large Server?</h1>
+        <p>
+            Yep! You download the server and run it yourself locally. Then students, peers, and whatever can go do whatever they want. This keeps all private information private and gives you fun admin commands.
+        </p>
+
+        <h1>CoreNote Integration</h1>
+        <p>
+            All CoreNote <img class="live_text_small" src="Assets/Live Logo.png" alt="Live"> sets comes from .corenote files. <b>You cannot create sets here; go to <a href="/Create.html">The Creator</a> for that</b>. CoreNote's Creator itself does have some special <img class="live_text_small" src="Assets/Live Logo.png" alt="Live">-only features, but any CoreNote set should work.
+        </p>
+
+    </div>
+    
+    <div style="height: 1vh;"></div>
+
+    <div style="display: flex; align-items: center; justify-content: center;">
+        <div class="footer">
+            © Tyler Koberna, 2026.<br>
+            View on <a href="https://github.com/bottomline-sabotage/CoreNote/">GitHub</a>
+        </div>
+    </div>
+    
+    <span id="awards"></span>
+    <div style="height: 5vh;"></div>
+    
+<!-- 
+    <div style="height: 15vh;" id="small_one"></div>
+    <div style="height: 9999vh;"></div> -->
+
+    <script src="General.js"></script>
+
+
+
+    <script>
+
+        const arrow = document.getElementById("scroll_arrow");
+        document.addEventListener("scroll", (event) => { 
+            if(window.scrollY >= 150) {
+                arrow.style.opacity = 0;
+            } else {
+                arrow.style.opacity = 1;
+            }
+        });
+    
+        // document.querySelector("#study_set").onclick = () => {
+        //     const fileInput = document.querySelector("#file_input");
+        //     fileInput.click()
+        // }
+    </script>
+
+
+</body>
+</html>
