@@ -5,6 +5,5 @@
     "maxPath": 50,
     "logPlayerLocations": false,
     "logPlayerCursorLocations": false,
-    "showAllPlayersCursorsRegardlessOfWebPage": false,
-    "adminPassword": "goodday123!"
+    "showAllPlayersCursorsRegardlessOfWebPage": false
 }

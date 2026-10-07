@@ -20,7 +20,7 @@ global.gameState = new GameState();
 
 global.gameState.host = `${IP_ADDRESS}:${PORT}`;
 
-global.serverFilePath = __dirname;
+global.serverConfigFilePath = __dirname;
 
 global.gameState._port = PORT;
 global.gameState._IP_ADDRESS = IP_ADDRESS;
@@ -35,7 +35,7 @@ const rl = readline.createInterface({
 
 fs.promises.readFile(`${__dirname}/config.json`, {"encoding": "utf-8"}).then((res) => {
 	try {
-		global.server = JSON.parse(res);
+		global.serverConfig = JSON.parse(res);
 	} catch(error) {
 		throw new Error("Fatal Error: Failed to load server config... " + error);
 	}
@@ -311,13 +311,20 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, IP_ADDRESS, () => {
     console.clear();
     console.log(`${Color.BG_GREEN}Server is running at http://${IP_ADDRESS}:${PORT}/${Color.RESET}`);
-
+    
     global.feet = new Feet(server, IP_ADDRESS, PORT);
-
+    
     // askQuestion();
-
+    
     global.gameState.update();
     setInterval(() => {
         global.gameState.update();
     }, 5000);
+
+    setTimeout(async () => {
+        while(!global.serverConfig) global.gameState.sleep(100);
+        global.serverConfig.adminPassword = crypto.randomUUID();
+        console.log(`To become admin, go to http://${IP_ADDRESS}:${PORT}/admin, then enter the password ${Color.RED}${global.serverConfig.adminPassword}${Color.RESET}`);
+        
+    }, 0.5e+3);
 });
