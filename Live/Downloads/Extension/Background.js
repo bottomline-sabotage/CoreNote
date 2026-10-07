@@ -93,6 +93,8 @@ class ServerCommunicator {
 }
 
 async function websocket() {
+
+    return true;
     try {
         
         const localStorage = await chrome.storage.local.get();

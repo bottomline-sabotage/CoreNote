@@ -16,6 +16,9 @@ class GameState {
 		this.allUsernames = [];
         this.onlinePlayers = [];
 
+        this.accounts = {};
+        this.usernamesList = []
+        this.authList = []
 
 	
         this.colors = {

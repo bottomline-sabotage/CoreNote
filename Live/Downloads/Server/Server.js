@@ -206,49 +206,49 @@ const server = http.createServer(async (req, res) => {
         let contentType = 'text/html; charset=utf-8';
 
         if(req.url.startsWith("/color@")) { 
-            const username = decodedURI.replaceAll('/', '').split('@')[1];
+            // const username = decodedURI.replaceAll('/', '').split('@')[1];
            
-            const auth = await Accounts.getAuth(username);
+            // const auth = await Accounts.getAuth(username);
 
-            if(!auth) {
-                res.writeHead(500);
-                res.end('null');
-                return;
-            }
+            // if(!auth) {
+            //     res.writeHead(500);
+            //     res.end('null');
+            //     return;
+            // }
 
-            let text;
+            // let text;
 
-            if(!global.gameState.colors[auth]) {
-                const config = await Accounts.getConfigByRef(username);
-                if(!config) {
-                    res.writeHead(500);
-                    res.end('null');
-                    return;
-                }
-                text = config.color;
-                global.gameState.colors[auth] = config.color;
-            } else {
-                text = global.gameState.colors[auth];
-            }
+            // if(!global.gameState.colors[auth]) {
+            //     const config = await Accounts.getConfigByRef(username);
+            //     if(!config) {
+            //         res.writeHead(500);
+            //         res.end('null');
+            //         return;
+            //     }
+            //     text = config.color;
+            //     global.gameState.colors[auth] = config.color;
+            // } else {
+            //     text = global.gameState.colors[auth];
+            // }
             
-            res.writeHead(200);
-            res.end(`${text}`);
+            // res.writeHead(200);
+            // res.end(`${text}`);
             return;
         } 
         
         else if(req.url.startsWith("/ht@")) {
-            const username = decodedURI.replaceAll('/', '').split('@')[1];
+            // const username = decodedURI.replaceAll('/', '').split('@')[1];
            
-            const auth = await Accounts.getAuth(username);
+            // const auth = await Accounts.getAuth(username);
 
-            if(!auth) {
-                res.writeHead(500);
-                res.end('null');
-                return
-            }
+            // if(!auth) {
+            //     res.writeHead(500);
+            //     res.end('null');
+            //     return
+            // }
 
-            res.writeHead(200);
-            res.end(`${global.gameState.calculateTrack(auth, false)}`);
+            // res.writeHead(200);
+            // res.end(`${global.gameState.calculateTrack(auth, false)}`);
             return;
         }
 

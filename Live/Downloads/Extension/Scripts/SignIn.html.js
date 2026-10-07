@@ -63,23 +63,29 @@ signUpButton.addEventListener('click', async () => {
 
 	const response = await account.signUp(accountData);
 
-	if(response !== true) {
-		preview.innerText = response;
+	if(response.ok !== true) {
+		preview.innerText = response.message;
 	} else {
 		preview.innerText = "";
 
 		setTimeout(async () => {
-			
+			window.location.href = "MainPage.html";
 		}, 4.5e+2);
 	}
 });
 
 
-chrome.storage.local.get().then((response) => {
-    // if(response.username && response.password) {
-	//    in_username.value = response.username;
-	//    in_pass.value = response.password;
-	// //    switchActionWindow("SignIn");
-	// //    signIn();
-    // }
+chrome.storage.local.get().then(async (response) => {
+    if(response.authorization) {
+		const res = await ServerCommunicator.post("TestAuth", {data: response.authorization});
+		if(res.ok) {
+			window.location.href = window.location.href = "MainPage.html";
+
+		} else {
+			chrome.storage.local.remove("authorization");
+			chrome.storage.local.remove("username");
+
+		}
+
+    }
 });

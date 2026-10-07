@@ -32,18 +32,13 @@ class ServerCommunicator {
 
                 const authorization = request.headers['authorization'];
 
-                if(action !== "Info" && action !== "CreateAccount" && action !== "SignInAccount" && action !== "RequestAdmin") {
-                    const username = await Accounts.getUsername(authorization);
-                    if(!username) {
-                        dataResponse = {
-                            "ok": false,
-                            "message": "Invalid Auth Key!"
-                        };
-                        
+                if(action !== "Info" && action !== "CreateAccount" && action !== "TestAuth" && action !== "RequestAdmin") {
+                    if(!global.gameState.authList.includes(authorization)) {
                         // Respond to the client
+                        dataResponse.ok = false;
+                        dataResponse.message = "requires valid auth";
                         response.writeHead(200, { 'Content-Type': 'application/json' });
                         response.end(JSON.stringify(dataResponse));
-                        
                         return;
                     }
                 }
@@ -87,14 +82,11 @@ class ServerCommunicator {
                         break;
                     }
 
-                    case "SignInAccount": {
-                        const account = new Accounts();
-                        dataResponse = await account .signInAccount(requestData);
+                    case "TestAuth": {
+                        dataResponse.ok = global.gameState.authList.includes(requestData.data);
                         break;
                     }
-
                    
-
                     case "RequestAdmin": {
                         if(requestData.password !== global.server.adminPassword) {
                             dataResponse = {
