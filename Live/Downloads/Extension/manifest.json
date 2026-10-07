@@ -1,0 +1,43 @@
+{
+    "name": "CoreNote Live",
+    "description": "THE GREATEST REVIEW GAME OF ALL TIME (possibly)",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "index.html",
+        "default_icon": "Assets/Favicons/1024.png",
+		"default_title": "CoreNote Live"
+    },
+    "icons": {
+        "32": "Assets/Favicons/32.png",
+        "64": "Assets/Favicons/64.png",
+        "128": "Assets/Favicons/128.png",
+        "512": "Assets/Favicons/512.png",
+        "1024": "Assets/Favicons/1024.png"
+
+    },
+    "background": {
+        "service_worker": "Background.js"
+    },
+    "host_permissions": ["<all_urls>"],
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],  
+            "js": ["/Content.js"],
+            "run_at": "document_start"
+        }
+    ],
+    "permissions": [
+       "storage", "tabs", "pageCapture", "topSites", "scripting", "webNavigation", "webRequest", "webAuthenticationProxy", "activeTab", "notifications", "identity", "identity.email"
+    ],
+
+    "web_accessible_resources": [
+    {
+      "resources": [
+            
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+    
+}

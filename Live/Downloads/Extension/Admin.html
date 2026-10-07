@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <link rel="stylesheet" href="Styles.css">
+</head>
+<body class="kraftvoll_body">
+    <div>
+        <h2>Admin Settings</h2>
+        <div class="user_list" id="user_list">
+            <!-- <button id="start_stop">Start/Stop the game!</button> -->
+            <button id="clear_all_paths">Clear all Paths</button>
+            <button id="force_change_roles">Force Change Roles</button>
+            <button id="mass_redirect">Mass Deportation</button>
+            <button id="toggle_follow_mode">Toggle Follow Mode</button>
+            <button id="server_eval">Server Eval</button>
+            <button id="term_server">Terminate Server</button>
+            <button id="user_eval" style="display: none;">User Eval</button>
+        </div>
+    </div>
+
+    <span style="position: fixed; bottom: 8px; right: 8px; font-size: 14px; cursor: pointer;" title="Go Back!" id="back">🔙</span>
+
+    <script src="Scripts/The Hell.js"></script>
+    <script src="Scripts/ServerCommunicator.js"></script>
+    <script src="Scripts/Accounts.js"></script>
+    <script src="Scripts/Admin.html.js"></script>
+</body>
+</html>

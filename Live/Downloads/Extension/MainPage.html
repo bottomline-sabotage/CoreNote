@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test</title>
+    <link rel="stylesheet" href="Styles.css">
+</head>
+<body class="main_page">
+    <div style="width: 100%">
+        <div id="start_tab" class="hide_on_dialogue_box">
+            <h2>Google Chrome Hide 'n' Seek</h2>
+            <hr>
+                <div id="nav_bar">
+                    <span class="nav_bar-el" id="nav_bar-el-time">Time</span>
+                    <span class="nav_bar-el" id="nav_bar-el-path">Path</span>
+                    <span class="nav_bar-el" id="nav_bar-el-players">Players</span>
+                    <span class="nav_bar-el" id="nav_bar-el-settings">Settings</span>
+                </div>
+            <hr>
+            <br>
+            <p id="preview"></p>
+            <br>
+        </div>
+
+
+        <div id="time">
+            <div id="time_result">
+                <h4>Hide Time:</h4>
+                <span id="hours">--</span> <span class="time_result-label" id="time_result-label-hours">Hours...</span> <span id="minutes">--</span> <span class="time_result-label" id="time_result-label-minutes">Minutes...</span> <span id="seconds">--</span> <span class="time_result-label" id="time_result-label-seconds">Seconds...</span>
+            </div>
+
+            <br>
+
+            <div class="scrollable_center_content-scaling" style="display: none;" id="stopwatch_controls">
+                <button id="s_start" style="font-size: small;">Start</button>
+                <button id="s_stop" style="font-size: small;">Stop</button>
+                <button id="s_clear" style="font-size: small;">Clear</button>
+            </div>
+        </div>
+
+        <div id="path">
+            <div class="scrollable_center_content-scaling" id="path_list">
+
+            </div>
+        </div>
+
+        <div id="players">
+            <div class="scrollable_center_content-scaling" id="players_list">
+
+            </div>
+            <span class="small_label">* times only update on refresh, which can be done by selecting "players" from the top again</span>
+        </div>
+
+        <div id="settings">
+            <div class="scrollable_center_content-scaling settings_content">
+                <label for="s-color">User Color:</label>
+                <input id="s-color" type="color"> 
+                
+                <br><br>                
+    
+                <label for="up_pfp">Profile Picture:</label>
+                <label for="up_pfp" id="custom-file-label" class="custom-file-label">Import</label>
+                <input id="up_pfp" type="file" accept="image/png"> 
+                
+               	<br><br>
+				
+				<label for="role">Seeker or Hider:</label>
+                <button id="role" style="font-size: small;">You're a Spectator</button>
+                
+				<br><br>
+                
+				<label for="random_theme">Generate Random Theme:</label>
+                <button id="random_theme" style="font-size: small;">Go!</button>
+
+                <br><br>
+
+				<label for="custom_theme">Add to Random Theme List:</label>
+                <button id="custom_theme" style="font-size: small;">Add!</button>
+
+                <br><br>
+
+                <label for="srv_disconnect">Disconnect From Server (and sign out):</label>
+                <button id="srv_disconnect" style="font-size: small;">Disconnect!</button>
+                
+            </div>
+        </div>
+    </div>
+
+    <span style="position: fixed; top: 8px; left: 8px; font-size: 14px; cursor: pointer; display: none;" title="Deport to Google" class="hide_on_dialogue_box" id="deport_to_google">G</span>
+    <span style="position: fixed; bottom: 8px; left: 8px; font-size: 14px; cursor: pointer; display: none;" title="Clear all Paths" class="hide_on_dialogue_box" id="clear_path">C</span>
+    <span style="position: fixed; top: 8px; right: 8px; font-size: 14px; cursor: pointer; display: none;" title="Admin" class="hide_on_dialogue_box" id="admin">🌎</span>
+    <span style="position: fixed; bottom: 8px; right: 8px; font-size: 14px; cursor: pointer;" title="Kraftvoll (DMs)" class="hide_on_dialogue_box" id="kraftvoll">💬</span>
+
+    <script src="Scripts/The Hell.js"></script>
+    <script src="Scripts/Reset.js"></script>
+    <script src="Scripts/ServerCommunicator.js"></script>
+    <script src="Scripts/Accounts.js"></script>
+    <script src="Scripts/Settings.js"></script>
+    <script src="Scripts/MainPage.html.js"></script>
+</body>
+</html>
