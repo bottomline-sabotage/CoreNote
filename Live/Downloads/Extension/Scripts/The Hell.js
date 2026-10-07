@@ -36,9 +36,7 @@ function loadingIcon(boolean, timeout = 1000) {
 function theHell() {
     // NO LOGS WILL COME BEFORE THE HELL!
     console.clear();
-    console.log('%c THE HELL YOU DOING 🖕 ', 'background: #6e0000; color: #ff8c00; text-shadow: -3px -3px 0 #541400, 3px -3px 0 #541400, -3px 3px 0 #000, 3px 3px 0 #541400; font-family: \'impact\'; font-size: 75px');
-        
-    console.log("%c   Seriously, bad, bad stuff can happen here if you're not good at doing shit.   ", 'background: #6e0000; color: #ff8c00; font-size: 20px;');
+    
 
     // console.error("Sending actual real-life porn can get your account banned.".toUpperCase() + " " + i);
     // console.log(console.log("%c _______ _    _ ______   _    _ ______ _      _     ___  _ \n |__   __| |  | |  ____| | |  | |  ____| |    | |   |__ \| |\n    | |  | |__| | |__    | |__| | |__  | |    | |      ) | |\n    | |  |  __  |  __|   |  __  |  __| | |    | |     / /| |\n    | |  | |  | | |____  | |  | | |____| |____| |____|_| |_|\n    |_|  |_|  |_|______| |_|  |_|______|______|______(_) (_)\n                                                            \n                       GET OUTTA MY CONSOLE! ", 'color: orange') + i);
@@ -50,11 +48,11 @@ function sleep(ms) {
 }
 
 function getRandomNumber(min, max) {
-    try {
+    // try { 
         return Math.floor(Math.random() * (max - min + 1)) + min;
-    } catch (e) {
-        return -1;
-    }
+    // } catch (e) {
+    //     return -1;
+    // }
 }
 
 function getRandomDecimal(min = 0, max = 1) {

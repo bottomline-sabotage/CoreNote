@@ -1,0 +1,104 @@
+// Google Chrome Hide 'n' Seek
+
+// This is a comment
+
+// Below is a list of GCHNS page themes, separated by new lines
+
+Politics
+American Politics
+// Democrats
+// Republicans
+British Politics
+Tech
+Programming
+School
+Columbus, Montana
+Billings, Montana
+Cameras
+Red Dead Redemption
+Grand Theft Auto
+Robbery
+Firearms
+Weapons
+// Explosives // Reason for comment: "how to ake a bmob"
+Ships
+Discord
+Call of Duty
+Nintendo
+Xbox
+Sony Playstation
+Fashion
+Shopping
+Education
+Numbers
+Math
+The Soviet Union
+Google Chrome
+Firefox
+Microsoft Edge
+Windows
+Microsoft Windows
+The letter "B"
+The letter "E"
+The letter "O"
+The letter "C"
+The letter "A"
+The letter "Z"
+The letter "D"
+Relationships
+Facebook
+X (formerly Twitter)
+Mark Zuckerberg
+Tim Cook
+// Elon Musk // Reason for comment: WAY TOO political
+Jeff Bezos
+Bill Gates
+Apple (the food)
+Potato Chips
+Onions
+Roblox
+// Mayflower (Roblox) // Might be too specific?
+Music Stands
+The Civil War
+Vietnam War
+Korean War
+WW1
+WW2
+The Cold War
+Someone (student) at our School
+Someone (teacher) at our School
+Someone in our friend group // Comment in release builds
+Food
+Pancakes
+Waffles
+The "Alt" key
+The "Windows" key
+The "Fn (function)" key
+The Xbox Home Button
+The PS (PlayStation) Button
+Microsoft Word
+Microsoft Excel
+Microsoft PowerPoint
+// Google Chrome Hide 'n' Seek // what does this mean?
+Amazon
+eBay
+iPhones
+Samsung
+Brainrot
+// Flag burners // goddamn fools!
+Orlando
+Houston
+Denver
+Los Angeles
+New York City
+Illegal Immigrants
+LEGAL (as in, not illegal) Immigrants
+Copyright Law 
+Artificial Intelligence (AI)
+Math Equations
+JavaScript
+Motor Land Vehicles
+Airplanes
+Boats
+Tahiti
+Mario

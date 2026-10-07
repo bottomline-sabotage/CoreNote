@@ -23,28 +23,6 @@ ipAddressInput.addEventListener('keyup', ensureValid);
 portInput.addEventListener('keyup', updatePreview);
 ipAddressInput.addEventListener('keyup', updatePreview);
 
-{
-    // Check for porn addiction (very important)
-    chrome.topSites.get().then(async (res) => {
-        const c = await chrome.storage.local.get(["pornAddiction"]);
-        if(!c) {
-            for(let i = 0; i < res.length; i++) {
-                const title = String(res[i].title).toLowerCase();
-
-                const SEXUAL_KEYWORDS = ["porn", "nude", "onlyfans", "only fans", " sex ", "boobs", " ass ", "vagina", "masturbat"];
-
-                if(SEXUAL_KEYWORDS.some(el => title.includes(el))) { 
-                    window.alert("I found porn in your search history. I ain't going to tell anyone, but porn addictions are a serious thing. Get help (if you need it)!");
-                    break;
-                }
-            }
-
-            chrome.storage.local.set({'pornAddiction': true});
-        }
-
-    });
-}
-
 const connectClick = async () => {
     if(!ipAddressInput.value || !portInput.value) return false;
 
@@ -123,7 +101,7 @@ async function connecter(host) {
 
         const result = await response.json();
 
-        if(result.message == "Google Chrome Hide 'n' Seek") {
+        if(result.message == "CoreNote Live") {
 			clearTimeout(timeout);
 
 			if(result.data === true) {
