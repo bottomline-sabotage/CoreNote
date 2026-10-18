@@ -1222,6 +1222,16 @@ function starCategory() {
 }
 
 function goCategory(category) {
+
+    const refreshSegments = () => {
+        // Segmify again
+        if(S_isSegmented) {
+            // unsegmify();
+            setCard(0);
+            segmify(settings.segmentedStudying.count, settings.segmentedStudying.repeatChance, settings.segmentedStudying.percentRequiredToProceed, settings.segmentedStudying.requiredPerfections);   
+        }
+    };
+
 	cardSet.json.cards = structuredClone(cardsBackUp);
 	
 	if(category != -2)
@@ -1243,6 +1253,9 @@ function goCategory(category) {
 		setCard(0);
 		showCard();
 		totalCards.textContent = cardSet.json.cards.length;
+
+        refreshSegments();
+
 		return;	
 	}
 	
@@ -1250,12 +1263,16 @@ function goCategory(category) {
 	if(category == -2) {
 		
 		previouslyIncorrect();
+
+        refreshSegments();
 		return;
 	}
 	
 	// Star
 	if(category == -1) {		
 		starCategory();
+
+        refreshSegments();
 		return;
 	}
 	
@@ -1275,6 +1292,8 @@ function goCategory(category) {
 	setCard(0);
 	showCard();
 	totalCards.textContent = cardSet.json.cards.length;
+
+    refreshSegments();
 }
 
 function goOrder(order) {

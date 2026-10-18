@@ -293,3 +293,7 @@ code {
 .printed_watermark {
     max-width: 30%;
 }
+
+#settings-segmented_study-window {
+    overflow: scroll;
+}
