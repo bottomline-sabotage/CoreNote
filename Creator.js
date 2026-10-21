@@ -873,9 +873,11 @@ async function shareFile() {
     await save(true);
     if(!window.lastGeneratedUrl) return;
 
+    const customMessage = await CoreNote.prompt("Custom message?");
+
     const title = document.querySelector("#info-title").value;
     await saveAndShare(window.lastGeneratedUrl, 
-        `I made a CoreNote set about "${title}!" To use it, go to https://corenote.tylerkoberna.com/Viewer.html, then Upload the file I've attached!`
+        `I made a CoreNote set about "${title}!" To use it, go to https://corenote.tylerkoberna.com/Viewer.html, then Upload the file I've attached!\n\n${customMessage}`
     );
     URL.revokeObjectURL(window.lastGeneratedUrl);
     window.lastGeneratedUrl = null;
