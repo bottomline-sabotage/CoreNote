@@ -44,11 +44,11 @@
     
     <link rel="icon" type="image/png" href="/Assets/favicon.png">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <link rel="stylesheet" href="/latex/katex.min.css">
 
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="/latex/katex.min.js"></script>
 
-    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"> </script>
+    <script defer src="/latex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"> </script>
 </head>
 <body>
 
@@ -194,7 +194,6 @@
                 "Four eyes approved ✔️",
                 "SOH CAH TOA",
                 "hide thy spurs him in",
-                "to be or not to be (i always choose the ladder)",
                 "cross product",
                 "Battle of Kings Mountain",
                 "study the studies before they study you (you don't want the studies studying you not studying)",
@@ -215,10 +214,9 @@
                 "for educational purposes only",
                 "watch out! there's a wandering albatross <b>right behind you</b>",
                 "the truth is often in the complex middle ('cept for when it ain't)"
-
-            ];
+            ]; 
             
-            let setArr = [];
+            let setArr = []; 
             if(localStorage.getItem("subtitles")) {
                 setArr = JSON.parse(localStorage.getItem("subtitles"));
             }

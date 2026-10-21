@@ -6,7 +6,10 @@
     <title>CoreNote</title>
     <link rel="stylesheet" href="Styles.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <link rel="stylesheet" href="/latex/katex.min.css">
+    <script src="/latex/katex.min.js"></script>
+    <script src="/latex/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"> </script>
+    
     <link rel="stylesheet" href="Viewer.css">
 
     <link rel="icon" type="image/png" href="/Assets/favicon.png">
@@ -304,8 +307,6 @@
     <span style="z-index: 1; font-size: 3rem; position: fixed; left: 50%; bottom: 2vh; transform: translate(-50%); opacity: 0; transition: 0.5s opacity ease;" id="scroll_arrow">↓</span>
 
     <script src="jszip/jszip.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"> </script>
     <script src="TTS.js"></script>
     <script src="General.js"> </script>
     <script src="Viewer.js"> </script>
