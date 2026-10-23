@@ -9,6 +9,12 @@ body {
     user-select: none;  
 }
 
+@media print {
+    body {
+        background-color: white;
+        color: black;
+    }
+}
 .selectable, tr > * {
   -webkit-user-select: text; 
   -moz-user-select: text;    

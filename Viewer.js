@@ -1451,8 +1451,6 @@ function printStuff() {
     document.querySelector("#progress_bar_container").style.display = "none";
 
     for(const card of cardSet.json.cards) {
-        
-
         const cardContent = document.createElement("div");
         cardContent.style.cssText = "display: flex; align-items: center; justify-content: space-between;";
 
