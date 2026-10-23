@@ -121,6 +121,7 @@
 
         <h1>Settings</h1>
         <button onclick="resetToDefault(); loadSettings();" tabindex="3">Reset To Default</button><br><br>
+        <label class="checkbox-container" title=""> Save recent sets in Browser <input tabindex="4" type="checkbox" id="settings-recentlyviewed"/> <span class="checkmark"></span> </label> <br>
         <label class="checkbox-container" title="Doesn't load assets for all sets (if a set constantly crashes, this can help)"> Disable Set Assets <input tabindex="4" type="checkbox" id="settings-disable_assets"/> <span class="checkmark"></span> </label> <br>
         <label class="checkbox-container" title="Uses the OpenDyslexic font" style="font-family: opendyslexic;" id="settings-dyslexic-contain"> OpenDyslexic Font <input tabindex="4" type="checkbox" id="settings-dyslexic" onclick="if(localStorage.getItem('dyslexic')) {  removeDyslexic(); } else {makeDyslexic();}"/> <span class="checkmark"></span> </label> 
         
@@ -281,7 +282,7 @@
         //     fileInput.click()
         // }
     </script>
-
+    <script src="RecentlyViewed.js"> </script>
     <script>
         function loadSettings() {
             try {
@@ -293,7 +294,7 @@
             
             // Elements
             const disableAssets = document.querySelector("#settings-disable_assets");
-
+            const recentlyViewed = document.querySelector("#settings-recentlyviewed");
             const tts = document.querySelector("#settings-tts");
             const motionControls = document.querySelector("#settings-motion");
             const motionControlsWindow = document.querySelector("#settings-motion-window");
@@ -318,6 +319,7 @@
             // Define Settings in LocalStorage
             const setter = () => {
                 disableAssets.checked = settings.disableSetAssets;
+                recentlyViewed.checked = settings.recentlyViewed;
                 motionControls.checked = settings.motionControls;
                 cardFlip.checked = settings.cardFlip;
                 if(motionControls.checked) {
@@ -371,16 +373,23 @@
                 settings.disableSetAssets = disableAssets.checked;
                 cleanup();
             };
+            recentlyViewed.onclick = () => {
+                settings.recentlyViewed = recentlyViewed.checked;
+                if(!recentlyViewed.checked) {
+                    deleteDataBaseNoInit();
+                    localStorage.removeItem("recentSetIds");
+                }
+                cleanup();
+            };
             motionControls.onclick = () => {
                 settings.motionControls = motionControls.checked;
                 cleanup();
-            }
+            };
             
             cardFlip.onclick = () => {
                 settings.cardFlip = cardFlip.checked;
                 cleanup();
-            }
-
+            };
             tts.onclick = () => {
                 settings.tts = tts.checked;
                 cleanup();

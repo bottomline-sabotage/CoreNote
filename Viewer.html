@@ -49,7 +49,7 @@
         <h1>Import your Study Set</h1>
         <span class="note">CoreNote Set files use the file extension <i>.corenote</i>.<br><b>Please only use sets from trusted sources</b>.</span><br><br>
         <input type="file" accept=".corenote" id="file_input" style="display: none;"><br>
-        <button tabindex="1" onclick="document.querySelector('#more_file_input').input = null; document.querySelector('#file_input').input = null; document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', function change () { showCover(); document.querySelector('#file_input').removeEventListener('change', change); })">Upload</button><br>
+        <button id="the-upload-button" tabindex="1" onclick="document.querySelector('#more_file_input').input = null; document.querySelector('#file_input').input = null; document.querySelector('#file_input').click(); document.querySelector('#file_input').addEventListener('change', function change () { showCover(); document.querySelector('#file_input').removeEventListener('change', change); })">Upload</button><br>
         
         <div style="height: 1vh;"></div>
         
@@ -68,6 +68,7 @@
                 <label class="note" style="pointer-events: all;">If you want to review multiple sets at once, you <a onclick="document.querySelector('#more_file_input').input = null; document.querySelector('#more_file_input').click(); document.querySelector('#more_file_input').addEventListener('change', function change() { combineMore(); document.querySelector('#more_file_input').removeEventListener('change', change); })"> can upload more here</a>.</label>
             </div>
             <div style="height: 1vh;"></div>
+
         </div>
       
          <div style="height: 1vh;"></div>
@@ -80,6 +81,14 @@
             </div>
             <div style="margin-top:8px;font-size:18px;font-weight:bold;color:#FFFFFF;">
                 IT SEEMS LIKE THE WEBSITE CRASHED WHILE YOU WERE UPLOADING A SET. THIS IS MOST LIKELY FROM A SET USING VERY BIG AND SCARY ASSETS. IF THIS REPEATS, <i style="color: white">DISABLE SET ASSETS TEMPORALLY ON THE SETTINGS OF THE MAIN PAGE<!--, OR <a>CLICK HERE--></a></i>.
+            </div>
+        </div>
+
+        <div class="gray_area" style="opacity: 0; padding: 0px; max-height: 0vh;" id="recently_viewed_box">
+            <h1>Recently Viewed <img src="Assets/Beta.png" style="max-height: 3vh;" alt="beta" onclick="CoreNote.alert('Recently Viewed is currently in development. It may not work as intended.')"></h1>
+            <span class="note">If you click the <a>title</a>, you can use the set without uploading it again!</span><br><br>
+            <div class="content">
+
             </div>
         </div>
     </div>
@@ -309,6 +318,7 @@
     <script src="jszip/jszip.js"></script>
     <script src="TTS.js"></script>
     <script src="General.js"> </script>
+    <script src="RecentlyViewed.js"> </script>
     <script src="Viewer.js"> </script>
     <script src="Vignette.js"> </script>
 
@@ -316,6 +326,44 @@
         if(sessionStorage.getItem("v-storageConcerns")) {
             document.querySelector("#set_error").style.display = "inline-block";
         }
+    </script>
+
+    <script>
+        async function setUpRecentlyViewedClient() {
+            try {
+                var settings = JSON.parse(localStorage.getItem("globalSettings"));
+            } catch(err) {
+                localStorage.removeItem("globalSettings");
+                resetToDefault();
+                console.warn("Failed to load default settings for recentlyViewed. ")
+                return;
+            }
+
+            if(!settings.recentlyViewed) return;
+
+            // Recently viewed is handled mostly by RecentlyViewed.js
+            const data = {}
+            if(!(await initRecentlyViewed(data)))
+                return;
+            
+            const n = await getRecentCount();
+            if(n < 1) return;
+            
+            // Show thing
+            const recentlyViewedBox = document.querySelector("#recently_viewed_box");
+            const sels = await enumerateRecentIntoDiv(recentlyViewedBox); // expects internal .content div
+
+            recentlyViewedBox.style.cssText = `opacity: 1; padding: 5px; max-height: 70vh; max-width: 90vw; margin-top: 2vh;`;
+
+            for(const sel of sels) {
+                const setId = sel.querySelector('a').getAttribute("corenote-set-id");
+
+                sel.querySelector('a').onclick = async () => {
+                    const blob = await loadRecent(setId);
+                };
+            }
+        }
+        setUpRecentlyViewedClient();
     </script>
 
     <script>

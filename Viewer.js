@@ -464,13 +464,35 @@ async function load() {
         settings = JSON.parse(localStorage.getItem("globalSettings"))
     }
 
-    
+    // Assets
     if(!JSON.parse(localStorage.getItem("globalSettings")).disableSetAssets) {
         await createCardAssets(cardZip.files);
     }
-	
+
+    // Recently viewed
+    if(sessionStorage.getItem('crash_prevention-recent') == 'true') {
+        const settings = JSON.parse(localStorage.getItem("globalSettings"));
+        settings.recentlyViewed = false;
+        localStorage.setItem('globalSettings', JSON.stringify(settings));
+    } else if(JSON.parse(localStorage.getItem("globalSettings")).recentlyViewed) {
+        sessionStorage.setItem('crash_prevention-recent', true);
+
+        const fileInput = document.querySelector("#file_input");
+        const file = fileInput.files[0];
+        const fr = new FileReader();
+        fr.onload = function (e) {
+            const arrayBuffer = e.target.result;
+            const blob = new Blob([arrayBuffer]);
+            
+            addSetToRecent(cardSet.json.title, cardSet.json.class, cardSet.json.id, blob).then((res) => {
+                sessionStorage.removeItem('crash_prevention-recent');
+            });
+        };
+        fr.readAsArrayBuffer(file);
+    }
+    
 	refreshSettings(); // Done after disabling set assets
-	initCardSet();
+	initCardSet();    
 }
 
 async function createCardAssets(cardZipFiles) {
