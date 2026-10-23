@@ -605,25 +605,21 @@ function initCardSet() {
         // }
         document.querySelector("#info-author").innerHTML = cardSet.json.creator || "<i>Undefined</i>";
 
-        switch(parseInt(cardSet.json.version)) {
-            case 0:
-                document.querySelector("#info-version").innerHTML = `0 <span class="note">(InDev)</span>`;
-                break;
-            case 1: 
-                document.querySelector("#info-version").innerHTML = `1 <span class="note">(Sunshine)</span>`;
-                break;
-            case 2:
-                document.querySelector("#info-version").innerHTML = `2 <span class="note">(Nullify The Dream)</span>`;
-                break;
-            case NaN: 
-                document.querySelector("#info-version").innerHTML = `<i>Undefined</i>`;
-                break;
-            default:
-                console.warn("No version identifier for version " + cardSet.json.version)
-                document.querySelector("#info-version").innerHTML = `${cardSet.json.version} <span class="note">(?)</span>`;
-                break;
-
+        // Version ID
+        let versionId = "";
+        const versionNames = [
+            "InDev",
+            "Sunshine",
+            "Nullify The Dream",
+            "Middle Ground"
+        ];
+        if(parseInt(cardSet.json.version) > 3 || Number.isNaN(parseInt(cardSet.json.version))) {
+            versionId = "Unknown";
+            console.warn("No version identifier for version " + cardSet.json.version);
+        } else {
+            versionId = versionNames[parseInt(cardSet.json.version)];
         }
+        document.querySelector("#info-version").innerHTML = `${parseInt(cardSet.json.version)} <span class="note">(${versionId})</span>`;
         
         document.querySelector("#info-date").innerHTML = epochToDate(cardSet.json.generationDate * 1000) || "<i>Undefined</i>";
         document.querySelector("#info-class").innerHTML = cardSet.json.class || "<i>Undefined</i>";
