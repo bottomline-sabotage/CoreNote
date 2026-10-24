@@ -39,6 +39,11 @@
             transition: all 0.5s ease;
         }
 
+        .descriptor_stuff {
+            justify-content: center;
+            max-height: 27vh;
+        }
+
 
     </style>
     
@@ -86,30 +91,34 @@
         <!-- <button onclick="window.location.href = 'Guide.pdf'">Instruction Guide</button> -->
         
         <h1 id="description_title">But... what is CoreNote?</h1>
+
+        <div style="">
+            <img src="Assets/Creating - Mobile.png" class="descriptor_stuff">
+            <!-- <img src="Assets/Creaing - PC.png" class="descriptor_stuff"> -->
+            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <img src="Assets/Studying - Phone.png" class="descriptor_stuff">
+        </div>  
+
         <div style="height: 10h;" id="description_spacer">
         <p>
             CoreNote is a free and open source note card studying software.<br><br>
-            Compared to our competitors, CoreNote has tons of innovative (and 100% free) features.<br>Here's a couple:<br>
+            <b>CoreNote's <i>Core</i> Features</b>:
 
-            <br>- Several Card Formats 
-            <br>- Category Division Per Set
-            <br>- Access to audio, images, videos, and other assets
-            <br>- Math formula support
-            <br>- Studier's inline comments
-            <br>- Segmented studying
-            <br>- Every set is editable (even if you don't own it)
-            <br>- AND MORE
+            <br>- Categories
+            <br>- Audio, Images, Videos in Cards
+            <br>- Math Formulas (via LaTeX)
+            <br>- Inline Comments
+            <br>- Segmented Studying
+            <br>- HTML Cards
+            <br>- Printable
+            <br>- Easy To Use
+            <br>- AND <i>MORE</i>
         
 
         </p>
-        <h1>Page-Only System</h1>
+        <h3>Privacy and Security Focused</h3>
         <p>
-            There's no server required for CoreNote. Instead, it prioritizes doing things on your own device. Sets are shared via .corenote files (which are just renamed .zip files for those interested). This means you don't need an account (you can't even make an account if you wanted). <b>All your data is yours</b>.
-        </p>
-
-        <h1>HTML Cards</h1>
-        <p>
-            Internally, all cards are just HTML pages. CoreNote fully supports you taking the HTML and coding it yourself, over using the default editor. This allows for an infinite amount of creativity (such as utilizing phone sensors and geolocation).
+            CoreNote collects no user data. It does by having set files, like Office. <i>You own what you make and you alone (unless if you share it).</i>
         </p>
 
         <!-- <h1>Customizable</h1>
@@ -185,6 +194,14 @@
     <div style="height: 9999vh;"></div> -->
 
     <script src="General.js"></script>
+
+    <script>
+        document.querySelectorAll('.descriptor_stuff').forEach((el) => {
+            el.onclick = () => {
+                CoreNote.alert(`<h1 style="color: white">Product Photo</h1><img src="${el.src}" style="max-height: 50vh; max-width: 80vw;">`);
+            };
+        });
+    </script>
 
     <script>
         const subtitle = document.querySelector("#subtitle");
