@@ -106,7 +106,7 @@ async function enumerateRecentIntoDiv(recentlyViewedBox) {
         sel.style.justifyContent = "space-around";
         
         const title = document.createElement('a');
-        title.innerText = item.title; // MUST USE INNERTEXT!
+        title.innerText = item.title || "Untitled Set"; // MUST USE INNERTEXT!
         title.title = item.title;
         title.setAttribute("corenote-set-id", item.id);
         if(title.innerText.length > 50) 
