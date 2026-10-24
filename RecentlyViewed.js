@@ -65,7 +65,10 @@ async function addSetToRecent(title, theClass, id, blob) {
 
     // Max is MAX_RECENT_COUNT
     if(list.length > MAX_RECENT_COUNT) {
-        list.splice(-1, 1); // TODO: remove from indexed db too
+        const r = list[list.length - 1];
+
+        removeRecentSetFromIndexed(r.id);
+        list.splice(-1, 1);
     }
 
     localStorage.setItem("recentSetIds", JSON.stringify(list));
@@ -80,6 +83,14 @@ async function addSetToRecent(title, theClass, id, blob) {
 async function getRecentCount() {
     if(!inited) return -1;
     return list.length;
+}
+
+async function removeRecentSetFromIndexed(id) {
+    const request = db.transaction("data", "readwrite").objectStore("data").delete(id);
+    request.onerror = () => {
+        console.error("AHHH!")
+    };
+
 }
 
 async function enumerateRecentIntoDiv(recentlyViewedBox) {
@@ -126,26 +137,35 @@ async function loadRecent(setId) {
     const tx = db.transaction("data", "readwrite");
     const store = tx.objectStore("data");
     const res = store.get(setId);
-    res.onsuccess = (e) => {
-        const blob = e.target.result.data;
-
-        const file = new File([blob], "upload.bin", {
-            type: "application/octet-stream"
-        });
-
-        const fileInput = document.querySelector("#file_input");
-        if(fileInput) {
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-
-            if(showCover)
-                showCover();
+    res.onsuccess = async (e) => {
+        try {
+            sessionStorage.setItem('crash_prevention-recent', true);
+            const blob = e.target.result.data;
+    
+            const file = new File([blob], "upload.bin", {
+                type: "application/octet-stream"
+            });
+    
+            const fileInput = document.querySelector("#file_input");
+            if(fileInput) {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+    
+                if(showCover)
+                    showCover();
+            }
+        } catch (err) {
+            await CoreNote.confirm("An unknown error occurred");
+            deleteDataBaseNoInit();
+            window.location.href = window.location.href;
+        } finally {
+            sessionStorage.removeItem('crash_prevention-recent');
         }
     };
     res.onerror = async () => {
+        await CoreNote.confirm("An unknown error occurred");
         deleteDataBaseNoInit();
-        await CoreNote.alert("An unknown error occurred");
         window.location.href = window.location.href;
     };
 
@@ -157,7 +177,8 @@ async function loadRecent(setId) {
 // Fixes for next time (ranked from greatest importance to least):
 // - MEMORY LEAKS AND CRASHES (though, that could be VSCode Live Server's fault)
 // - OLD SETS AREN'T DELETED
+
 // - NOT TESTED
-// - YOU CANNOT COMBINE SETS
+// - YOU CANNOT COMBINE SETS (currently handled by not supporting that)
 
 // CANNOT BE MERGED INTO MAIN YET!

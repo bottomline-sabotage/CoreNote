@@ -474,7 +474,7 @@ async function load() {
         const settings = JSON.parse(localStorage.getItem("globalSettings"));
         settings.recentlyViewed = false;
         localStorage.setItem('globalSettings', JSON.stringify(settings));
-    } else if(JSON.parse(localStorage.getItem("globalSettings")).recentlyViewed) {
+    } else if(JSON.parse(localStorage.getItem("globalSettings")).recentlyViewed && combinedSets.length < 1) {
         sessionStorage.setItem('crash_prevention-recent', true);
 
         const fileInput = document.querySelector("#file_input");
