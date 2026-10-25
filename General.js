@@ -129,6 +129,7 @@ function resetToDefault() {
     removeDyslexic();
 
     const setup = {
+        scriptWarning: true,
         recentlyViewed: true,
         disableSetAssets: false,
         motionControls: true,

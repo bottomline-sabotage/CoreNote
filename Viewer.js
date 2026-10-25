@@ -474,6 +474,7 @@ async function load() {
         const settings = JSON.parse(localStorage.getItem("globalSettings"));
         settings.recentlyViewed = false;
         localStorage.setItem('globalSettings', JSON.stringify(settings));
+        sessionStorage.removeItem('crash_prevention-recent');
     } else if(JSON.parse(localStorage.getItem("globalSettings")).recentlyViewed && combinedSets.length < 1) {
         sessionStorage.setItem('crash_prevention-recent', true);
 
@@ -489,6 +490,42 @@ async function load() {
             });
         };
         fr.readAsArrayBuffer(file);
+    }
+
+    if(JSON.parse(localStorage.getItem("globalSettings")).scriptWarning) {
+        let foundScript = false;
+        for(let i = 0; i < cardSet.json.cards.length; i++) {
+            const card = cardSet.json.cards[i];
+            if(card.randomizedFront) {
+                for(const front of card.front) {
+                    const l = String(front).toLowerCase();
+                    if(l.includes("<script") || l.includes("onclick=\"")) {
+                        foundScript = true;
+                        break;
+                    }
+                }
+                if(foundScript) break;
+            } else {
+                const l = String(card.front).toLowerCase();
+                if(l.includes("<script") || l.includes("onclick=\"")) {
+                    foundScript = true;
+                    break;
+                }
+            }
+            const l = String(card.back).toLowerCase();
+            if(l.includes("<script") || l.includes("onclick=\"")) {
+                foundScript = true;
+                break;
+            }
+        }
+        
+        if(foundScript) {
+            if(await CoreNote.confirm(
+                `This set includes JavaScript scripts. While they cannot access your personal information (that you haven't used in CoreNote), you may still want to skip this set as a precaution.<b style="color: white">Say 'yes' to go back.</b><br><br><i style="color: white">You can disable this security check in Settings.</i>`
+            )) {
+                window.location.href = "/";
+            }
+        }
     }
     
 	refreshSettings(); // Done after disabling set assets

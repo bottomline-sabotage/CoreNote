@@ -171,7 +171,6 @@ async function loadRecent(setId) {
 
 
     // return that
-    
 }
 
 // Fixes for next time (ranked from greatest importance to least):
