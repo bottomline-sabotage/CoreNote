@@ -464,13 +464,72 @@ async function load() {
         settings = JSON.parse(localStorage.getItem("globalSettings"))
     }
 
-    
+    // Assets
     if(!JSON.parse(localStorage.getItem("globalSettings")).disableSetAssets) {
         await createCardAssets(cardZip.files);
     }
-	
+
+    // Recently viewed
+    if(sessionStorage.getItem('crash_prevention-recent') == 'true') {
+        const settings = JSON.parse(localStorage.getItem("globalSettings"));
+        settings.recentlyViewed = false;
+        localStorage.setItem('globalSettings', JSON.stringify(settings));
+        sessionStorage.removeItem('crash_prevention-recent');
+    } else if(JSON.parse(localStorage.getItem("globalSettings")).recentlyViewed && combinedSets.length < 1) {
+        sessionStorage.setItem('crash_prevention-recent', true);
+
+        const fileInput = document.querySelector("#file_input");
+        const file = fileInput.files[0];
+        const fr = new FileReader();
+        fr.onload = function (e) {
+            const arrayBuffer = e.target.result;
+            const blob = new Blob([arrayBuffer]);
+            
+            addSetToRecent(cardSet.json.title, cardSet.json.class, cardSet.json.id, blob).then((res) => {
+                sessionStorage.removeItem('crash_prevention-recent');
+            });
+        };
+        fr.readAsArrayBuffer(file);
+    }
+
+    if(JSON.parse(localStorage.getItem("globalSettings")).scriptWarning) {
+        let foundScript = false;
+        for(let i = 0; i < cardSet.json.cards.length; i++) {
+            const card = cardSet.json.cards[i];
+            if(card.randomizedFront) {
+                for(const front of card.front) {
+                    const l = String(front).toLowerCase();
+                    if(l.includes("<script") || l.includes("onclick=\"")) {
+                        foundScript = true;
+                        break;
+                    }
+                }
+                if(foundScript) break;
+            } else {
+                const l = String(card.front).toLowerCase();
+                if(l.includes("<script") || l.includes("onclick=\"")) {
+                    foundScript = true;
+                    break;
+                }
+            }
+            const l = String(card.back).toLowerCase();
+            if(l.includes("<script") || l.includes("onclick=\"")) {
+                foundScript = true;
+                break;
+            }
+        }
+        
+        if(foundScript) {
+            if(await CoreNote.confirm(
+                `This set includes JavaScript scripts. While they cannot access your personal information (that you haven't used in CoreNote), you may still want to skip this set as a precaution.<b style="color: white">Say 'yes' to go back.</b><br><br><i style="color: white">You can disable this security check in Settings.</i>`
+            )) {
+                window.location.href = "/";
+            }
+        }
+    }
+    
 	refreshSettings(); // Done after disabling set assets
-	initCardSet();
+	initCardSet();    
 }
 
 async function createCardAssets(cardZipFiles) {
@@ -1447,8 +1506,6 @@ function printStuff() {
     document.querySelector("#progress_bar_container").style.display = "none";
 
     for(const card of cardSet.json.cards) {
-        
-
         const cardContent = document.createElement("div");
         cardContent.style.cssText = "display: flex; align-items: center; justify-content: space-between;";
 
