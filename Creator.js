@@ -205,9 +205,7 @@ function createCardDialogue() {
     // Multiple Choice
     const multipleChoiceDiv = document.createElement('div');
     multipleChoiceDiv.id = "wrong_answers";
-    multipleChoiceDiv.innerHTML = `
-        <h3>Wrong Answers</h3>
-    `;
+    multipleChoiceDiv.style.margin = "15px";
     for(let i = 0; i < 3; i++) {
         const wrongAnswer = document.createElement('div');
         wrongAnswer.contentEditable = "plaintext-only";
@@ -499,6 +497,7 @@ function createCardDialogue() {
                 card.removeAttribute('multiplechoice');
                 backSide.style.setProperty('box-shadow', "");
                 backSide.style.setProperty('height', "22vh");
+                backSide.setAttribute('placeholder', "Enter the Back Side");
                 multipleChoiceDiv.style.display = "none";
             }
             
@@ -508,6 +507,7 @@ function createCardDialogue() {
                 card.setAttribute('multiplechoice', true);
                 backSide.style.setProperty('box-shadow', "5px 5px 19px rgba(60, 255, 0, 0.2)");
                 backSide.style.setProperty('height', "10vh");
+                backSide.setAttribute('placeholder', "Enter the Correct Answer here");
                 multipleChoiceDiv.style.display = "inline";
             }
         };
@@ -678,9 +678,11 @@ function createCardDialogue() {
         backSide.style.setProperty('box-shadow', "5px 5px 19px rgba(60, 255, 0, 0.2)");
         multipleChoiceDiv.style.display = "inline";
         backSide.style.setProperty('height', "10vh");
+        backSide.setAttribute('placeholder', "Enter the Correct Answer here");
     } else {
         multipleChoiceDiv.style.display = "none";
         backSide.style.setProperty('height', "22vh");
+        backSide.setAttribute('placeholder', "Enter the Back Side");
     }
 
 
@@ -1016,7 +1018,7 @@ function loadFromJson(data) {
         if(card.difficultyWeight) {
             const stars = document.createElement('span');
             stars.textContent = card.difficultyWeight;
-            stars.style.display = "none";
+            stars.style.display = "none"; 
             stars.className = "star_rating";
             el.appendChild(stars);
         }
@@ -1031,7 +1033,7 @@ function loadFromJson(data) {
             el.querySelector('.card_back_side').style.setProperty('box-shadow', "5px 5px 19px rgba(60, 255, 0, 0.2)");
             wrongAnswersBox.style.display = "inline";
             el.querySelector('.card_back_side').style.setProperty('height', "10vh");
-            
+            el.querySelector('.card_back_side').setAttribute('placeholder', "Enter the Correct Answer here");
         }
 
         category.textContent = categories[card.category] || "No Category";

@@ -822,23 +822,69 @@ function showHelpPopup(text) {
 
 function showCard() {
     
-    let innerHTML = currentCard.front;
-
     let ourFront = onFront;
     if(settings.cardFlip) {
         ourFront = !ourFront;
     }
+
+    // Quiz Card
+    let quizMode = false;
+    let quizModeCorrectIndex = undefined;
+    if(!window.forceNoQuiz && currentCard.multipleChoice && rng(0, 17) == 0 && !ourFront) { 
+        addVignetteById('2');
+        quizMode = true;
+        window.progressLock = true;
+        const text = `~ QUIZ TIME ~`;
+        flipButton.textContent = text;
+        setTimeout(() => {
+            flipButton.textContent = text;
+        }, 1.51e+3);
+
+        nextButton.style.display = "none";
+        previousButton.style.display = "none";
+        document.querySelector("#wrong_button").style.display = "none";
+        document.querySelector("#right_button").style.display = "none";
+
+        const answers = [... currentCard.wrongAnswers, currentCard.back];
+        shuffleArray(answers);
+        answers.unshift();
+        quizModeCorrectIndex = answers.lastIndexOf(currentCard.back);
+
+        innerHTML = `
+            <h4>Which one?</h4> <br>
+            <div>
+                ${currentCard.front}
+            </div>
+            <br>
+            <div id="answer_0" class="multiple_choice_card_slot">
+            ${answers[0]}
+            </div> <br>
+            <div id="answer_1" class="multiple_choice_card_slot">
+            ${answers[1]}
+            </div> <br>
+            <div id="answer_2" class="multiple_choice_card_slot">
+            ${answers[2]}
+            </div> <br>
+            <div id="answer_3" class="multiple_choice_card_slot">
+            ${answers[3]}
+            </div> <br>
+        `;
+    }
+    window.forceNoQuiz = false;
     
     // Pick card side
-    if(ourFront) {
-        innerHTML = currentCard.front;
-    } else {
-        innerHTML = currentCard.back;
-    }
-    
-    // If randomized front, do that
-    if(ourFront && currentCard.randomizedFront) {
-        innerHTML = innerHTML[rng(0, innerHTML.length - 1)]
+    if(!quizMode) {
+        if(ourFront) {
+            innerHTML = currentCard.front;
+        } else {
+            innerHTML = currentCard.back;
+        }
+        
+        // If randomized front, do that
+        if(ourFront && currentCard.randomizedFront) {
+            innerHTML = innerHTML[rng(0, innerHTML.length - 1)]
+        }
+
     }
 
     // Handle explanations
@@ -988,8 +1034,69 @@ function showCard() {
     }
 
     if(rng(1, 5000) == 1) {
-        hijack();
+        // hijack();
     } 
+
+    // Finishing the Quiz Mode
+    if(quizMode) {
+        const endCondition = () => {
+            setTimeout(() => {
+                addVignetteById(`3`);
+            }, 3e+3);
+            window.forceNoQuiz = true;
+            window.progressLock = false;
+            flipButton.textContent = "GOOD JOB!";
+            setTimeout(() => {
+                flipButton.textContent = "Flip";
+            },3.5e+3);
+            showCard();
+
+            if(settings.answerSorting) {
+                document.querySelector("#wrong_button").style.display = "inline";
+                document.querySelector("#right_button").style.display = "inline";
+            } else {
+                nextButton.style.display = "inline";
+                previousButton.style.display = "inline";
+            }
+
+        };
+
+        
+        rawCardView.querySelectorAll('.multiple_choice_card_slot').forEach((el) => {
+            el.onclick = () => {
+                el.onclick = undefined;
+
+                if(el.id != `answer_${quizModeCorrectIndex}`) {
+                    const arr = [
+                        "That doesn't look right",
+                        "Nope!",
+                        "Try again?",
+                        "I don't know about that",
+                        "Incorrect"
+                    ];
+                    flipButton.textContent = arr[rng(0, arr.length - 1)];
+                    setTimeout(() => {
+                        flipButton.textContent = "~ QUIZ TIME ~";
+                    }, 3.5e+3);
+
+                    el.className = "multiple_choice_card_slot_style_only";
+                    el.style.opacity = 0;
+                } else {
+                    addVignetteById(`success`);
+                    endCondition();
+                    return;
+                }
+
+                const choices = rawCardView.querySelectorAll('.multiple_choice_card_slot');
+                if(choices.length < 1) {
+                    endCondition();
+                    return;
+                }
+                
+                el.onclick = undefined;
+            };
+        });
+    }
 }
 
 let flipButtonTimeout = null;
