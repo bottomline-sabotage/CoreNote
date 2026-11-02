@@ -1,9 +1,0 @@
-{
-    "tellHidersWhereSeekersAre": true,
-    "tellSeekersWhereHidersPreviouslyWere": true,
-        "hideGoogleFromTellingSeekersHidersWereThere": false,
-    "maxPath": 50,
-    "logPlayerLocations": false,
-    "logPlayerCursorLocations": false,
-    "showAllPlayersCursorsRegardlessOfWebPage": false
-}
