@@ -93,7 +93,7 @@
         <div id="emergency_backup_holder" style="display: none;">
             <hr>
     
-            <label>You've made a set previously but we don't know if you saved it. For the most part, everything (except for its assets, like images) should still be preserved. <b>Note:</b> by not selecting this, the backup will be. </label><br>
+            <label>You've made a set previously but we don't know if you saved it. For the most part, everything (except for its assets, like images) should still be preserved. <b>Note:</b> by not selecting this, the backup will be destroyed. </label><br>
             <button onclick="loadFromJson(JSON.parse(localStorage.getItem('e-emergencyBackup'))); start();" tabindex="4">Use Emergency Backup</button>
         </div>
         
@@ -238,6 +238,18 @@
             <label>Share your Set File</label><br>
             <button onclick="shareFile()">Share</button>
 
+            <hr>
+
+            <label class="checkbox-container" title="Enables multiple choice on every question"> Enable Multiple Choice on Every New Card <input tabindex="4" type="checkbox" id="settings-defaultmultiplechoice"/> <span class="checkmark"></span> </label> <br>
+
+            <div id="ai_set" style="display: none;">
+                <label>Use an AI to generate a set.</label><br>
+                <button>Generate AI Set</button>
+                <hr>
+            </div>
+
+            <hr>
+
             <h2>Categories</h2>
             <div style="width: 100%; height: fit-content;" id="categories_queen">
 
@@ -245,11 +257,7 @@
 
             <hr>
 
-            <div id="ai_set" style="display: none;">
-                <label>Use an AI to generate a set.</label><br>
-                <button>Generate AI Set</button>
-                <hr>
-            </div>
+            
 
 
             <label>Go back to the main page</label><br>

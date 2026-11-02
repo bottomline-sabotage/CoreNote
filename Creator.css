@@ -282,3 +282,10 @@ textarea::placeholder, .editable_div::placeholder {
     opacity: 0;
     transition: opacity 1.5s ease, transform 0.3s ease, background-color 0.3s ease;
 }
+
+.wrong_answer {
+    height: 5vh;
+    margin-bottom: 5px;
+    box-shadow: 5px 5px 19px rgba(147, 0, 0, 0.204);
+    transition: max-height 0.5s ease;
+}

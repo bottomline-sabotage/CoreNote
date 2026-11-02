@@ -12,14 +12,16 @@ function hideCardTopBar() {
     topBar.style.height = "0vh";
 }
 
-function createCardObject(randomizedFront = undefined, category = undefined, explanation = undefined, hint = undefined, front = undefined, back = undefined, difficultyWeight = undefined ) {
+function createCardObject(randomizedFront, category, explanation, hint, front, back, difficultyWeight, multipleChoice, wrongAnswers) {
     return {
         "randomizedFront": randomizedFront,
+        "multipleChoice": multipleChoice,
         "category": category,
         "explanation": explanation,
         "hint": hint,
         "front": front,
         "back": back,
+        "wrongAnswers": wrongAnswers,
         "difficultyWeight": difficultyWeight
     };
        
@@ -51,6 +53,7 @@ function createCardDialogue() {
     card.id = `card-${index}`;
     card.className = "cardDialogue";
     card.style.backgroundColor = "white";
+
     // card.draggable = true;
 
     const top = document.createElement('div');
@@ -199,6 +202,19 @@ function createCardDialogue() {
             document.createElement('br'),
     );
 
+    // Multiple Choice
+    const multipleChoiceDiv = document.createElement('div');
+    multipleChoiceDiv.id = "wrong_answers";
+    multipleChoiceDiv.style.margin = "15px";
+    for(let i = 0; i < 3; i++) {
+        const wrongAnswer = document.createElement('div');
+        wrongAnswer.contentEditable = "plaintext-only";
+        wrongAnswer.className = "editable_div wrong_answer";
+        wrongAnswer.id = "wrong_answer_" + i;
+        multipleChoiceDiv.append(wrongAnswer)
+    }
+        
+
     card.append(
         top,
         // document.createElement('br'),
@@ -211,6 +227,7 @@ function createCardDialogue() {
         //backLabel,
        // document.createElement('br'),
         backSide,
+        multipleChoiceDiv,
         document.createElement('br'),
         document.createElement('br'),
         hintStuff,
@@ -467,6 +484,33 @@ function createCardDialogue() {
             }
         };
 
+        const multipleChoice = document.createElement('a');
+        if(card.hasAttribute('multiplechoice')) {
+            multipleChoice.textContent = "Disable Multiple Choice";
+        } else {
+            multipleChoice.textContent = "Enable Multiple Choice";
+        }
+        multipleChoice.onclick = () => {
+            // Disable
+            if(card.hasAttribute(`multiplechoice`)) {
+                multipleChoice.textContent = "Enable Multiple Choice";
+                card.removeAttribute('multiplechoice');
+                backSide.style.setProperty('box-shadow', "");
+                backSide.style.setProperty('height', "22vh");
+                backSide.setAttribute('placeholder', "Enter the Back Side");
+                multipleChoiceDiv.style.display = "none";
+            }
+            
+            // Enable
+            else {
+                multipleChoice.textContent = "Disable Multiple Choice";
+                card.setAttribute('multiplechoice', true);
+                backSide.style.setProperty('box-shadow', "5px 5px 19px rgba(60, 255, 0, 0.2)");
+                backSide.style.setProperty('height', "10vh");
+                backSide.setAttribute('placeholder', "Enter the Correct Answer here");
+                multipleChoiceDiv.style.display = "inline";
+            }
+        };
 
         // const duplicate = document.createElement('a');
         // duplicate.textContent = "Duplicate";
@@ -489,12 +533,13 @@ function createCardDialogue() {
             frontSide.removeEventListener('change', editable);
             backSide.removeEventListener('change', editable);     
         };
-        
+
         div.append(
             uploadAsset,
             rating,
             // hyperlink,
             randomFront,
+            multipleChoice,
             document.createElement('hr'),
             mover,
             // duplicate,
@@ -628,27 +673,18 @@ function createCardDialogue() {
         }
     };
 
-    // mover.onclick = () => {
-    //     const cards = [...document.querySelectorAll(".cardDialogue")];
+    if(document.querySelector("#settings-defaultmultiplechoice").checked || card.hasAttribute('multiplechoice')) {
+        card.setAttribute('multiplechoice', true);
+        backSide.style.setProperty('box-shadow', "5px 5px 19px rgba(60, 255, 0, 0.2)");
+        multipleChoiceDiv.style.display = "inline";
+        backSide.style.setProperty('height', "10vh");
+        backSide.setAttribute('placeholder', "Enter the Correct Answer here");
+    } else {
+        multipleChoiceDiv.style.display = "none";
+        backSide.style.setProperty('height', "22vh");
+        backSide.setAttribute('placeholder', "Enter the Back Side");
+    }
 
-    //     const input = parseInt(prompt(`Move to card # (1-${cards.length})`), 10);
-    //     if(isNaN(input))
-    //         return;
-
-    //     const newIndex = input - 1;
-
-    //     if (newIndex < 0 || newIndex >= cards.length) return;
-
-    //     const remaining = cards.filter(c => c !== card);
-
-    //     if(newIndex >= remaining.length) {
-    //         cardWindow.appendChild(card);
-    //     } else {
-    //         remaining[newIndex].before(card);
-    //     }
-
-    //     reindexCards();
-    // };
 
     frontSide.focus();
 
@@ -715,9 +751,10 @@ function generateJson() {
         "class": classInfo.value,
         "unitInfo": unit.value,
         "title": title.value,
-        "version": 2,
+        "version": 3,
         "description": description.value,
         "generationDate": Math.floor(Date.now() / 1000),
+        "defaultMultipleChoice": document.querySelector("#settings-defaultmultiplechoice").checked,
 
         "categories": categories, 
     };
@@ -744,6 +781,7 @@ function generateJson() {
         const categoryHolder = document.querySelector(`#${el.id} .category_holder`);
         const category = categoryHolder.firstElementChild;
         const isUsingRandom = document.querySelector(`#${el.id} .using_random`) != null;
+        const isUsingMultipleChoice = document.querySelector(`#${el.id}`).hasAttribute('multiplechoice');
 
         let categoryIndex = parseInt(String(category.className).replace("category-", ""), 10);
         if(Number.isNaN(categoryIndex))
@@ -767,8 +805,18 @@ function generateJson() {
             // }
             randomEntries = String(front.innerHTML).replaceAll('\n', '<br>').split("<br>");
         }
+
+        let wrongAnswers = [];
+        if(isUsingMultipleChoice) {
+            for(let i = 0; i < 3; i++) {
+                const ans = document.querySelector(`#${el.id}`).querySelector(`#wrong_answer_${i}`);
+                wrongAnswers.push(prettify(ans.innerHTML));
+            }
+        }
         
-        data.cards.push(createCardObject(isUsingRandom, categoryIndex, explanation.value || "", hint.value || "", !isUsingRandom ? prettify(front.innerHTML) : randomEntries, prettify(back.innerHTML), ratingNumber));
+        data.cards.push(
+            createCardObject(isUsingRandom, categoryIndex, explanation.value || "", hint.value || "", !isUsingRandom ? prettify(front.innerHTML) : randomEntries, prettify(back.innerHTML), ratingNumber, isUsingMultipleChoice, wrongAnswers)
+        );
     });
 
     // // Reorganize LaTeX
@@ -925,6 +973,9 @@ function loadFromJson(data) {
         author.value = data.creator;
 
         categories = data.categories;
+
+        if(data.defaultMultipleChoice)
+            document.querySelector("#settings-defaultmultiplechoice").checked = true;
     }
 
     for(let i = 0; i < data.cards.length; i++) {
@@ -939,11 +990,13 @@ function loadFromJson(data) {
         const categoryHolder = document.querySelector(`#${el.id} .category_holder`);
         const category = categoryHolder.firstElementChild;
 
+        const wrongAnswersBox = document.querySelector(`#${el.id} #wrong_answers`);
+
         if(card.randomizedFront) {
             card.front.forEach((_el, i) => {
                 card.front[i] = inversePrettify(card.front[i]);
             });
-            front.innerHTML = card.front.join('\n');
+            front.innerHTML = card.front.join('<br>'); // MAYBE RIGHT?!
             const id = document.createElement('span');
             id.className = "using_random";
             el.appendChild(id);
@@ -965,9 +1018,22 @@ function loadFromJson(data) {
         if(card.difficultyWeight) {
             const stars = document.createElement('span');
             stars.textContent = card.difficultyWeight;
-            stars.style.display = "none";
+            stars.style.display = "none"; 
             stars.className = "star_rating";
             el.appendChild(stars);
+        }
+
+        if(card.multipleChoice) {
+            el.setAttribute('multiplechoice', true);
+            for(let i = 0; i < 3; i++) {
+                const sec = wrongAnswersBox.querySelector(`#wrong_answer_${i}`);
+                sec.innerHTML = inversePrettify(card.wrongAnswers[i]);
+            }
+            el.setAttribute('multiplechoice', true);
+            el.querySelector('.card_back_side').style.setProperty('box-shadow', "5px 5px 19px rgba(60, 255, 0, 0.2)");
+            wrongAnswersBox.style.display = "inline";
+            el.querySelector('.card_back_side').style.setProperty('height', "10vh");
+            el.querySelector('.card_back_side').setAttribute('placeholder', "Enter the Correct Answer here");
         }
 
         category.textContent = categories[card.category] || "No Category";
@@ -1108,10 +1174,10 @@ let backupTimeout = null;
 
 document.addEventListener('keydown', () => {
     try {
+        if(backupTimeout !== null)
+            return;
         const js = generateJson();
         if(!js)
-            return;
-        if(backupTimeout !== null)
             return;
         localStorage.setItem("e-emergencyBackup", JSON.stringify(js));
         backupTimeout = setTimeout(() => {
@@ -1299,7 +1365,7 @@ function inlineFormattingManager(wrapperEl, sel = undefined, editor = undefined)
     if(!editor)
         editor = document.activeElement;
 
-    if (!editor?.className.endsWith("editable_div"))
+    if(!(String(editor?.className).includes("editable_div")))
         return;
 
     if(!sel)
@@ -1316,7 +1382,7 @@ function inlineFormattingManager(wrapperEl, sel = undefined, editor = undefined)
 
     const range = sel.getRangeAt(0);
 
-    if (!editor.contains(range.commonAncestorContainer))
+    if(!editor.contains(range.commonAncestorContainer))
         return;
 
     if(wrapperEl.tagName == 'highlight')
@@ -1332,7 +1398,7 @@ function inlineFormattingManager(wrapperEl, sel = undefined, editor = undefined)
         );
     // }
 
-    if (existing && existing.contains(range.startContainer) && existing.contains(range.endContainer)) {
+    if(existing && existing.contains(range.startContainer) && existing.contains(range.endContainer)) {
         removeFormatting(existing, range);
         return;
     }
@@ -1473,88 +1539,7 @@ document.querySelector("#highlight_text").addEventListener("pointerdown", async 
     el.className = 'highlighter';
     inlineFormattingManager(el);
 
-    // const sel = window.getSelection();
-    // const editor = document.activeElement;
-
-    // const popup = createPopup(`
-    //     <h1>Highlight Style</h1>
-    //     <input id="highlight_pick_input" type="color" style="opacity: 0; height: 0vh; overflow: hidden; "><br>
-    //     <a id="highlight_pick">Pick a Color</a><br><br>
-    //     <a id="highlight_pick-none">None</a><br><br>
-    //     <a>Cancel</a>
-    // `);
-
-    // // popup.style.opacity = 0;
-    // // document.body.append(popup);
-    // // setTimeout(() => {
-    // //     popup.style.opacity = 1;
-    // // }, 50);
     
-    // // await sleep(500);
-
-    // // document.addEventListener('pointerdown', function fds (e) {
-    // //     if(e.target.id == "color_text_input") {
-    // //         return;
-    // //     }
-
-    // //     if(e.target.id == "highlight_pick") {
-    // //         const highlightInput = document.querySelector("#highlight_pick_input");
-
-    // //         highlightInput.addEventListener("change", function onChange() {
-                
-    // //             const el = document.createElement("highlight");
-    // //             el.className = "highlighter";
-    // //             el.style.backgroundColor = `${highlightInput.value}`;
-    // //             document.querySelector("#highlight_text").style.backgroundColor = el.style.color; // TODO: alpha
-
-    // //             inlineFormattingManager(el, sel, editor);
-
-                
-    // //             document.removeEventListener('pointerdown', fds);
-
-
-    // //             highlightInput.removeEventListener("change", onChange);
-    // //             popup.style.opacity = 0;
-    // //             setTimeout(() => {
-    // //                 popup.remove();
-    // //             }, 500);
-    // //         });
-
-    // //         highlightInput.click();
-    // //     } else if(e.target.id == "highlight_pick-none") {
-    // //         const el = document.createElement("highlighter");
-    // //         el.className = "highlighter";
-    // //         el.style.backgroundColor = ``;
-    // //         document.querySelector("#highlight_text").style.backgroundColor = "";
-
-    // //         popup.style.opacity = 0;
-    // //         setTimeout(() => {
-    // //             popup.remove();
-    // //         }, 500);
-
-    // //         inlineFormattingManager(el, sel, editor);
-    // //     } else {
-    // //         popup.style.opacity = 0;
-    // //         setTimeout(() => {
-    // //             popup.remove();
-    // //         }, 500);
-
-    // //         document.removeEventListener('pointerdown', fds);
-    // //     }
-    // });
-
-    //     // const colorInput = document.querySelector("#highlight_text_input");
-
-    //     // colorInput.addEventListener("change", function onChange() {
-    //     //     colorInput.removeEventListener("change", onChange);
-
-    //     //     const el = document.createElement("span");
-    //     //     el.className = "highlighter";
-    //     //     el.style.backgroundColor = `${colorInput.value}`;
-    //     //     inlineFormattingManager(el);
-    //     // }, { once: true });
-
-    //     // colorInput.click();
 });
 
 // Math and HTML are different
@@ -1764,7 +1749,7 @@ document.querySelector("#html_edit").addEventListener("pointerdown", function do
 
 // Keyboard shortcuts
 window.addEventListener('keydown', (e) => {
-if(!document.activeElement.className.endsWith("editable_div"))
+if(!(String(document.activeElement.className).includes("editable_div")))
         return;
 
     const isMac = navigator.platform.toLowerCase().includes("mac");
@@ -1986,6 +1971,8 @@ document.addEventListener('click', (e) => {
 });
 
 document.addEventListener("input", (e) => {
+
+
     const editor = e.target.closest("[contenteditable]");
     if(!editor) return;
 
