@@ -62,7 +62,7 @@
     <img id="logo" placeholder="CoreNote Logo" src="Assets/Logo.png"><br>
     
     <div class="floating_window">
-        <button style="font-size: 3vh;">Join Game</button><br><br>
+        <button style="font-size: 3vh;" onclick="joinGame()">Join Game</button><br><br>
         <button>Host Game</button>
     </div>
 
@@ -109,7 +109,7 @@
     <div style="height: 15vh;" id="small_one"></div>
     <div style="height: 9999vh;"></div> -->
 
-    <script src="General.js"></script>
+    <script src="/General.js"></script>
 
 
 
@@ -128,6 +128,50 @@
         //     const fileInput = document.querySelector("#file_input");
         //     fileInput.click()
         // }
+
+        function joinGame() {
+            const overlay = document.createElement('div');
+            overlay.className = "alert_overlay";
+            overlay.style.opacity = 0;
+    
+            if(document.querySelector('.loader')) {
+                overlay.style.backgroundColor = 'black';
+            }
+
+            overlay.innerHTML = `
+                <div class="alert_overlay">
+                    <div class="alert_box">
+                        <h1>Which one?</h1>
+                        <button id="solo">Solo</button><br>
+                        <button id="multiplayer">Multiplayer (<img class="live_text_small" src="Assets/Live Logo.png" alt="Live">)</button>
+                        <br><br>
+                        <button id="back">Back</button>
+                    </div>
+                </div>
+            
+            `;
+    
+            document.body.appendChild(overlay);
+            setTimeout(() => {
+                overlay.style.opacity = 1;
+            }, 50);
+    
+            overlay.querySelector('#back').onclick = () => {
+                overlay.style.opacity = 0;
+                setTimeout(() => {
+                    overlay.remove();
+                }, 1000);
+            }
+
+            overlay.querySelector('#solo').onclick = () => {
+                window.location.href = "/Live/Downloads/Server/Public/Client/MainPage.html";
+            }
+            
+            overlay.querySelector('#multiplayer').onclick = () => {
+                window.location.href = "MultiplayerMover.html";
+            }
+            
+        }
     </script>
 
 

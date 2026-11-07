@@ -9,7 +9,49 @@ const path = require("path");
 class HostServer extends _Server {
 
     post(req, res) {
+        let dataResponse = {
+            "ok": false,
+        };
         
+        let requestBody = '';
+
+        // Collect data chunks from the request
+        req.on('data', chunk => {
+            requestBody += chunk.toString();
+        });
+
+        // When all data has been received, what do we do?
+        req.on('end', async () => {
+            try {
+                // Parse the JSON body
+                const requestData = JSON.parse(requestBody);
+
+                if(tradeSecret != this.tradeSecret) {
+                    let dataResponse = {
+                        "ok": false,
+                        "code": -5,
+                        "message": "unverified" 
+                    };  
+
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify(dataResponse));
+                    return;
+                }
+
+                switch(action) {
+
+                }
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(dataResponse));
+                return;
+            } catch (err) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end("{\"ok\": false}");
+                console.error(err);
+                return;
+            }
+        });
     }
 
     async getTradeSecretPage(req, res, filePath) {
@@ -134,6 +176,8 @@ class HostServer extends _Server {
         this.server.listen(this.port, this.ip, () => { 
             if(openInBrowser)
                 open.default(`http://${this.ip}:${this.port}/TradeSecret`);
+
+            console.log(`Hosting Host Server at http://${ip}:${port}`);
         });
 
     }

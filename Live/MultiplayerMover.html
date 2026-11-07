@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplayer</title>
+    <link rel="stylesheet" href="Styles.css">
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: white;
+        }
+
+        * {
+            color: white;
+        }
+
+        .center-thing {
+            width: 80vw;
+            height: 50vh;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);   
+        }
+
+        .sec {
+            text-align: center;
+            font-size: 8vh;
+            width: auto;
+            padding: 5px;
+            background-color: rgb(2, 48, 26);
+            border-radius: 10px;
+            border-color: rgb(0, 118, 16);
+            border-style: solid;
+            border-width: 3px;
+            font-family: norwester, calibri, 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+            transition: all 0.3s ease;
+            z-index: 5;
+            user-select: none;
+            margin: 5px;
+        }
+
+
+        /* .sec:hover {
+            transform: scale(1.1);
+            background-color: rgb(0, 40, 8);
+        } */
+
+        .sec:hover {
+            /* font-size: 1.7rem;/ */
+            background-color: rgb(0, 142, 0);
+            transform: scale(0.98);
+            
+        }
+
+        input {
+            margin: 2px;
+            font-size: larger;
+            background-color: rgb(2, 48, 26);
+            border-radius: 10px;
+            border-color: rgb(0, 118, 16);
+            border-style: solid;
+            border-width: 3px;
+            font-family: calibri, 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+            transition: all 0.3s ease;
+            z-index: 5;
+            user-select: none;
+            font-size: 5vh;
+        }
+
+        input:hover {
+            transform: scale(1.01);
+            background-color: rgb(0, 40, 8);
+        }
+
+        input:active {
+            /* font-size: 1.7rem;/ */
+            background-color: rgb(0, 142, 0);
+            transform: scale(0.99);
+        }
+
+        #security-note * {
+            color: darkred;
+        }
+
+        #security-note {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="center-thing">
+        <h1>Enter the Session ID</h1>
+        <!-- <span class="note">The password has been saved to your web browser.<br>However, if you plan on changing devices or sharing the server with other hosts, <i>you will need to know the password</i>.</span><br><br> -->
+        <div style="display: flex; justify-content: center;">
+            <input id="sess">
+        </div><br><br>
+        <button onclick="submit()">Submit</button><br>
+        <span class="note" id="security-note"><b>Note: </b>This server doesn't use HTTPS. Your browser may say it's insecure. To continue, go to Advanced > Continue To Page.</span>
+        <br><br>
+        <button onclick="window.location.href = 'Live.index.html'" id="copioer">Back</button>
+        
+
+    </div>
+    <script>
+        function decodeServer(value) {
+            const chars = Array.from(value);
+            let i = 0;
+
+            const result = {
+            };
+
+            if(chars[i] === "X") {
+                result.secure = false;
+                i++;
+            } else result.secure = true;
+
+            if(chars[i] === "L") {
+                result.hostname = "localhost";
+
+                if(chars[i + 1] !== "-" || chars[i + 2] !== "-") {
+                    throw new Error("Invalid localhost delimiter");
+                }
+
+                i += 3;
+            } else {
+                let lengthStr = "";
+
+                while(i < chars.length && /\d/.test(chars[i])) {
+                    lengthStr += chars[i++];
+                }
+
+                if(!lengthStr || chars[i] !== "-") {
+                    throw new Error("Invalid hostname length");
+                }
+
+                const hostnameLength = Number(lengthStr);
+                i++;
+
+                result.hostname = chars.slice(i, i + hostnameLength).join("");
+                i += hostnameLength;
+
+                if(Array.from(result.hostname).length !== hostnameLength) {
+                    throw new Error("Hostname length mismatch");
+                }
+
+                if(chars[i] !== "-") {
+                    throw new Error("Missing hostname delimiter");
+                }
+
+            }
+
+            if(chars[i] === "D") {
+                result.port = "4000";
+                i++;
+
+                if(i < chars.length && chars[i] === "-") {
+                    i++;
+                }
+            } else {
+                let portLengthStr = "";
+
+                while(i < chars.length && /\d/.test(chars[i])) {
+                    portLengthStr += chars[i++];
+                }
+
+                if(!portLengthStr || chars[i] !== ",") {
+                    throw new Error("Invalid port length (TODO: this is broken)");
+                }
+
+                const portLength = Number(portLengthStr);
+                i++; 
+
+                result.port = chars.slice(i, i + portLength).join("");
+                i += portLength;
+
+                if(Array.from(result.port).length !== portLength) {
+                    throw new Error("Port length mismatch");
+                }
+
+                if(chars[i] === "-") {
+                    i++;
+                } else if (i < chars.length) {
+                    throw new Error("Missing port delimiter");
+                }
+            }
+
+            if(i !== chars.length) {
+                throw new Error("Unexpected trailing characters");
+            }
+
+            return result;
+        }
+
+        const sessionId = document.querySelector("#sess");
+        sessionId.addEventListener("input", () => {
+  
+            if(!sessionId.value.toLowerCase().startsWith('x')) {
+                document.querySelector("#security-note").style.display = "none";
+            } else {
+                document.querySelector("#security-note").style.display = "inline";
+            }
+            
+        });
+        document.querySelector("#security-note").style.display = "none";
+
+        function submit() {
+            let value = sessionId.value
+                // .replace(/-/g, "")
+                .toUpperCase()
+                // .substring(0, 12)
+                .replace(' ', '')
+                .replace('\n', '');
+
+            sessionId.value = value;
+
+            console.log(decodeServer(value));
+        }
+
+        
+    </script>
+</body>
+</html>

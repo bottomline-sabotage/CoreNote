@@ -90,6 +90,16 @@ class _Server {
 
         return contentType;
     }
+
+    encryptData(tradeSecret, data) {
+        console.error("oogy boogy man")
+        return "todo";
+    }
+
+    decryptData(tradeSecret, data) {
+        console.error("oogy boogy man")
+        return "todo";
+    }
 };
 
 module.exports = _Server;
