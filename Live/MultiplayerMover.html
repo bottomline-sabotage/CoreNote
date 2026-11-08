@@ -97,7 +97,8 @@
             <input id="sess">
         </div><br><br>
         <button onclick="submit()">Submit</button><br>
-        <span class="note" id="security-note"><b>Note: </b>This server doesn't use HTTPS. Your browser may say it's insecure. To continue, go to Advanced > Continue To Page.</span>
+        <span class="note" id="security-note"><b>Note: </b>This server doesn't use HTTPS. Your browser may say it's insecure. To continue, go to Advanced > Continue To Page.</span><br>
+        <span class="note" id="the-note"><b></span>
         <br><br>
         <button onclick="window.location.href = 'Live.index.html'" id="copioer">Back</button>
         
@@ -149,15 +150,19 @@
                     throw new Error("Missing hostname delimiter");
                 }
 
+                i++;
             }
 
             if(chars[i] === "D") {
-                result.port = "4000";
+                result.port = "3000";
                 i++;
 
                 if(i < chars.length && chars[i] === "-") {
                     i++;
                 }
+            } else if(chars[i] === "N") {
+                result.port = null;
+                i++;
             } else {
                 let portLengthStr = "";
 
@@ -165,12 +170,12 @@
                     portLengthStr += chars[i++];
                 }
 
-                if(!portLengthStr || chars[i] !== ",") {
-                    throw new Error("Invalid port length (TODO: this is broken)");
+                if(!portLengthStr || chars[i] !== "-") {
+                    throw new Error("Invalid port length");
                 }
 
                 const portLength = Number(portLengthStr);
-                i++; 
+                i++;
 
                 result.port = chars.slice(i, i + portLength).join("");
                 i += portLength;
@@ -181,7 +186,7 @@
 
                 if(chars[i] === "-") {
                     i++;
-                } else if (i < chars.length) {
+                } else if(i < chars.length) {
                     throw new Error("Missing port delimiter");
                 }
             }
@@ -192,7 +197,7 @@
 
             return result;
         }
-
+        
         const sessionId = document.querySelector("#sess");
         sessionId.addEventListener("input", () => {
   
@@ -205,17 +210,30 @@
         });
         document.querySelector("#security-note").style.display = "none";
 
-        function submit() {
+        async function submit() {
             let value = sessionId.value
-                // .replace(/-/g, "")
                 .toUpperCase()
-                // .substring(0, 12)
                 .replace(' ', '')
                 .replace('\n', '');
 
             sessionId.value = value;
 
-            console.log(decodeServer(value));
+            try {
+                var data = decodeServer(value);
+                const url = `${(data.secure ? "https://" : "http://")}${data.hostname}${data.port ? ":" : ""}${data.port || ""}`;
+                console.log(url);
+                document.querySelector("#the-note").textContent = `Connecting to ${url}`;
+                
+
+                // const res = await fetch(url);
+                // if(!res.ok()) throw new Error(res);
+
+                window.location.href = `${(data.secure ? "https://" : "http://")}${data.hostname}${data.port ? ":" : ""}${data.port || ""}`;
+            } catch (err) {
+                document.querySelector("#the-note").textContent = "Invalid Session ID";
+                console.error(err);
+
+            }   
         }
 
         
