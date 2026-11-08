@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>One-Time Password</title>
+    <link rel="stylesheet" href="/Styles.css">
+    <style>
+        body {
+            background-color: #2c2c2c;
+            color: white;
+        }
+
+        * {
+            color: white;
+        }
+
+        .center-thing {
+            min-width: 100vw;
+            height: 50vh;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);   
+        }
+
+        .sec {
+            text-align: center;
+            font-size: 4vh;
+            max-width: 24vw;
+            padding: 5px;
+            background-color: rgb(2, 48, 26);
+            border-radius: 10px;
+            border-color: rgb(0, 118, 16);
+            border-style: solid;
+            border-width: 3px;
+            font-family: norwester, calibri, 'Gill Sans', 'Gill Sans MT', 'Trebuchet MS', sans-serif;
+            transition: all 0.3s ease;
+            z-index: 5;
+            user-select: none;
+            margin: 5px;
+        }
+
+
+        /* .sec:hover {
+            transform: scale(1.1);
+            background-color: rgb(0, 40, 8);
+        } */
+
+        .sec:hover {
+            /* font-size: 1.7rem;/ */
+            background-color: rgb(0, 142, 0);
+            transform: scale(0.98);
+            
+        }
+
+        .big-logo {
+            max-height: 13vh;
+            max-width: 90vw;
+        }
+
+        .grid {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: min(100%, 650px);
+            padding: 20px;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px #0005;
+            border-radius: 5px;
+            transition: opacity 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <img src="/Assets/Logo.png" class="big-logo" alt="CoreNote Live">
+
+    <div class="grid" id="gameToken">
+        <h1>Enter your Game Token!</h1>
+        <div style="display: flex; justify-content: center;">
+            <input class="sec" id="one">
+            <input class="sec" id="two">
+            <input class="sec" id="three">
+        </div>
+
+        <br>
+        
+        <span style="font-size: 3vh;">And your Nickname!</span><br>
+        <span class="note">Don't use your real name</span><br><br>
+        <input>
+
+        <br><br>
+        <button>Continue</button>
+    </div> 
+
+    <div id="mainPage"></div>
+
+    <script src="/General.js"></script>
+    <script>
+        const params = new URL(window.location.href).searchParams;
+        if(params.get("online") == "true") {
+            document.querySelector("#mainPage").style.display = "none";
+            document.querySelector("#gameToken").style.display = "inline";
+        } else {
+            document.querySelector("#gameToken").style.display = "none";
+            document.querySelector("#mainPage").style.display = "inline";
+
+        }
+    </script>
+    <script>
+        const inputs = document.querySelectorAll(".sec");
+
+        inputs.forEach((input, index) => {
+
+            // Move forward after 4 characters
+            input.addEventListener("input", () => {
+                if(input.value.length >= 4 && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                    inputs[index + 1].select();
+                } else if(input.value.length >= 4) {
+                    input.value = input.value.substring(0, 4);
+                }
+            });
+
+            input.addEventListener("keydown", (e) => {
+
+                // Backspace: move to previous input if empty
+                if(e.key === "Backspace" && input.value === "" && index > 0) {
+                    e.preventDefault();
+                    inputs[index - 1].focus();
+                    inputs[index - 1].setSelectionRange(
+                        inputs[index - 1].value.length,
+                        inputs[index - 1].value.length
+                    );
+                }
+
+                // Left arrow: move to previous input
+                if(e.key === "ArrowLeft" && index > 0 &&
+                    input.selectionStart === 0) {
+                    e.preventDefault();
+                    inputs[index - 1].focus();
+                    inputs[index - 1].setSelectionRange(
+                        inputs[index - 1].value.length,
+                        inputs[index - 1].value.length
+                    );
+                }
+
+                // Right arrow: move to next input
+                if(e.key === "ArrowRight" && index < inputs.length - 1 &&
+                    input.selectionStart === input.value.length) {
+                    e.preventDefault();
+                    inputs[index + 1].focus();
+                    inputs[index + 1].setSelectionRange(0, 0);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

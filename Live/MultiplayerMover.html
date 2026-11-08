@@ -87,10 +87,25 @@
         #security-note {
             color: red;
         }
+
+        .grid {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: min(100%, 650px);
+            padding: 20px;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 18px;
+            box-shadow: 0 20px 50px #0005;
+            border-radius: 5px;
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body>
-    <div class="center-thing">
+    <div class="grid">
         <h1>Enter the Session ID</h1>
         <!-- <span class="note">The password has been saved to your web browser.<br>However, if you plan on changing devices or sharing the server with other hosts, <i>you will need to know the password</i>.</span><br><br> -->
         <div style="display: flex; justify-content: center;">
@@ -104,6 +119,7 @@
         
 
     </div>
+    <script src="/General.js"></script>
     <script>
         function decodeServer(value) {
             const chars = Array.from(value);
@@ -213,22 +229,24 @@
         async function submit() {
             let value = sessionId.value
                 .toUpperCase()
-                .replace(' ', '')
-                .replace('\n', '');
+                .replaceAll(' ', '')
+                .replaceAll('\n', '');
 
             sessionId.value = value;
 
             try {
                 var data = decodeServer(value);
-                const url = `${(data.secure ? "https://" : "http://")}${data.hostname}${data.port ? ":" : ""}${data.port || ""}`;
+                const url = `${(data.secure ? "https://" : "http://")}${data.hostname}${data.port ? ":" : ""}${data.port || ""}/Client/MainPage?online=true`
                 console.log(url);
-                document.querySelector("#the-note").textContent = `Connecting to ${url}`;
+                
                 
 
                 // const res = await fetch(url);
                 // if(!res.ok()) throw new Error(res);
+                if(await CoreNote.confirm(`This will take you <a href="${url}">outside of CoreNote</a> into a <i>custom CoreNote Live server</i>. Are you sure?<br><br>If the website doesn't work, the code you entered is wrong.`)) {
+                    window.location.href = url;
+                } 
 
-                window.location.href = `${(data.secure ? "https://" : "http://")}${data.hostname}${data.port ? ":" : ""}${data.port || ""}`;
             } catch (err) {
                 document.querySelector("#the-note").textContent = "Invalid Session ID";
                 console.error(err);

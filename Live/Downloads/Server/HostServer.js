@@ -67,12 +67,18 @@ class HostServer extends _Server {
     async get(req, res) {
         
         let decodedURI;
+        let searchParams = "";
         try {
             decodedURI = decodeURIComponent(req.url);
         } catch (error) { decodedURI = "/404.html" }
 
-        // Get File PATH
+        // Search PARAM
+        if(decodedURI.indexOf('?') !== -1) {
+            searchParams = decodedURI.substring(decodedURI.indexOf('?'), decodedURI.length);
+            decodedURI = decodedURI.substring(0, decodedURI.indexOf('?'))
+        }
         
+        // Get File PATH
         let filePath = path.join(__dirname, "Public", decodedURI);
         if(filePath === path.join(__dirname, "Public", '/')) {
             filePath = path.join(__dirname, 'Public/index.html');
@@ -87,7 +93,7 @@ class HostServer extends _Server {
             }
         }
     
-        if(!this.hadTradeSecret && decodedURI.toLowerCase() == "/tradesecret.html") {
+        if(!this.hadTradeSecret && decodedURI.toLowerCase() == "/host/tradesecret.html") {
             this.getTradeSecretPage(req, res, filePath); return;
         }
 
@@ -175,7 +181,7 @@ class HostServer extends _Server {
 
         this.server.listen(this.port, this.ip, () => { 
             if(openInBrowser)
-                open.default(`http://${this.ip}:${this.port}/TradeSecret`);
+                open.default(`http://${this.ip}:${this.port}/Host/TradeSecret`);
 
             console.log(`Hosting Host Server at http://${ip}:${port}`);
         });
