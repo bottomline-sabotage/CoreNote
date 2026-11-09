@@ -171,7 +171,7 @@ body {
     left: 50%; 
     transform: translate(-50%, -50%);
     
-    overflow: scroll; 
+    overflow: auto; 
     box-shadow: 0 0 900px black, 0px 6px 10px rgba(0, 0, 0, 0.4) ;
     background-color: rgb(50, 50, 56);
     padding: 50px;
@@ -305,7 +305,7 @@ button:active {
     margin: auto;
     max-width: 65vw;
     transition: all 0.5s ease;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 #subtitle, .note {
@@ -383,7 +383,7 @@ hr {
     background-color: #f1f1f1;
     min-width: 160px;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     border-radius: 5px;
@@ -425,7 +425,7 @@ hr {
     left: 50%; 
     transform: translate(-50%, -50%);
     
-    overflow: scroll; 
+    overflow: auto; 
     box-shadow: 0 0 900px black, 0px 6px 10px rgba(0, 0, 0, 0.4) ;
     background-color: rgb(48, 48, 80);
     padding: 30px;
