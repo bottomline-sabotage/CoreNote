@@ -126,9 +126,11 @@ function shuffleArray(array) {
 }
 
 function resetToDefault() {
-    removeDyslexic() 
+    removeDyslexic();
 
     const setup = {
+        scriptWarning: true,
+        recentlyViewed: true,
         disableSetAssets: false,
         motionControls: true,
         tts: true,

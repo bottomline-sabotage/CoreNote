@@ -464,13 +464,72 @@ async function load() {
         settings = JSON.parse(localStorage.getItem("globalSettings"))
     }
 
-    
+    // Assets
     if(!JSON.parse(localStorage.getItem("globalSettings")).disableSetAssets) {
         await createCardAssets(cardZip.files);
     }
-	
+
+    // Recently viewed
+    if(sessionStorage.getItem('crash_prevention-recent') == 'true') {
+        const settings = JSON.parse(localStorage.getItem("globalSettings"));
+        settings.recentlyViewed = false;
+        localStorage.setItem('globalSettings', JSON.stringify(settings));
+        sessionStorage.removeItem('crash_prevention-recent');
+    } else if(JSON.parse(localStorage.getItem("globalSettings")).recentlyViewed && combinedSets.length < 1) {
+        sessionStorage.setItem('crash_prevention-recent', true);
+
+        const fileInput = document.querySelector("#file_input");
+        const file = fileInput.files[0];
+        const fr = new FileReader();
+        fr.onload = function (e) {
+            const arrayBuffer = e.target.result;
+            const blob = new Blob([arrayBuffer]);
+            
+            addSetToRecent(cardSet.json.title, cardSet.json.class, cardSet.json.id, blob).then((res) => {
+                sessionStorage.removeItem('crash_prevention-recent');
+            });
+        };
+        fr.readAsArrayBuffer(file);
+    }
+
+    if(JSON.parse(localStorage.getItem("globalSettings")).scriptWarning) {
+        let foundScript = false;
+        for(let i = 0; i < cardSet.json.cards.length; i++) {
+            const card = cardSet.json.cards[i];
+            if(card.randomizedFront) {
+                for(const front of card.front) {
+                    const l = String(front).toLowerCase();
+                    if(l.includes("<script") || l.includes("onclick=\"")) {
+                        foundScript = true;
+                        break;
+                    }
+                }
+                if(foundScript) break;
+            } else {
+                const l = String(card.front).toLowerCase();
+                if(l.includes("<script") || l.includes("onclick=\"")) {
+                    foundScript = true;
+                    break;
+                }
+            }
+            const l = String(card.back).toLowerCase();
+            if(l.includes("<script") || l.includes("onclick=\"")) {
+                foundScript = true;
+                break;
+            }
+        }
+        
+        if(foundScript) {
+            if(await CoreNote.confirm(
+                `This set includes JavaScript scripts. While they cannot access your personal information (that you haven't used in CoreNote), you may still want to skip this set as a precaution.<b style="color: white">Say 'yes' to go back.</b><br><br><i style="color: white">You can disable this security check in Settings.</i>`
+            )) {
+                window.location.href = "/";
+            }
+        }
+    }
+    
 	refreshSettings(); // Done after disabling set assets
-	initCardSet();
+	initCardSet();    
 }
 
 async function createCardAssets(cardZipFiles) {
@@ -605,25 +664,21 @@ function initCardSet() {
         // }
         document.querySelector("#info-author").innerHTML = cardSet.json.creator || "<i>Undefined</i>";
 
-        switch(parseInt(cardSet.json.version)) {
-            case 0:
-                document.querySelector("#info-version").innerHTML = `0 <span class="note">(InDev)</span>`;
-                break;
-            case 1: 
-                document.querySelector("#info-version").innerHTML = `1 <span class="note">(Sunshine)</span>`;
-                break;
-            case 2:
-                document.querySelector("#info-version").innerHTML = `2 <span class="note">(Nullify The Dream)</span>`;
-                break;
-            case NaN: 
-                document.querySelector("#info-version").innerHTML = `<i>Undefined</i>`;
-                break;
-            default:
-                console.warn("No version identifier for version " + cardSet.json.version)
-                document.querySelector("#info-version").innerHTML = `${cardSet.json.version} <span class="note">(?)</span>`;
-                break;
-
+        // Version ID
+        let versionId = "";
+        const versionNames = [
+            "InDev",
+            "Sunshine",
+            "Nullify The Dream",
+            "Middle Ground"
+        ];
+        if(parseInt(cardSet.json.version) > 3 || Number.isNaN(parseInt(cardSet.json.version))) {
+            versionId = "Unknown";
+            console.warn("No version identifier for version " + cardSet.json.version);
+        } else {
+            versionId = versionNames[parseInt(cardSet.json.version)];
         }
+        document.querySelector("#info-version").innerHTML = `${parseInt(cardSet.json.version)} <span class="note">(${versionId})</span>`;
         
         document.querySelector("#info-date").innerHTML = epochToDate(cardSet.json.generationDate * 1000) || "<i>Undefined</i>";
         document.querySelector("#info-class").innerHTML = cardSet.json.class || "<i>Undefined</i>";
@@ -767,23 +822,69 @@ function showHelpPopup(text) {
 
 function showCard() {
     
-    let innerHTML = currentCard.front;
-
     let ourFront = onFront;
     if(settings.cardFlip) {
         ourFront = !ourFront;
     }
+
+    // Quiz Card
+    let quizMode = false;
+    let quizModeCorrectIndex = undefined;
+    if(!window.forceNoQuiz && currentCard.multipleChoice && rng(0, 17) == 0 && !ourFront) { 
+        addVignetteById('2');
+        quizMode = true;
+        window.progressLock = true;
+        const text = `~ QUIZ TIME ~`;
+        flipButton.textContent = text;
+        setTimeout(() => {
+            flipButton.textContent = text;
+        }, 1.51e+3);
+
+        nextButton.style.display = "none";
+        previousButton.style.display = "none";
+        document.querySelector("#wrong_button").style.display = "none";
+        document.querySelector("#right_button").style.display = "none";
+
+        const answers = [... currentCard.wrongAnswers, currentCard.back];
+        shuffleArray(answers);
+        answers.unshift();
+        quizModeCorrectIndex = answers.lastIndexOf(currentCard.back);
+
+        innerHTML = `
+            <h4>Which one?</h4> <br>
+            <div>
+                ${currentCard.front}
+            </div>
+            <br>
+            <div id="answer_0" class="multiple_choice_card_slot">
+            ${answers[0]}
+            </div> <br>
+            <div id="answer_1" class="multiple_choice_card_slot">
+            ${answers[1]}
+            </div> <br>
+            <div id="answer_2" class="multiple_choice_card_slot">
+            ${answers[2]}
+            </div> <br>
+            <div id="answer_3" class="multiple_choice_card_slot">
+            ${answers[3]}
+            </div> <br>
+        `;
+    }
+    window.forceNoQuiz = false;
     
     // Pick card side
-    if(ourFront) {
-        innerHTML = currentCard.front;
-    } else {
-        innerHTML = currentCard.back;
-    }
-    
-    // If randomized front, do that
-    if(ourFront && currentCard.randomizedFront) {
-        innerHTML = innerHTML[rng(0, innerHTML.length - 1)]
+    if(!quizMode) {
+        if(ourFront) {
+            innerHTML = currentCard.front;
+        } else {
+            innerHTML = currentCard.back;
+        }
+        
+        // If randomized front, do that
+        if(ourFront && currentCard.randomizedFront) {
+            innerHTML = innerHTML[rng(0, innerHTML.length - 1)]
+        }
+
     }
 
     // Handle explanations
@@ -933,8 +1034,69 @@ function showCard() {
     }
 
     if(rng(1, 5000) == 1) {
-        hijack();
+        // hijack();
     } 
+
+    // Finishing the Quiz Mode
+    if(quizMode) {
+        const endCondition = () => {
+            setTimeout(() => {
+                addVignetteById(`3`);
+            }, 3e+3);
+            window.forceNoQuiz = true;
+            window.progressLock = false;
+            flipButton.textContent = "GOOD JOB!";
+            setTimeout(() => {
+                flipButton.textContent = "Flip";
+            },3.5e+3);
+            showCard();
+
+            if(settings.answerSorting) {
+                document.querySelector("#wrong_button").style.display = "inline";
+                document.querySelector("#right_button").style.display = "inline";
+            } else {
+                nextButton.style.display = "inline";
+                previousButton.style.display = "inline";
+            }
+
+        };
+
+        
+        rawCardView.querySelectorAll('.multiple_choice_card_slot').forEach((el) => {
+            el.onclick = () => {
+                el.onclick = undefined;
+
+                if(el.id != `answer_${quizModeCorrectIndex}`) {
+                    const arr = [
+                        "That doesn't look right",
+                        "Nope!",
+                        "Try again?",
+                        "I don't know about that",
+                        "Incorrect"
+                    ];
+                    flipButton.textContent = arr[rng(0, arr.length - 1)];
+                    setTimeout(() => {
+                        flipButton.textContent = "~ QUIZ TIME ~";
+                    }, 3.5e+3);
+
+                    el.className = "multiple_choice_card_slot_style_only";
+                    el.style.opacity = 0;
+                } else {
+                    addVignetteById(`success`);
+                    endCondition();
+                    return;
+                }
+
+                const choices = rawCardView.querySelectorAll('.multiple_choice_card_slot');
+                if(choices.length < 1) {
+                    endCondition();
+                    return;
+                }
+                
+                el.onclick = undefined;
+            };
+        });
+    }
 }
 
 let flipButtonTimeout = null;
