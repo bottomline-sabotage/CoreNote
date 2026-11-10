@@ -903,10 +903,17 @@ async function save(justGenerate = false) {
         URL.revokeObjectURL(url);
 
         console.log(data);
+        
+        if(!localStorage.getItem("random-file-warning")) {
+            setTimeout(() => {
+                CoreNote.alert("We just saved a .corenote file onto your computer! To review it, go to the Main Page > Study Set, then upload your file! To edit it again, refresh this page, then press Upload set (you must save it again if you make any changes).<br><br>Note: Opening/uploading the file in places outside of CoreNote will not work.");
+                localStorage.setItem("random-file-warning", true);
+            }, 3e+3);
+        }
 
         setTimeout(() => {
-            console.log("Cleared emergency backup");
-            localStorage.removeItem("e-emergencyBackup");
+            // console.log("Cleared emergency backup");
+            // localStorage.removeItem("e-emergencyBackup");
         }, 40e+3);
 
     } catch (err) {
