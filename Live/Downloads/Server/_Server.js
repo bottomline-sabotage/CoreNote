@@ -40,6 +40,29 @@ class _Server {
         return secret.join('');
     }
 
+    generateSecretGame() {
+        const size = 12;
+        const arr = [
+            '!', '@', '#', '$', '%', '^', '&', '*',
+             '-', '_', '=', '+',
+             ',', '.',
+
+            'A', 'B', 'D', 'E', 'F', 'G', 'H', 'J',
+            'K', 'M', 'N', 'P', 'R', 'S', 'T',
+            'U', 'V', 'W', 'X', 'Y',
+
+            '2', '3', '4', '6', '7', '9'
+        ];
+
+        let secret = "";
+
+        for(let i = 0; i < size; i++) {
+            secret += arr[Math.floor(Math.random() * arr.length)] // TODO: secure
+        }
+
+        return secret;
+    }
+
     getContentType(filePath) {
 
         const extname = path.extname(filePath);

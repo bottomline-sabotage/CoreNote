@@ -56,6 +56,8 @@ class GameServer extends _Server {
 
         const wss = new WebSocket.Server({"port": port, "host": ip});
 
+        this.tradeSecret = this.generateSecretGame();
+
         console.log(`Hosting Game Server at ws://${ip}:${port}`);
 
         this.knownUsers = {};
