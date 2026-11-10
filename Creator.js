@@ -912,8 +912,8 @@ async function save(justGenerate = false) {
         }
 
         setTimeout(() => {
-            // console.log("Cleared emergency backup");
-            // localStorage.removeItem("e-emergencyBackup");
+            console.log("Cleared emergency backup");
+            localStorage.removeItem("e-emergencyBackup");
         }, 40e+3);
 
     } catch (err) {
