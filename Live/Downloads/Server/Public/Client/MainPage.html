@@ -73,10 +73,23 @@
             border-radius: 5px;
             transition: opacity 0.3s ease;
         }
+
+        a {
+            cursor: pointer;
+        }
+
+        #mainPage, #gameToken {
+            display: none;
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 <body>
+    <div style="position: fixed; top: 6vh; left: 5%; max-width: 20vw; ;" id="custom-username"></div>
+    
     <img src="/Assets/Logo.png" class="big-logo" alt="CoreNote Live">
+    
+    <div style="position: fixed; bottom: 0.5vh; right: 50%; transform: translate(50%); "><a id="offline-online-switcherroo">I actually wanted an offline game</a></div>
 
     <div class="grid" id="gameToken">
         <h1>Enter your Game Token!</h1>
@@ -90,44 +103,130 @@
         
         <span style="font-size: 3vh; font-weight: bold;">And your Nickname!</span><br>
         <span class="note">Don't use your real name</span><br><br>
-        <input style="font-size: 3vh;">
+        <input style="font-size: 3vh;" id="account-creation-username">
 
         <br><br>
-        <button>Continue</button>
+        <button id="account-creation-continue">Continue</button>
     </div> 
 
-    <div id="mainPage"></div>
+    <div id="mainPage" class="grid">TEST</div>
 
     <script src="/General.js"></script>
     <script>
+
+        
+
+        document.querySelector("#account-creation-continue").onclick = async () => {
+            // If game token in storage and is different from current, reset (after verifying) via CoreNoteLive.clear
+
+            const usernameBox = document.querySelector("#custom-username");
+            let username = document.querySelector("#account-creation-username").value;
+            usernameBox.innerHTML = `Hello, <a>${username}</a>!`;
+            
+            CoreNoteLive.storage.set("username", username);
+            
+            usernameBox.onclick = async () => {
+                let res; 
+                do {
+                    res = await CoreNote.prompt("Change your username here", username);
+                } while(!res);
+                
+                username = res;
+                usernameBox.innerHTML = `Hello, <a>${username}</a>!`;
+                CoreNoteLive.storage.set("username", username);
+            }
+
+    
+
+
+
+            // Transition
+            const mainPage = document.querySelector("#mainPage");
+            const gameToken = document.querySelector("#gameToken");
+
+            CoreNoteLive.elementTransition(gameToken, mainPage, 350);
+
+            document.querySelector("#account-creation-continue").onclick = null;
+
+        };
+        
+        // If already has a username in storage
+        if(CoreNoteLive.storage.get("username")) {
+            const eUsername = CoreNoteLive.storage.get("username");
+            const usernameBox = document.querySelector("#custom-username");
+            document.querySelector("#account-creation-username").value = eUsername;
+        }
+
         const params = new URL(window.location.href).searchParams;
         if(params.get("online") == "true") {
+            CoreNoteLive.storage.set("online", true);
+            window.onlineGame = true;
             document.querySelector("#mainPage").style.display = "none";
             document.querySelector("#gameToken").style.display = "inline";
+            document.querySelector("#offline-online-switcherroo").textContent = "I actually wanted an offline game";
+            document.querySelector("#offline-online-switcherroo").onclick = () => {
+                CoreNoteLive.storage.clear();
+                window.location.href = `${String(window.location.href).replaceAll('?online=true', '')}`;
+            };
         } else {
+            CoreNoteLive.storage.set("online", false);
+            window.onlineGame = false;
             document.querySelector("#gameToken").style.display = "none";
             document.querySelector("#mainPage").style.display = "inline";
-
+            document.querySelector("#offline-online-switcherroo").textContent = "I actually wanted an online game";
+            document.querySelector("#offline-online-switcherroo").onclick = () => {
+                CoreNoteLive.storage.clear();
+                window.location.href = `${window.location.href}?online=true`;
+            };
         }
     </script>
     <script>
+       
         const inputs = document.querySelectorAll(".sec");
 
         inputs.forEach((input, index) => {
 
-            // Move forward after 4 characters
+            // Handle typing
             input.addEventListener("input", () => {
+                input.value = input.value.substring(0, 4);
+
                 if(input.value.length >= 4 && index < inputs.length - 1) {
                     inputs[index + 1].focus();
                     inputs[index + 1].select();
-                } else if(input.value.length >= 4) {
-                    input.value = input.value.substring(0, 4);
                 }
             });
 
+            // Handle paste across all inputs
+            input.addEventListener("paste", (e) => {
+                e.preventDefault();
+
+                const pastedData = e.clipboardData
+                    .getData("text")
+                    .replace(/\s/g, "");
+
+                let currentIndex = index;
+
+                for(let i = 0; i < pastedData.length && currentIndex < inputs.length; i += 4) {
+                    inputs[currentIndex].value = pastedData.substring(i, i + 4);
+                    currentIndex++;
+                }
+
+                // Focus the last filled input
+                const lastIndex = Math.min(
+                    index + Math.ceil(pastedData.length / 4) - 1,
+                    inputs.length - 1
+                );
+
+                inputs[lastIndex].focus();
+                inputs[lastIndex].setSelectionRange(
+                    inputs[lastIndex].value.length,
+                    inputs[lastIndex].value.length
+                );
+            });
+
+            // Keyboard navigation
             input.addEventListener("keydown", (e) => {
 
-                // Backspace: move to previous input if empty
                 if(e.key === "Backspace" && input.value === "" && index > 0) {
                     e.preventDefault();
                     inputs[index - 1].focus();
@@ -137,8 +236,8 @@
                     );
                 }
 
-                // Left arrow: move to previous input
-                if(e.key === "ArrowLeft" && index > 0 &&
+                if(e.key === "ArrowLeft" &&
+                    index > 0 &&
                     input.selectionStart === 0) {
                     e.preventDefault();
                     inputs[index - 1].focus();
@@ -148,15 +247,17 @@
                     );
                 }
 
-                // Right arrow: move to next input
-                if(e.key === "ArrowRight" && index < inputs.length - 1 &&
+                if(e.key === "ArrowRight" &&
+                    index < inputs.length - 1 &&
                     input.selectionStart === input.value.length) {
                     e.preventDefault();
                     inputs[index + 1].focus();
                     inputs[index + 1].setSelectionRange(0, 0);
                 }
             });
+
         });
+
     </script>
 </body>
 </html>

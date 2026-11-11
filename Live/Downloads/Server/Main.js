@@ -1,8 +1,10 @@
 const HostServer = require("./HostServer.js");
 const GameServer = require("./GameServer.js");
 
-const h = new HostServer( 3000, 'localhost', true);
-const g = new GameServer( 4000,'localhost');
+const IP = "192.168.68.54";
+
+const h = new HostServer( 3000, IP, true);
+const g = new GameServer( 4000,IP);
 
 setTimeout(() => {
     console.log("Host Trade Secret: " + h.tradeSecret);

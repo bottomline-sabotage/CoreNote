@@ -489,3 +489,53 @@ class CoreNote {
         });
     }
 }   
+
+// Live Settings
+class CoreNoteLive {
+    static storage = {
+        init() {
+            if(!localStorage.getItem("live-data")) {
+                localStorage.setItem("live-data", "{}");
+            }
+        },
+        asJson() {
+            try {
+                return JSON.parse(localStorage.getItem("live-data"));
+            } catch (err) {
+                console.error(err);
+                return {};
+            }
+        },
+        set(key, value) {
+            this.init();
+            const json = this.asJson();
+            json[key] = value;
+            localStorage.setItem("live-data", JSON.stringify(json));
+        },
+        get(key) {
+            this.init();
+            const json = this.asJson();
+            return json[key];
+        },
+        remove(key) {
+            this.init();
+            const json = this.asJson();
+            delete json[key];
+            localStorage.setItem("live-data", JSON.stringify(json));
+        },
+        clear() {
+            localStorage.removeItem("live-data");
+        }
+    }
+
+    static async elementTransition(el1, el2, wait = 500, delay = 30) {
+        el1.style.opacity = 0;
+        await sleep(wait);
+        el2.style.opacity = 0;
+        el1.style.display = "none";
+        el2.style.display = "inline"
+        await sleep(delay);
+        el2.style.opacity = 1;
+        
+    }
+}
